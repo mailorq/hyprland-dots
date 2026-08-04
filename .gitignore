@@ -1,5 +1,10 @@
 .idea/
+__pycache__/
 
 # User-provided, unprocessed references. They stay local until each image has a
 # confirmed role and an application-specific export size.
 /pictures/
+
+# User-owned hardware and input overrides for Hyprland. The template is tracked;
+# the active override is intentionally machine-local.
+/config/hypr/fata/local.lua

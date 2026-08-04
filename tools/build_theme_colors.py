@@ -14,6 +14,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 PALETTE_PATH = ROOT / "theme" / "palette.json"
 THEME_DIR = ROOT / "theme"
+HYPRLAND_COLORS_PATH = ROOT / "config" / "hypr" / "fata" / "colors.lua"
 TOKEN_ORDER = (
     "black", "bg_deep", "bg", "bg_cool", "surface", "surface_warm",
     "border", "fg_dim", "fg_muted", "fg", "white", "burgundy",
@@ -103,6 +104,8 @@ def main() -> None:
     (THEME_DIR / "colors.conf").write_text(kitty(colors), encoding="utf-8")
     (THEME_DIR / "colors.rasi").write_text(rasi(colors), encoding="utf-8")
     (THEME_DIR / "colors.lua").write_text(lua(colors), encoding="utf-8")
+    HYPRLAND_COLORS_PATH.parent.mkdir(parents=True, exist_ok=True)
+    HYPRLAND_COLORS_PATH.write_text(lua(colors), encoding="utf-8")
 
 
 if __name__ == "__main__":

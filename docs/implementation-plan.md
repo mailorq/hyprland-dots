@@ -3,7 +3,7 @@
 This repository is built in narrow, verifiable stages. A later stage cannot
 silently change a completed contract from an earlier one.
 
-## 1. Foundation and source audit — in progress
+## 1. Foundation and source audit — complete
 
 **Purpose:** establish the target architecture before any runnable dotfile is
 written.
@@ -32,7 +32,7 @@ written.
 - No legacy Hyprlang configuration, copied upstream artwork, or hidden runtime
   helper is introduced.
 
-## 2. Artwork catalogue and palette — pending
+## 2. Artwork catalogue and palette — complete
 
 **Purpose:** turn the reference set into reusable visual assets and freeze the
 Fata Morgana semantic palette.
@@ -56,7 +56,7 @@ Fata Morgana semantic palette.
   generation rule.
 - Palette adapters are byte-for-byte synchronized with the canonical tokens.
 
-## 3. Hyprland compositor — pending
+## 3. Hyprland compositor — in progress
 
 **Purpose:** create a current Hyprland 0.55+ Lua configuration for the desktop
 workflow.
