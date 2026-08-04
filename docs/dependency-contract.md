@@ -9,8 +9,8 @@ implemented. Silent fallbacks are prohibited.
 | Component | Mandatory binary | Scope | Notes |
 |---|---|---|---|
 | Compositor | `Hyprland` 0.55+ | all profiles | Lua configuration only. |
-| Terminal | `kitty` | all profiles | Reads a Kitty-valid colour include. |
-| Launcher | `rofi` with Wayland support | all profiles | Rasi is validated before release. |
+| Terminal | `kitty` | all profiles | Reads a Kitty-valid colour include and the approved-art glob. |
+| Launcher | `rofi` with Wayland support | all profiles | Rasi is validated before release; `fata-rofi` uses only POSIX `sh` plus this binary. |
 | Notifications | `mako` | all profiles | Native Mako config; Dunst is not a hidden substitute. |
 | Panel | `waybar` | all profiles | One desktop config; laptop additions are explicit. |
 

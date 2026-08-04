@@ -56,7 +56,7 @@ Fata Morgana semantic palette.
   generation rule.
 - Palette adapters are byte-for-byte synchronized with the canonical tokens.
 
-## 3. Hyprland compositor — in progress
+## 3. Hyprland compositor — baseline ready for runtime validation; personal binds pending
 
 **Purpose:** create a current Hyprland 0.55+ Lua configuration for the desktop
 workflow.
@@ -78,7 +78,7 @@ workflow.
 - No legacy `source =`, `windowrule =`, `animation =`, or deprecated
   `decoration:drop_shadow` syntax remains.
 
-## 4. Kitty, Rofi, and Mako — pending
+## 4. Kitty, Rofi, and Mako — in progress
 
 **Purpose:** apply the mansion visual system to focused interaction surfaces.
 
