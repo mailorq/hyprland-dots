@@ -50,7 +50,7 @@ def main() -> None:
     manifest = json.loads(
         (ROOT / "assets" / "art" / "fata-morgana" / "manifest.json").read_text(encoding="utf-8")
     )
-    require(len(artwork) == 41, "approved artwork count must remain 41")
+    require(len(artwork) == 40, "approved artwork count must remain 40")
     require(
         all("kitty" in item["roles"] and "rofi" in item["roles"] for item in artwork),
         "each approved master must remain selectable by Kitty and Rofi",

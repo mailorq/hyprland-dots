@@ -96,17 +96,18 @@ workflow.
 - Kitty parses its config, Rofi validates its Rasi files, and Mako starts with
   the selected configuration on Wayland.
 
-## 5. Waybar, profiles, integration, and final QA — pending
+## 5. Waybar, profiles, integration, and final QA — in progress
 
 **Purpose:** build the final desktop panel and installation profile selection.
 
 **Work**
 
 - Build a clean desktop Waybar: launcher, 10 workspaces, focused title,
-  clock, audio/network/tray only where selected. No battery, temperature,
-  brightness, or power-profile monitoring on the desktop profile.
-- Provide an explicit opt-in laptop profile. Battery and backlight are optional;
-  temperature is separately opt-in and never inferred from laptop selection.
+  clock, audio, network, and tray. No battery, temperature, brightness,
+  power-profile, CPU, or memory monitoring on the desktop profile.
+- Provide explicit `laptop-battery`, `laptop-backlight`, and
+  `laptop-battery-backlight` variants. Temperature is separately opt-in and
+  never inferred from laptop selection.
 - Add a dependency preflight and an installation workflow with dry-run support;
   do not use blanket copies such as `cp -r /* ~/`.
 - Validate on the QHD primary display and a FHD-compatible secondary display,
