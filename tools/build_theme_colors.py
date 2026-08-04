@@ -15,6 +15,9 @@ ROOT = Path(__file__).resolve().parents[1]
 PALETTE_PATH = ROOT / "theme" / "palette.json"
 THEME_DIR = ROOT / "theme"
 HYPRLAND_COLORS_PATH = ROOT / "config" / "hypr" / "fata" / "colors.lua"
+KITTY_COLORS_PATH = ROOT / "config" / "kitty" / "fata" / "colors.conf"
+ROFI_COLORS_PATH = ROOT / "config" / "rofi" / "fata" / "colors.rasi"
+MAKO_CONFIG_PATH = ROOT / "config" / "mako" / "config"
 TOKEN_ORDER = (
     "black", "bg_deep", "bg", "bg_cool", "surface", "surface_warm",
     "border", "fg_dim", "fg_muted", "fg", "white", "burgundy",
@@ -98,14 +101,76 @@ def lua(colors: dict[str, str]) -> str:
     return "\n".join(lines) + "\n"
 
 
+def mako(colors: dict[str, str]) -> str:
+    """Render Mako's complete, XDG-portable key-value configuration."""
+    alpha = lambda name: f"{colors[name]}FF"
+    return "\n".join((
+        "# Generated from theme/palette.json by tools/build_theme_colors.py.",
+        "# Do not hand-edit: Mako include paths cannot portably follow XDG_CONFIG_HOME.",
+        "max-history=20",
+        "sort=-time",
+        "layer=top",
+        "anchor=top-right",
+        "width=380",
+        "height=160",
+        "outer-margin=8",
+        "margin=4",
+        "padding=12",
+        "border-size=2",
+        "border-radius=8",
+        "font=sans-serif 11",
+        "markup=1",
+        "format=<b>%s</b>\\n%b",
+        "text-alignment=left",
+        "icons=1",
+        "icon-location=left",
+        "max-icon-size=40",
+        "icon-border-radius=6",
+        "actions=1",
+        "default-timeout=6000",
+        "ignore-timeout=0",
+        "max-visible=3",
+        "on-button-left=invoke-default-action",
+        "on-button-right=dismiss",
+        "",
+        f"background-color={alpha('bg')}",
+        f"text-color={alpha('fg')}",
+        f"border-color={alpha('brass')}",
+        f"progress-color=over {alpha('brass_bright')}",
+        "",
+        "[urgency=low]",
+        f"border-color={alpha('storm')}",
+        f"text-color={alpha('fg_muted')}",
+        "",
+        "[urgency=normal]",
+        f"border-color={alpha('brass')}",
+        "",
+        "[urgency=high]",
+        f"background-color={alpha('burgundy')}",
+        f"border-color={alpha('danger')}",
+        f"text-color={alpha('white')}",
+        f"progress-color=over {alpha('danger')}",
+        "default-timeout=0",
+        "ignore-timeout=1",
+        "",
+    ))
+
+
 def main() -> None:
     colors = load_palette()
-    (THEME_DIR / "colors.css").write_text(css(colors), encoding="utf-8")
-    (THEME_DIR / "colors.conf").write_text(kitty(colors), encoding="utf-8")
-    (THEME_DIR / "colors.rasi").write_text(rasi(colors), encoding="utf-8")
-    (THEME_DIR / "colors.lua").write_text(lua(colors), encoding="utf-8")
-    HYPRLAND_COLORS_PATH.parent.mkdir(parents=True, exist_ok=True)
-    HYPRLAND_COLORS_PATH.write_text(lua(colors), encoding="utf-8")
+    outputs = {
+        THEME_DIR / "colors.css": css(colors),
+        THEME_DIR / "colors.conf": kitty(colors),
+        THEME_DIR / "colors.rasi": rasi(colors),
+        THEME_DIR / "colors.lua": lua(colors),
+        HYPRLAND_COLORS_PATH: lua(colors),
+        KITTY_COLORS_PATH: kitty(colors),
+        ROFI_COLORS_PATH: rasi(colors),
+        MAKO_CONFIG_PATH: mako(colors),
+    }
+    for path, content in outputs.items():
+        path.parent.mkdir(parents=True, exist_ok=True)
+        path.write_text(content, encoding="utf-8")
 
 
 if __name__ == "__main__":
