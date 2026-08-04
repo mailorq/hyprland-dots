@@ -1,0 +1,98 @@
+{
+  "layer": "top",
+  "position": "top",
+  "height": 40,
+  "margin-top": 8,
+  "margin-left": 12,
+  "margin-right": 12,
+  "spacing": 0,
+  "fixed-center": true,
+  "modules-left": [
+    "custom/menu",
+    "hyprland/workspaces",
+    "hyprland/window"
+  ],
+  "modules-center": [
+    "clock"
+  ],
+  "modules-right": [
+    "battery",
+    "backlight",
+    "pulseaudio",
+    "network",
+    "tray"
+  ],
+  "custom/menu": {
+    "format": "MENU",
+    "tooltip": false,
+    "on-click": "fata-rofi"
+  },
+  "hyprland/workspaces": {
+    "format": "{name}",
+    "persistent-only": true,
+    "persistent-workspaces": {
+      "*": 10
+    },
+    "all-outputs": false,
+    "move-to-monitor": true,
+    "enable-bar-scroll": false,
+    "sort-by": "number",
+    "tooltip": false
+  },
+  "hyprland/window": {
+    "max-length": 46,
+    "separate-outputs": true,
+    "fallback": "—",
+    "tooltip": true,
+    "tooltip-format": "{title}"
+  },
+  "clock": {
+    "interval": 60,
+    "format": "{:%H:%M}",
+    "tooltip": true,
+    "tooltip-format": "{:%A, %d %B %Y}"
+  },
+  "battery": {
+    "interval": 60,
+    "states": {
+      "warning": 25,
+      "critical": 12
+    },
+    "format": "BAT {capacity}%",
+    "format-charging": "CHG {capacity}%",
+    "format-plugged": "AC {capacity}%",
+    "tooltip": true,
+    "tooltip-format": "Battery: {capacity}% ({timeTo})"
+  },
+  "backlight": {
+    "interval": 5,
+    "format": "LIGHT {percent}%",
+    "tooltip": true,
+    "tooltip-format": "Display brightness: {percent}%"
+  },
+  "pulseaudio": {
+    "format": "VOL {volume}%",
+    "format-muted": "MUTED",
+    "scroll-step": 2,
+    "max-volume": 100,
+    "tooltip": true,
+    "tooltip-format": "{desc}: {volume}%"
+  },
+  "network": {
+    "interval": 5,
+    "format-wifi": "WLAN {signalStrength}%",
+    "format-ethernet": "LAN",
+    "format-linked": "LINK",
+    "format-disconnected": "OFFLINE",
+    "format-disabled": "WLAN OFF",
+    "tooltip": true,
+    "tooltip-format-wifi": "{essid} ({signalStrength}%)\n{ipaddr}",
+    "tooltip-format-ethernet": "{ifname}\n{ipaddr}",
+    "tooltip-format-disconnected": "Network disconnected"
+  },
+  "tray": {
+    "icon-size": 16,
+    "spacing": 6,
+    "show-passive-items": false
+  }
+}
