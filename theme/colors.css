@@ -1,0 +1,20 @@
+/* Generated from theme/palette.json by tools/build_theme_colors.py. */
+/* GTK 3 supports named colors; CSS custom properties are intentionally absent. */
+@define-color fm_black #171716;
+@define-color fm_bg_deep #202023;
+@define-color fm_bg #2C2D2E;
+@define-color fm_bg_cool #2D3040;
+@define-color fm_surface #3C3B3B;
+@define-color fm_surface_warm #493B36;
+@define-color fm_border #655B58;
+@define-color fm_fg_dim #92949A;
+@define-color fm_fg_muted #B9B0A5;
+@define-color fm_fg #E9E1D7;
+@define-color fm_white #F5F0E8;
+@define-color fm_burgundy #5F2F28;
+@define-color fm_burgundy_active #8E5545;
+@define-color fm_brass #B39A6A;
+@define-color fm_brass_bright #D0B77E;
+@define-color fm_storm #8E9BA8;
+@define-color fm_moss #899684;
+@define-color fm_danger #C9796C;

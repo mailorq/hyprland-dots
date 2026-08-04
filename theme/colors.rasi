@@ -1,0 +1,22 @@
+/* Generated from theme/palette.json by tools/build_theme_colors.py. */
+/* Rasi named values use @fm-... references in concrete Rofi widgets. */
+* {
+    fm-black: #171716;
+    fm-bg-deep: #202023;
+    fm-bg: #2C2D2E;
+    fm-bg-cool: #2D3040;
+    fm-surface: #3C3B3B;
+    fm-surface-warm: #493B36;
+    fm-border: #655B58;
+    fm-fg-dim: #92949A;
+    fm-fg-muted: #B9B0A5;
+    fm-fg: #E9E1D7;
+    fm-white: #F5F0E8;
+    fm-burgundy: #5F2F28;
+    fm-burgundy-active: #8E5545;
+    fm-brass: #B39A6A;
+    fm-brass-bright: #D0B77E;
+    fm-storm: #8E9BA8;
+    fm-moss: #899684;
+    fm-danger: #C9796C;
+}
