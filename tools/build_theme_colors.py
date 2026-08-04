@@ -18,6 +18,7 @@ HYPRLAND_COLORS_PATH = ROOT / "config" / "hypr" / "fata" / "colors.lua"
 KITTY_COLORS_PATH = ROOT / "config" / "kitty" / "fata" / "colors.conf"
 ROFI_COLORS_PATH = ROOT / "config" / "rofi" / "fata" / "colors.rasi"
 MAKO_CONFIG_PATH = ROOT / "config" / "mako" / "config"
+WAYBAR_COLORS_PATH = ROOT / "config" / "waybar" / "fata" / "colors.css"
 TOKEN_ORDER = (
     "black", "bg_deep", "bg", "bg_cool", "surface", "surface_warm",
     "border", "fg_dim", "fg_muted", "fg", "white", "burgundy",
@@ -167,6 +168,7 @@ def main() -> None:
         KITTY_COLORS_PATH: kitty(colors),
         ROFI_COLORS_PATH: rasi(colors),
         MAKO_CONFIG_PATH: mako(colors),
+        WAYBAR_COLORS_PATH: css(colors),
     }
     for path, content in outputs.items():
         path.parent.mkdir(parents=True, exist_ok=True)
