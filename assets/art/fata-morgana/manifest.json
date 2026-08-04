@@ -1,0 +1,1013 @@
+{
+  "schema_version": 1,
+  "collection": "The House in Fata Morgana — user-supplied art masters",
+  "normalization": {
+    "orientation": "EXIF transpose",
+    "color_space": "sRGB RGB",
+    "metadata": "stripped",
+    "max_long_edge_px": 2048,
+    "crop": "none",
+    "upscale": "never"
+  },
+  "artwork": [
+    {
+      "id": "fm-001",
+      "file": "fata-morgana-001-red-masked-portrait.jpg",
+      "source_file": "_𝐈𝐜𝐨𝐧𝐬.jpg",
+      "source_sha256": "2a93f0fb6663687c7fbf5d546240448383eaf0989736ae27b2395f43514d12e7",
+      "source_dimensions": {
+        "width": 736,
+        "height": 932
+      },
+      "sha256": "e2f173a4ac703fa5b2ada6584f936c54d80ac5cba1b43687151cfb6f792824c3",
+      "dimensions": {
+        "width": 736,
+        "height": 932
+      },
+      "roles": [
+        "kitty",
+        "rofi",
+        "mako",
+        "lockscreen"
+      ],
+      "wallpaper": {
+        "eligible": false
+      }
+    },
+    {
+      "id": "fm-002",
+      "file": "fata-morgana-002-misty-forest-portrait.jpg",
+      "source_file": "fata-morgana-002-misty-forest-portrait.jpg",
+      "source_sha256": "9d75bcfae3a1deb2d43c729ed438b9443b03e8d230d17137f6331d385fc4f92a",
+      "source_dimensions": {
+        "width": 736,
+        "height": 976
+      },
+      "sha256": "fa2d90316e9b04a87953470cdc4b0080978ab45f5fdc93608cad0f4536aa37a5",
+      "dimensions": {
+        "width": 736,
+        "height": 976
+      },
+      "roles": [
+        "kitty",
+        "rofi",
+        "mako",
+        "lockscreen"
+      ],
+      "wallpaper": {
+        "eligible": false
+      }
+    },
+    {
+      "id": "fm-004",
+      "file": "fata-morgana-004-jacopo-crimson-portrait.jpg",
+      "source_file": "Jacopo Bearzatti.jpg",
+      "source_sha256": "fc40ce6a9010956fcd92a435dac3423d89fe1883e64bedff4a732204654429b0",
+      "source_dimensions": {
+        "width": 736,
+        "height": 1018
+      },
+      "sha256": "c7e7ed333bf9f57e4d736198d1a4efcebad69876ffa5c04d1f890cfc1f80d4cd",
+      "dimensions": {
+        "width": 736,
+        "height": 1018
+      },
+      "roles": [
+        "kitty",
+        "rofi",
+        "mako",
+        "lockscreen"
+      ],
+      "wallpaper": {
+        "eligible": false
+      }
+    },
+    {
+      "id": "fm-005",
+      "file": "fata-morgana-005-jacopo-and-clock.jpg",
+      "source_file": "Jacopo Bearzatti_#2412550 _ Fullsize Image (1433x2048).jpg",
+      "source_sha256": "ece6f3f387ce4e45811150987e717615709bc0d2d5d0ea02e8e9b5d46719d545",
+      "source_dimensions": {
+        "width": 736,
+        "height": 1052
+      },
+      "sha256": "c537a3d057fb8642952b2c5e136445d8006bf6b84ab37fcb3c97d89e3ae7c30e",
+      "dimensions": {
+        "width": 736,
+        "height": 1052
+      },
+      "roles": [
+        "kitty",
+        "rofi",
+        "mako",
+        "lockscreen"
+      ],
+      "wallpaper": {
+        "eligible": false
+      }
+    },
+    {
+      "id": "fm-006",
+      "file": "fata-morgana-006-jacopo-at-table.jpg",
+      "source_file": "Jacopo.jpg",
+      "source_sha256": "7494c771e7df01847e4439db36ea229009808cca3fd98fb48b1a8a78013b39c7",
+      "source_dimensions": {
+        "width": 736,
+        "height": 981
+      },
+      "sha256": "d48d4c52216e0fabdf17d6b76eeeea6b117ef50bebced1bd651858364e1eff5e",
+      "dimensions": {
+        "width": 736,
+        "height": 981
+      },
+      "roles": [
+        "kitty",
+        "rofi",
+        "mako",
+        "lockscreen"
+      ],
+      "wallpaper": {
+        "eligible": false
+      }
+    },
+    {
+      "id": "fm-007",
+      "file": "fata-morgana-007-mell-and-michel.jpg",
+      "source_file": "Mell _ The White-Haired Girl.jpg",
+      "source_sha256": "f139c2acc048c8a73b09688e45f658e5c6f11d7f2f30debf5f9258531ebff6bf",
+      "source_dimensions": {
+        "width": 735,
+        "height": 1050
+      },
+      "sha256": "b11e562051955ae6cd981a8f987b2b96a0ae6d6ba9e067fe8cf9ba02045e7d92",
+      "dimensions": {
+        "width": 735,
+        "height": 1050
+      },
+      "roles": [
+        "kitty",
+        "rofi",
+        "mako",
+        "lockscreen"
+      ],
+      "wallpaper": {
+        "eligible": false
+      }
+    },
+    {
+      "id": "fm-008",
+      "file": "fata-morgana-008-white-haired-figure.jpg",
+      "source_file": "Michel Bollinger_#2412580 _ Fullsize Image (1433x2048).jpg",
+      "source_sha256": "2a7656318ae2588a5b0cb88c964ee4105e8e690ffca393036ebe7a5bf194e21b",
+      "source_dimensions": {
+        "width": 735,
+        "height": 1051
+      },
+      "sha256": "1f2f23931c0bdd5deb2874c6f875b5f3eea42572afc945514f39cbd4d350cb8a",
+      "dimensions": {
+        "width": 735,
+        "height": 1051
+      },
+      "roles": [
+        "kitty",
+        "rofi",
+        "mako",
+        "lockscreen"
+      ],
+      "wallpaper": {
+        "eligible": false
+      }
+    },
+    {
+      "id": "fm-009",
+      "file": "fata-morgana-009-michel-and-skull.jpg",
+      "source_file": "Michel the house in fata Morgana.jpg",
+      "source_sha256": "72743674d9410e35ec48812e1045404eef3e23d487642e4631abcd412cb40199",
+      "source_dimensions": {
+        "width": 736,
+        "height": 1052
+      },
+      "sha256": "f1bacce289a111f3dd12d0c8a9330d91d1739e79ef9e50f9b5b9d660d6a9cbdb",
+      "dimensions": {
+        "width": 736,
+        "height": 1052
+      },
+      "roles": [
+        "kitty",
+        "rofi",
+        "mako",
+        "lockscreen"
+      ],
+      "wallpaper": {
+        "eligible": false
+      }
+    },
+    {
+      "id": "fm-010",
+      "file": "fata-morgana-010-michel-and-white-haired-girl.jpg",
+      "source_file": "Michel.jpg",
+      "source_sha256": "330ddd6ebf907fa24dfbaaaeff8322afb46d90b7a597e3503461208d00709207",
+      "source_dimensions": {
+        "width": 736,
+        "height": 1051
+      },
+      "sha256": "7e07a3a56f5596aa2d1924fcaa9059810474d1d704c46c455668bf4c6341fcd1",
+      "dimensions": {
+        "width": 736,
+        "height": 1051
+      },
+      "roles": [
+        "kitty",
+        "rofi",
+        "mako",
+        "lockscreen"
+      ],
+      "wallpaper": {
+        "eligible": false
+      }
+    },
+    {
+      "id": "fm-011",
+      "file": "fata-morgana-011-tower-scene.jpg",
+      "source_file": "Morgana and Jacopo (Tower Scene).jpg",
+      "source_sha256": "fa07ca48f521b1160f88419f1b1f5bdee5922ddf7e5b5016d312d32990d8a7dc",
+      "source_dimensions": {
+        "width": 735,
+        "height": 552
+      },
+      "sha256": "e7b39a2f07c9c4471e7bc56737636a3c0faea2c11b21f39953a3815cff78ebd6",
+      "dimensions": {
+        "width": 735,
+        "height": 552
+      },
+      "roles": [
+        "kitty",
+        "rofi",
+        "mako",
+        "lockscreen"
+      ],
+      "wallpaper": {
+        "eligible": false
+      }
+    },
+    {
+      "id": "fm-012",
+      "file": "fata-morgana-012-crimson-portrait.jpg",
+      "source_file": "NOIR_黑以 (@noir_lan) on X.jpg",
+      "source_sha256": "3a95419565cf158247054146fd0656222034627be114a00a04d066ff90bbdf3e",
+      "source_dimensions": {
+        "width": 736,
+        "height": 981
+      },
+      "sha256": "9962429bff3e772f030c8596e35eb00e6c04f48c6dc6e72b46d5cd48946e3952",
+      "dimensions": {
+        "width": 736,
+        "height": 981
+      },
+      "roles": [
+        "kitty",
+        "rofi",
+        "mako",
+        "lockscreen"
+      ],
+      "wallpaper": {
+        "eligible": false
+      }
+    },
+    {
+      "id": "fm-013",
+      "file": "fata-morgana-013-entwined-figures.jpg",
+      "source_file": "photo_2026-08-04_00-31-15.jpg",
+      "source_sha256": "28bacdd9f2d3dc5fc4f276265f38615c0d9e1c34701f383c028d63ca1a27f89e",
+      "source_dimensions": {
+        "width": 1036,
+        "height": 1280
+      },
+      "sha256": "a1adc70b5dc62a3fa224f3ac6bca969e8a2ef900f55d2ec3be6d6bba0aab42cf",
+      "dimensions": {
+        "width": 1036,
+        "height": 1280
+      },
+      "roles": [
+        "kitty",
+        "rofi",
+        "mako",
+        "lockscreen"
+      ],
+      "wallpaper": {
+        "eligible": false
+      }
+    },
+    {
+      "id": "fm-014",
+      "file": "fata-morgana-014-quiet-portrait.jpg",
+      "source_file": "THE ART  178 photos.jpg",
+      "source_sha256": "c853ee0de3333566276c228ec3337b2f48cefd9855c754cc7f9deb63ffe39775",
+      "source_dimensions": {
+        "width": 736,
+        "height": 1040
+      },
+      "sha256": "bbf75c3b1f8737dd5dcb5e5e7d02685971e6bbc8625e201eba7ff4cc86aa4e5e",
+      "dimensions": {
+        "width": 736,
+        "height": 1040
+      },
+      "roles": [
+        "kitty",
+        "rofi",
+        "mako",
+        "lockscreen"
+      ],
+      "wallpaper": {
+        "eligible": false
+      }
+    },
+    {
+      "id": "fm-015",
+      "file": "fata-morgana-015-bloodied-figure.jpg",
+      "source_file": "THE ART body-╨╕╨╖╨╛╨▒╤А╨░╨╢╨╡╨╜╨╕╤П-21.jpg",
+      "source_sha256": "e0bd2b8f25ddc1995b0f6a5ba15f42190e754dea965b3a943f18934ff1e7926d",
+      "source_dimensions": {
+        "width": 1892,
+        "height": 1419
+      },
+      "sha256": "ca3adc0bee7c3e1c3ae112929ebc8eb0c9becf0ace0947141ae36b460da01368",
+      "dimensions": {
+        "width": 1892,
+        "height": 1419
+      },
+      "roles": [
+        "kitty",
+        "rofi",
+        "mako",
+        "lockscreen"
+      ],
+      "wallpaper": {
+        "eligible": false
+      }
+    },
+    {
+      "id": "fm-016",
+      "file": "fata-morgana-016-violet-cloaked-portrait.jpg",
+      "source_file": "THE ART body-╨╕╨╖╨╛╨▒╤А╨░╨╢╨╡╨╜╨╕╤П-23.jpg",
+      "source_sha256": "82fea3a44d36e42fbcc7fb5a1c2861272bf6005113ea0c2a0f88fef929a59b92",
+      "source_dimensions": {
+        "width": 5870,
+        "height": 4175
+      },
+      "sha256": "bd1196fc1f7666890122330c1d7333aabe7477435d7a9b53a324201fa05700d5",
+      "dimensions": {
+        "width": 2048,
+        "height": 1457
+      },
+      "roles": [
+        "kitty",
+        "rofi",
+        "mako",
+        "lockscreen"
+      ],
+      "wallpaper": {
+        "eligible": true,
+        "target_aspect_ratio": "16:9",
+        "crop": "center",
+        "estimated_crop_loss_percent": 20.9
+      }
+    },
+    {
+      "id": "fm-017",
+      "file": "fata-morgana-017-reaching-light.jpg",
+      "source_file": "THE ART body-╨╕╨╖╨╛╨▒╤А╨░╨╢╨╡╨╜╨╕╤П-61.jpg",
+      "source_sha256": "7f6e227cc7247936baed7f2560baadb705fbb27c0a30340543610a2732d57326",
+      "source_dimensions": {
+        "width": 998,
+        "height": 1383
+      },
+      "sha256": "74ffc85abc1a46205a037dd07bf51ba3cfb365063dc0184bfe77cd39ce7d4f44",
+      "dimensions": {
+        "width": 998,
+        "height": 1383
+      },
+      "roles": [
+        "kitty",
+        "rofi",
+        "mako",
+        "lockscreen"
+      ],
+      "wallpaper": {
+        "eligible": false
+      }
+    },
+    {
+      "id": "fm-018",
+      "file": "fata-morgana-018-palm-and-tear.jpg",
+      "source_file": "THE ART body-╨╕╨╖╨╛╨▒╤А╨░╨╢╨╡╨╜╨╕╤П-65.jpg",
+      "source_sha256": "94fb3eba0305d1eefb64ca7a963ed6cb7d98473fd9a51ce4f4e4d78de69af344",
+      "source_dimensions": {
+        "width": 2976,
+        "height": 4210
+      },
+      "sha256": "cbb0137092394699bd51af8736a0bd788a0dac53471acfcaceda6f30ac5e39b7",
+      "dimensions": {
+        "width": 1448,
+        "height": 2048
+      },
+      "roles": [
+        "kitty",
+        "rofi",
+        "mako",
+        "lockscreen"
+      ],
+      "wallpaper": {
+        "eligible": false
+      }
+    },
+    {
+      "id": "fm-019",
+      "file": "fata-morgana-019-grief-and-embrace.jpg",
+      "source_file": "THE ART body-╨╕╨╖╨╛╨▒╤А╨░╨╢╨╡╨╜╨╕╤П-73.jpg",
+      "source_sha256": "bed589bc8d31af31190135fa990429a5f58e63c4bcfdd073ad53fa4c2ea09245",
+      "source_dimensions": {
+        "width": 993,
+        "height": 1395
+      },
+      "sha256": "9c2cfe4ed2a61e40eb5cdd7af822315ba718fbe360eda5093dd62c1b38902b91",
+      "dimensions": {
+        "width": 993,
+        "height": 1395
+      },
+      "roles": [
+        "kitty",
+        "rofi",
+        "mako",
+        "lockscreen"
+      ],
+      "wallpaper": {
+        "eligible": false
+      }
+    },
+    {
+      "id": "fm-020",
+      "file": "fata-morgana-020-offering-hand.jpg",
+      "source_file": "THE ART body-╨╕╨╖╨╛╨▒╤А╨░╨╢╨╡╨╜╨╕╤П-76.jpg",
+      "source_sha256": "2444d196f8c1e4ddcc435ae753211e42ae151f385a929713e1af137fc40ea7d6",
+      "source_dimensions": {
+        "width": 993,
+        "height": 1395
+      },
+      "sha256": "d4d5a9311ba1c10d32d822c2ce8dea62d3459495a23ddaabd06cd6e482a54483",
+      "dimensions": {
+        "width": 993,
+        "height": 1395
+      },
+      "roles": [
+        "kitty",
+        "rofi",
+        "mako",
+        "lockscreen"
+      ],
+      "wallpaper": {
+        "eligible": false
+      }
+    },
+    {
+      "id": "fm-021",
+      "file": "fata-morgana-021-black-and-white-tableau.jpg",
+      "source_file": "the house in fata morgana (3).jpg",
+      "source_sha256": "caa0c84a956cbb960f987caccbb086de2dc26f9ebec62a186fbe6e4020999059",
+      "source_dimensions": {
+        "width": 735,
+        "height": 976
+      },
+      "sha256": "b6431c3db8e33524c492c627bb1270d6075cd83a9b312cc995bf8fcb716a845d",
+      "dimensions": {
+        "width": 735,
+        "height": 976
+      },
+      "roles": [
+        "kitty",
+        "rofi",
+        "mako",
+        "lockscreen"
+      ],
+      "wallpaper": {
+        "eligible": false
+      }
+    },
+    {
+      "id": "fm-022",
+      "file": "fata-morgana-022-anguished-portrait.jpg",
+      "source_file": "The House in Fata Morgana (4).jpg",
+      "source_sha256": "766e94e222c3e8834fe8b3f948237c6dc4797f7f7b69d180fe1ad2516f81db7f",
+      "source_dimensions": {
+        "width": 736,
+        "height": 1053
+      },
+      "sha256": "7b75e0c822778160f433e0854e98bf79f66900e6b26f95e7392ba45ad0b0c41c",
+      "dimensions": {
+        "width": 736,
+        "height": 1053
+      },
+      "roles": [
+        "kitty",
+        "rofi",
+        "mako",
+        "lockscreen"
+      ],
+      "wallpaper": {
+        "eligible": false
+      }
+    },
+    {
+      "id": "fm-023",
+      "file": "fata-morgana-023-snowy-bride.jpg",
+      "source_file": "the house in fata morgana art by yuweijiashui.jpg",
+      "source_sha256": "cba974f25ed0fe1f3209685f474b4dccf6699eb62acc5e4d6e494ead863bffa5",
+      "source_dimensions": {
+        "width": 736,
+        "height": 972
+      },
+      "sha256": "53aa575c1d8aa9e0f48cd437008b122d941a3604ba0210c5888d40010e5ea4f1",
+      "dimensions": {
+        "width": 736,
+        "height": 972
+      },
+      "roles": [
+        "kitty",
+        "rofi",
+        "mako",
+        "lockscreen"
+      ],
+      "wallpaper": {
+        "eligible": false
+      }
+    },
+    {
+      "id": "fm-024",
+      "file": "fata-morgana-024-thorned-portrait.jpg",
+      "source_file": "the house in fata morgana.jpg",
+      "source_sha256": "045c2639bdac6599d85a600670534febed81a6fd6fd41044a353be973da60561",
+      "source_dimensions": {
+        "width": 736,
+        "height": 981
+      },
+      "sha256": "5c36d61c44e953e3c648d013ed86506cfdec2de2293b5b9de80f29954d969423",
+      "dimensions": {
+        "width": 736,
+        "height": 981
+      },
+      "roles": [
+        "kitty",
+        "rofi",
+        "mako",
+        "lockscreen"
+      ],
+      "wallpaper": {
+        "eligible": false
+      }
+    },
+    {
+      "id": "fm-025",
+      "file": "fata-morgana-025-mell-forest-tableau.jpg",
+      "source_file": "the maid _ Mell Rhodes.jpg",
+      "source_sha256": "d102d855cbdb09d49251c18aba5e82cd8af4f401d19d7f2b4bcfcc0933a2d7b0",
+      "source_dimensions": {
+        "width": 736,
+        "height": 551
+      },
+      "sha256": "0126b5b5a79b7f0be24540622c4ab2ff2de9923ace3f278879d7aa019b7caea4",
+      "dimensions": {
+        "width": 736,
+        "height": 551
+      },
+      "roles": [
+        "kitty",
+        "rofi",
+        "mako",
+        "lockscreen"
+      ],
+      "wallpaper": {
+        "eligible": false
+      }
+    },
+    {
+      "id": "fm-026",
+      "file": "fata-morgana-026-shaft-of-light.jpg",
+      "source_file": "wmremove-transformed (1).jpeg",
+      "source_sha256": "2a88f12aa1e709860e2dca6bfec7cd9539de4281558d9dc037f8f6b5c50c9669",
+      "source_dimensions": {
+        "width": 735,
+        "height": 1143
+      },
+      "sha256": "62c533930e355b5535e803fbddaa3e4750c90881b8952f617473a31bd0ec2c75",
+      "dimensions": {
+        "width": 735,
+        "height": 1143
+      },
+      "roles": [
+        "kitty",
+        "rofi",
+        "mako",
+        "lockscreen"
+      ],
+      "wallpaper": {
+        "eligible": false
+      }
+    },
+    {
+      "id": "fm-027",
+      "file": "fata-morgana-027-chained-figures.jpg",
+      "source_file": "wmremove-transformed (2).jpeg",
+      "source_sha256": "ab3b0b3161552c68639ccb123c185c81243a6087f0383bc8731f65b3bf00e2ec",
+      "source_dimensions": {
+        "width": 736,
+        "height": 1041
+      },
+      "sha256": "597e0fcbab4b215e92f66f5f9831af6950531fef57c58d998f87c6ccfcea6cc7",
+      "dimensions": {
+        "width": 736,
+        "height": 1041
+      },
+      "roles": [
+        "kitty",
+        "rofi",
+        "mako",
+        "lockscreen"
+      ],
+      "wallpaper": {
+        "eligible": false
+      }
+    },
+    {
+      "id": "fm-028",
+      "file": "fata-morgana-028-crimson-reaching-figure.jpg",
+      "source_file": "wmremove-transformed (3).jpeg",
+      "source_sha256": "e966c5aca7c50a7c49a5dcaef0ac3b341fd6849c05860e44f6153b8ffe9e6b7b",
+      "source_dimensions": {
+        "width": 736,
+        "height": 1042
+      },
+      "sha256": "d4f1dad2fe9509926fd6a29eb6e9490b2e5769022d8a728013a507797988f455",
+      "dimensions": {
+        "width": 736,
+        "height": 1042
+      },
+      "roles": [
+        "kitty",
+        "rofi",
+        "mako",
+        "lockscreen"
+      ],
+      "wallpaper": {
+        "eligible": false
+      }
+    },
+    {
+      "id": "fm-030",
+      "file": "fata-morgana-030-blue-aura-figure.jpg",
+      "source_file": "wmremove-transformed.jpeg",
+      "source_sha256": "ed18fc804c82667e1e79b6fa325935cb312d059772dd3f59d022189b3335d419",
+      "source_dimensions": {
+        "width": 736,
+        "height": 1041
+      },
+      "sha256": "86e270ef4d68aba91fa9973abfe705a70a5d1c688d815ac324e16b5092f16c8c",
+      "dimensions": {
+        "width": 736,
+        "height": 1041
+      },
+      "roles": [
+        "kitty",
+        "rofi",
+        "mako",
+        "lockscreen"
+      ],
+      "wallpaper": {
+        "eligible": false
+      }
+    },
+    {
+      "id": "fm-031",
+      "file": "fata-morgana-031-sleeping-maid.jpg",
+      "source_file": "Без названия (1).jpg",
+      "source_sha256": "13f614c020b3824b394f65a75180db7e32e85f2be0c953659dd155d71acddc35",
+      "source_dimensions": {
+        "width": 736,
+        "height": 514
+      },
+      "sha256": "8d1a232811457fa42ccdfa68356a0df2152b7e6bb83eea34856544103ee2d7c0",
+      "dimensions": {
+        "width": 736,
+        "height": 514
+      },
+      "roles": [
+        "kitty",
+        "rofi",
+        "mako",
+        "lockscreen"
+      ],
+      "wallpaper": {
+        "eligible": true,
+        "target_aspect_ratio": "16:9",
+        "crop": "center",
+        "estimated_crop_loss_percent": 19.5
+      }
+    },
+    {
+      "id": "fm-032",
+      "file": "fata-morgana-032-crimson-streaked-portrait.jpg",
+      "source_file": "Без названия (10).jpg",
+      "source_sha256": "7050edc0f251a3f4f60ce04db624ee0178280dc35f4ab48aa96fadbdc3736d8d",
+      "source_dimensions": {
+        "width": 736,
+        "height": 1308
+      },
+      "sha256": "7d5b9846ff400b03c45d0bbcee1de3f0bc785fd2ba24c0d7824872b5ce969087",
+      "dimensions": {
+        "width": 736,
+        "height": 1308
+      },
+      "roles": [
+        "kitty",
+        "rofi",
+        "mako",
+        "lockscreen"
+      ],
+      "wallpaper": {
+        "eligible": false
+      }
+    },
+    {
+      "id": "fm-033",
+      "file": "fata-morgana-033-snowfall-portrait.jpg",
+      "source_file": "Без названия (11).jpg",
+      "source_sha256": "9ca9b15992c36ef53eb394777fe20c1bfb73c87a21acbea2a413e7bcfb074ffa",
+      "source_dimensions": {
+        "width": 736,
+        "height": 935
+      },
+      "sha256": "76f309513593bd4cfee23873931bbbebb32f326b39ffda13c77fcc6876f6dd70",
+      "dimensions": {
+        "width": 736,
+        "height": 935
+      },
+      "roles": [
+        "kitty",
+        "rofi",
+        "mako",
+        "lockscreen"
+      ],
+      "wallpaper": {
+        "eligible": false
+      }
+    },
+    {
+      "id": "fm-034",
+      "file": "fata-morgana-034-rose-profile.jpg",
+      "source_file": "Без названия (12).jpg",
+      "source_sha256": "f057d786d53326a83bcc2cd40624b02f20500dd8b5bec81a27181793021a444d",
+      "source_dimensions": {
+        "width": 735,
+        "height": 973
+      },
+      "sha256": "ae6872aa672ac2433dd3f007108a97bc2fb8d0937ecb77a49089b8e824644eeb",
+      "dimensions": {
+        "width": 735,
+        "height": 973
+      },
+      "roles": [
+        "kitty",
+        "rofi",
+        "mako",
+        "lockscreen"
+      ],
+      "wallpaper": {
+        "eligible": false
+      }
+    },
+    {
+      "id": "fm-035",
+      "file": "fata-morgana-035-spotlight-figure.jpg",
+      "source_file": "Без названия (2).jpg",
+      "source_sha256": "7148db18c753e55c576ad9aa7e29217986f7347c0d6222ca38d8878c69d4b735",
+      "source_dimensions": {
+        "width": 736,
+        "height": 520
+      },
+      "sha256": "9182b01f5d5f01f441a907c1879b22e4ba099ebfc66b97a7e914aab70c163b4d",
+      "dimensions": {
+        "width": 736,
+        "height": 520
+      },
+      "roles": [
+        "kitty",
+        "rofi",
+        "mako",
+        "lockscreen"
+      ],
+      "wallpaper": {
+        "eligible": true,
+        "target_aspect_ratio": "16:9",
+        "crop": "center",
+        "estimated_crop_loss_percent": 20.4
+      }
+    },
+    {
+      "id": "fm-036",
+      "file": "fata-morgana-036-sketched-pair.jpg",
+      "source_file": "fata-morgana-036-sketched-pair.jpg",
+      "source_sha256": "7a063a718b0b3b168177699a3cdf51f7217e768430aef1d249764dea60321e8d",
+      "source_dimensions": {
+        "width": 736,
+        "height": 550
+      },
+      "sha256": "6d16ea1fd2efbccc180f81857fc132a361be766fe80e3a997a9b7dc74be7fd59",
+      "dimensions": {
+        "width": 736,
+        "height": 550
+      },
+      "roles": [
+        "kitty",
+        "rofi",
+        "mako",
+        "lockscreen"
+      ],
+      "wallpaper": {
+        "eligible": false
+      }
+    },
+    {
+      "id": "fm-037",
+      "file": "fata-morgana-037-misty-blue-figure.jpg",
+      "source_file": "Без названия (5).jpg",
+      "source_sha256": "71218b18aad6e960897355ed1630c0f7b70c1a70acd3a9b6cd9e58287c441bf1",
+      "source_dimensions": {
+        "width": 736,
+        "height": 1042
+      },
+      "sha256": "50a9dc1f76dda17895fb25cf4f75ab2035faa69f51ff6e3abfde1b45220fbd91",
+      "dimensions": {
+        "width": 736,
+        "height": 1042
+      },
+      "roles": [
+        "kitty",
+        "rofi",
+        "mako",
+        "lockscreen"
+      ],
+      "wallpaper": {
+        "eligible": false
+      }
+    },
+    {
+      "id": "fm-038",
+      "file": "fata-morgana-038-moonlit-sleep.jpg",
+      "source_file": "Без названия (7).jpg",
+      "source_sha256": "5cbfc0ae80280a196e9316aa4068163ee431a90cc24565060127da8a6f95db04",
+      "source_dimensions": {
+        "width": 736,
+        "height": 414
+      },
+      "sha256": "0c1b223b1a9706f86bd33e74c6ed0c4ea3441e970ec04408e59dfe014d989185",
+      "dimensions": {
+        "width": 736,
+        "height": 414
+      },
+      "roles": [
+        "kitty",
+        "rofi",
+        "mako",
+        "lockscreen"
+      ],
+      "wallpaper": {
+        "eligible": true,
+        "target_aspect_ratio": "16:9",
+        "crop": "native",
+        "estimated_crop_loss_percent": 0.0
+      }
+    },
+    {
+      "id": "fm-039",
+      "file": "fata-morgana-039-forest-fire.jpg",
+      "source_file": "Без названия (8).jpg",
+      "source_sha256": "4cfb5c2d643b9635df8c8ec4249e6dde1435f753488bd35226fdbbe4d3466e6f",
+      "source_dimensions": {
+        "width": 1472,
+        "height": 1104
+      },
+      "sha256": "9fd3280dd101603604f20c64e881765d7f26a8877bb3f0a80268e38eaaf3c17f",
+      "dimensions": {
+        "width": 1472,
+        "height": 1104
+      },
+      "roles": [
+        "kitty",
+        "rofi",
+        "mako",
+        "lockscreen"
+      ],
+      "wallpaper": {
+        "eligible": false
+      }
+    },
+    {
+      "id": "fm-040",
+      "file": "fata-morgana-040-butterfly-maid.jpg",
+      "source_file": "Без названия (9).jpg",
+      "source_sha256": "95885c07024a23397d2054a75d316d6c0b1981e857c4aeccca8bed0c5bb5ea57",
+      "source_dimensions": {
+        "width": 1468,
+        "height": 1040
+      },
+      "sha256": "4e53e4e8cb88285a2439fe6438fd0e65998d58842660db86946d57ec1b05cd19",
+      "dimensions": {
+        "width": 1468,
+        "height": 1040
+      },
+      "roles": [
+        "kitty",
+        "rofi",
+        "mako",
+        "lockscreen"
+      ],
+      "wallpaper": {
+        "eligible": true,
+        "target_aspect_ratio": "16:9",
+        "crop": "center",
+        "estimated_crop_loss_percent": 20.6
+      }
+    },
+    {
+      "id": "fm-041",
+      "file": "fata-morgana-041-blue-orb-portrait.jpg",
+      "source_file": "ຳ ٍ                     ★                    ٍ.jpg",
+      "source_sha256": "238c236381b297703e2d77a2b4d1bba30ddb3ebea8330193169644a43536be08",
+      "source_dimensions": {
+        "width": 736,
+        "height": 736
+      },
+      "sha256": "0145143858159f4a5a9ee0195aacc2929dbe328fe8ecfced5e5431d48ef7280e",
+      "dimensions": {
+        "width": 736,
+        "height": 736
+      },
+      "roles": [
+        "kitty",
+        "rofi",
+        "mako",
+        "lockscreen"
+      ],
+      "wallpaper": {
+        "eligible": false
+      }
+    },
+    {
+      "id": "fm-042",
+      "file": "fata-morgana-042-mansion-window.jpg",
+      "source_file": "𝐓𝐇𝐄 𝐇𝐎𝐔𝐒𝐄 𝐈𝐍 𝐅𝐀𝐓𝐀 𝐌𝐎𝐑𝐆𝐀𝐍𝐀 ©NOVECT_JP ON TWT (1).jpg",
+      "source_sha256": "8e5c640d86d30eae3c76e25bee0a7ddc3a20dd3acd83f68b440367471e911f0f",
+      "source_dimensions": {
+        "width": 736,
+        "height": 1041
+      },
+      "sha256": "511db4b6f2bc0e3464b0535d0a498fd6c7ebdae21fd81d74ca244b584586208a",
+      "dimensions": {
+        "width": 736,
+        "height": 1041
+      },
+      "roles": [
+        "kitty",
+        "rofi",
+        "mako",
+        "lockscreen"
+      ],
+      "wallpaper": {
+        "eligible": false
+      }
+    },
+    {
+      "id": "fm-043",
+      "file": "fata-morgana-043-monochrome-gentleman.jpg",
+      "source_file": "𝐓𝐇𝐄 𝐇𝐎𝐔𝐒𝐄 𝐈𝐍 𝐅𝐀𝐓𝐀 𝐌𝐎𝐑𝐆𝐀𝐍𝐀 ©NOVECT_JP ON TWT.jpg",
+      "source_sha256": "622cb31d899bbff7cf0dd27ddf00e9d5b344a7a22c4a5ac9a6cb57c8a7e70355",
+      "source_dimensions": {
+        "width": 736,
+        "height": 1040
+      },
+      "sha256": "5655bd8224bbbce29b92be51ddce6750a6d898768754a7aa9bc93c0b81389321",
+      "dimensions": {
+        "width": 736,
+        "height": 1040
+      },
+      "roles": [
+        "kitty",
+        "rofi",
+        "mako",
+        "lockscreen"
+      ],
+      "wallpaper": {
+        "eligible": false
+      }
+    }
+  ]
+}
