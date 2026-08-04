@@ -21,6 +21,11 @@ ROOT = Path(__file__).resolve().parents[1]
 DEFAULT_INPUT_DIR = ROOT / "pictures"
 DEFAULT_OUTPUT_DIR = ROOT / "assets" / "art" / "fata-morgana"
 MAX_LONG_EDGE = 2048
+# Portraits are shared by Kitty and Rofi, whose wide interface surfaces cannot
+# use a vertical-16:9 composition without discarding most of the illustration.
+# The current approved maximum is fm-026 at 1.555; 1.60 leaves a small margin
+# while rejecting the retired fm-032 composition at 1.777.
+MAX_PORTRAIT_HEIGHT_TO_WIDTH = 1.60
 SHARED_ROLES = ("kitty", "rofi", "mako", "lockscreen")
 WALLPAPER_CANDIDATES = {
     "82fea3a44d36e42fbcc7fb5a1c2861272bf6005113ea0c2a0f88fef929a59b92": ("center", 20.9),
@@ -67,7 +72,6 @@ SPECS = {
     "e966c5aca7c50a7c49a5dcaef0ac3b341fd6849c05860e44f6153b8ffe9e6b7b": ArtworkSpec(28, "crimson-reaching-figure"),
     "ed18fc804c82667e1e79b6fa325935cb312d059772dd3f59d022189b3335d419": ArtworkSpec(30, "blue-aura-figure"),
     "13f614c020b3824b394f65a75180db7e32e85f2be0c953659dd155d71acddc35": ArtworkSpec(31, "sleeping-maid"),
-    "7050edc0f251a3f4f60ce04db624ee0178280dc35f4ab48aa96fadbdc3736d8d": ArtworkSpec(32, "crimson-streaked-portrait"),
     "9ca9b15992c36ef53eb394777fe20c1bfb73c87a21acbea2a413e7bcfb074ffa": ArtworkSpec(33, "snowfall-portrait"),
     "f057d786d53326a83bcc2cd40624b02f20500dd8b5bec81a27181793021a444d": ArtworkSpec(34, "rose-profile"),
     "7148db18c753e55c576ad9aa7e29217986f7347c0d6222ca38d8878c69d4b735": ArtworkSpec(35, "spotlight-figure"),
@@ -89,6 +93,7 @@ RETIRED_SOURCE_HASHES = {
     "baa4552abf2424034514ce12c42529beb7c0c2d13a9fbbada6571bb33c06afbe",
     "4554b79deaae70e3bc1e559e141c100348451953af9506bafbf0c0116e579d7e",
     "bb2c3e8848ded04bff98a28d1efe3c41438549945be9965a95af3dd20271c796",
+    "7050edc0f251a3f4f60ce04db624ee0178280dc35f4ab48aa96fadbdc3736d8d",
 }
 
 
@@ -136,6 +141,16 @@ def dimensions(image: Image.Image) -> dict[str, int]:
     return {"width": image.width, "height": image.height}
 
 
+def validate_shared_surface_aspect(image: Image.Image, source_path: Path) -> None:
+    """Reject portraits that would discard excessive content in Kitty and Rofi."""
+    ratio = image.height / image.width
+    if ratio > MAX_PORTRAIT_HEIGHT_TO_WIDTH:
+        raise RuntimeError(
+            f"portrait {source_path.name} is too tall for shared UI surfaces: "
+            f"{ratio:.3f} > {MAX_PORTRAIT_HEIGHT_TO_WIDTH:.2f}"
+        )
+
+
 def wallpaper_metadata(source_hash: str) -> dict[str, object]:
     candidate = WALLPAPER_CANDIDATES.get(source_hash)
     if candidate is None:
@@ -158,6 +173,7 @@ def build(input_dir: Path, output_dir: Path) -> None:
         output_path = output_dir / filename
         with Image.open(source_path) as source:
             image = ImageOps.exif_transpose(source).convert("RGB")
+        validate_shared_surface_aspect(image, source_path)
         source_dimensions = dimensions(image)
         image.thumbnail((MAX_LONG_EDGE, MAX_LONG_EDGE), Image.Resampling.LANCZOS)
         image.save(output_path, "JPEG", quality=94, subsampling=0, optimize=True, progressive=True)
@@ -210,6 +226,8 @@ def verify(input_dir: Path, output_dir: Path) -> int:
         with Image.open(path) as image:
             if max(image.size) > MAX_LONG_EDGE or image.mode != "RGB":
                 errors.append(f"invalid master {path.name}: {image.mode} {image.size}")
+            elif image.height / image.width > MAX_PORTRAIT_HEIGHT_TO_WIDTH:
+                errors.append(f"portrait too tall for shared UI surfaces: {path.name}")
     if errors:
         print("\n".join(errors), file=sys.stderr)
         return 1

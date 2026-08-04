@@ -7,7 +7,7 @@ window-manager binding or a hardware monitor.
 
 The approved manifest is the only artwork allowlist.
 `tools/build_art_selectors.py` requires every entry to carry both `kitty` and
-`rofi` roles; it currently generates selectors for all 41 masters. It does not
+`rofi` roles; it currently generates selectors for all 40 masters. It does not
 inspect `pictures/` or any unapproved file at runtime.
 
 - Kitty receives a native JPEG glob at

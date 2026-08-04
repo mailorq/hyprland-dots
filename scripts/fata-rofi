@@ -36,7 +36,6 @@ case "$fm_rofi_art_file" in
         "fata-morgana-028-crimson-reaching-figure.jpg"|
         "fata-morgana-030-blue-aura-figure.jpg"|
         "fata-morgana-031-sleeping-maid.jpg"|
-        "fata-morgana-032-crimson-streaked-portrait.jpg"|
         "fata-morgana-033-snowfall-portrait.jpg"|
         "fata-morgana-034-rose-profile.jpg"|
         "fata-morgana-035-spotlight-figure.jpg"|

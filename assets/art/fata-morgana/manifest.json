@@ -713,30 +713,6 @@
       }
     },
     {
-      "id": "fm-032",
-      "file": "fata-morgana-032-crimson-streaked-portrait.jpg",
-      "source_file": "Без названия (10).jpg",
-      "source_sha256": "7050edc0f251a3f4f60ce04db624ee0178280dc35f4ab48aa96fadbdc3736d8d",
-      "source_dimensions": {
-        "width": 736,
-        "height": 1308
-      },
-      "sha256": "7d5b9846ff400b03c45d0bbcee1de3f0bc785fd2ba24c0d7824872b5ce969087",
-      "dimensions": {
-        "width": 736,
-        "height": 1308
-      },
-      "roles": [
-        "kitty",
-        "rofi",
-        "mako",
-        "lockscreen"
-      ],
-      "wallpaper": {
-        "eligible": false
-      }
-    },
-    {
       "id": "fm-033",
       "file": "fata-morgana-033-snowfall-portrait.jpg",
       "source_file": "Без названия (11).jpg",

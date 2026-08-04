@@ -1,6 +1,6 @@
 # Art and palette contract
 
-The generated reference set contains 41 user-supplied Fata Morgana images. The raw
+The generated reference set contains 40 user-supplied Fata Morgana images. The raw
 `pictures/` directory is ignored and remains unchanged; the committed master
 collection is generated through a SHA-256 allowlist rather than source names.
 This prevents an accidental replacement or a foreign-title image from quietly
@@ -18,7 +18,9 @@ python tools/build_art_assets.py --check
 `build_art_assets.py` creates 2048 px-or-smaller sRGB masters with clean
 English filenames. It corrects EXIF orientation and removes metadata but never
 crops or enlarges an illustration. Every master remains eligible for Kitty,
-Rofi, Mako, and lockscreen use.
+Rofi, Mako, and lockscreen use. A shared-surface portrait cannot exceed a
+height-to-width ratio of 1.60: this retains `fm-026` at 1.555 while excluding
+vertical-16:9 compositions that would lose too much content in Kitty and Rofi.
 
 Five masters may later become QHD 16:9 desktop wallpapers with either native
 framing or a centered crop that removes at most 20.9% of the source area:
