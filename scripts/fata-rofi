@@ -1,0 +1,73 @@
+#!/bin/sh
+# Generated from assets/art/fata-morgana/manifest.json by
+# tools/build_art_selectors.py.
+# Runtime dependencies: a POSIX-compatible /bin/sh and rofi with Wayland
+# support.  No directory scan or external text-processing utility is used.
+set -eu
+
+fm_rofi_art_file=${FM_ROFI_ART_FILE:-fata-morgana-038-moonlit-sleep.jpg}
+case "$fm_rofi_art_file" in
+        "fata-morgana-001-red-masked-portrait.jpg"|
+        "fata-morgana-002-misty-forest-portrait.jpg"|
+        "fata-morgana-004-jacopo-crimson-portrait.jpg"|
+        "fata-morgana-005-jacopo-and-clock.jpg"|
+        "fata-morgana-006-jacopo-at-table.jpg"|
+        "fata-morgana-007-mell-and-michel.jpg"|
+        "fata-morgana-008-white-haired-figure.jpg"|
+        "fata-morgana-009-michel-and-skull.jpg"|
+        "fata-morgana-010-michel-and-white-haired-girl.jpg"|
+        "fata-morgana-011-tower-scene.jpg"|
+        "fata-morgana-012-crimson-portrait.jpg"|
+        "fata-morgana-013-entwined-figures.jpg"|
+        "fata-morgana-014-quiet-portrait.jpg"|
+        "fata-morgana-015-bloodied-figure.jpg"|
+        "fata-morgana-016-violet-cloaked-portrait.jpg"|
+        "fata-morgana-017-reaching-light.jpg"|
+        "fata-morgana-018-palm-and-tear.jpg"|
+        "fata-morgana-019-grief-and-embrace.jpg"|
+        "fata-morgana-020-offering-hand.jpg"|
+        "fata-morgana-021-black-and-white-tableau.jpg"|
+        "fata-morgana-022-anguished-portrait.jpg"|
+        "fata-morgana-023-snowy-bride.jpg"|
+        "fata-morgana-024-thorned-portrait.jpg"|
+        "fata-morgana-025-mell-forest-tableau.jpg"|
+        "fata-morgana-026-shaft-of-light.jpg"|
+        "fata-morgana-027-chained-figures.jpg"|
+        "fata-morgana-028-crimson-reaching-figure.jpg"|
+        "fata-morgana-030-blue-aura-figure.jpg"|
+        "fata-morgana-031-sleeping-maid.jpg"|
+        "fata-morgana-032-crimson-streaked-portrait.jpg"|
+        "fata-morgana-033-snowfall-portrait.jpg"|
+        "fata-morgana-034-rose-profile.jpg"|
+        "fata-morgana-035-spotlight-figure.jpg"|
+        "fata-morgana-036-sketched-pair.jpg"|
+        "fata-morgana-037-misty-blue-figure.jpg"|
+        "fata-morgana-038-moonlit-sleep.jpg"|
+        "fata-morgana-039-forest-fire.jpg"|
+        "fata-morgana-040-butterfly-maid.jpg"|
+        "fata-morgana-041-blue-orb-portrait.jpg"|
+        "fata-morgana-042-mansion-window.jpg"|
+        "fata-morgana-043-monochrome-gentleman.jpg") ;;
+    *)
+        printf '%s\n' "fata-rofi: FM_ROFI_ART_FILE is not in the approved Fata Morgana catalogue" >&2
+        exit 64
+        ;;
+esac
+
+fm_rofi_mode=${FM_ROFI_MODE:-drun}
+case "$fm_rofi_mode" in
+    drun|run|window) ;;
+    *)
+        printf '%s\n' "fata-rofi: FM_ROFI_MODE must be drun, run, or window" >&2
+        exit 64
+        ;;
+esac
+
+if [ -z "${HOME:-}" ]; then
+    printf '%s\n' "fata-rofi: HOME is required to locate installed artwork" >&2
+    exit 64
+fi
+
+FM_ROFI_ART="url(\"${HOME}/.local/share/fata-morgana/art/${fm_rofi_art_file}\", height)"
+export FM_ROFI_ART
+exec rofi -show "$fm_rofi_mode" "$@"

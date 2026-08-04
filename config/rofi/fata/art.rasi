@@ -1,0 +1,6 @@
+/* Generated from assets/art/fata-morgana/manifest.json by
+ * tools/build_art_selectors.py.  scripts/fata-rofi supplies
+ * FM_ROFI_ART as a complete, validated Rasi image value. */
+* {
+    fm-rofi-art: env(FM_ROFI_ART, linear-gradient(to bottom, #2C2D2E, #202023));
+}
