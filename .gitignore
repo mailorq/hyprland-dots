@@ -8,3 +8,7 @@ __pycache__/
 # User-owned hardware and input overrides for Hyprland. The template is tracked;
 # the active override is intentionally machine-local.
 /config/hypr/fata/local.lua
+
+# Kitty accepts optional local overrides via a glob. Keep those machine- and
+# preference-specific files outside the shared theme contract.
+/config/kitty/fata/local/
