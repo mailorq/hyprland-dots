@@ -7,6 +7,7 @@ require("fata.appearance")
 require("fata.input")
 require("fata.workspaces")
 require("fata.bindings")
+require("fata.autostart")
 
 -- The tracked example documents local monitor, keyboard, and pointer overrides.
 -- A real `fata/local.lua` is optional and deliberately ignored by Git. Missing

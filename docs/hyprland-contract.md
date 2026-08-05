@@ -26,9 +26,13 @@ compositor does not guess its exclusive zone.
   monitor until the user supplies actual output names and desired split.
 - Mouse sensitivity stays at `0.0`; empty `accel_profile` preserves libinput's
   device default. 1200 DPI alone does not justify a guessed curve.
-- `fata/bindings.lua` contains no default actions. It will receive only the
-  user's supplied `hl.bind()` declarations, preserving existing habits and
-  avoiding unannounced dependencies.
+- `fata/bindings.lua` provides a deliberately small Super/Win baseline: Kitty,
+  Rofi, last-window focus, close, floating, fullscreen, and workspace 1–10.
+  `Super+Tab` is the Alt+Tab analogue and focuses the previously active window;
+  it does not pretend to be a workspace switcher. The only commands named by
+  bindings are mandatory `kitty` and the installed `fata-rofi` helper. The
+  Rofi bind uses the helper's exact HOME-relative deployment path so it does
+  not depend on a display manager propagating `~/.local/bin` into PATH.
 
 ## Motion and decoration
 
@@ -36,6 +40,14 @@ Window, layer, and workspace motion share one short Bézier curve. There are no
 border-angle loops, opacity dimming, blur, glow, wobble, or shadow effects in
 the baseline. The active border uses aged brass and the inactive border uses the
 muted structural token from the canonical palette.
+
+## Session services
+
+`fata/autostart.lua` listens only for `hyprland.start` and launches `mako` plus
+`waybar` through `hl.exec_cmd()`. It does not launch a wallpaper daemon, a
+hardware monitor, a tray applet, a shell wrapper, or a duplicate process on
+config reload. Both called binaries are mandatory and preflighted by the
+installation helper.
 
 ## Validation
 
