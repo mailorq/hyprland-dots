@@ -109,7 +109,8 @@ workflow.
   `laptop-battery-backlight` variants. Temperature is separately opt-in and
   never inferred from laptop selection.
 - Add a dependency preflight and an installation workflow with dry-run support;
-  do not use blanket copies such as `cp -r /* ~/`.
+  do not use blanket copies such as `cp -r /* ~/`. **Static implementation is
+  complete; Linux preflight and deployment remain runtime gates.**
 - Validate on the QHD primary display and a FHD-compatible secondary display,
   then inspect stderr and application logs for parser errors.
 

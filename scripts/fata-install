@@ -1,0 +1,218 @@
+#!/bin/sh
+# Install a reviewed Fata Morgana profile without touching unrelated files.
+#
+# The default is a dry-run.  Writes require --apply; replacing a file already
+# owned by the target environment also requires --force.  Runtime dependencies
+# are deliberately checked before a real deployment instead of being installed
+# or guessed by this script.
+set -eu
+
+fm_program=${0##*/}
+fm_profile=desktop
+fm_mode=dry-run
+fm_force=0
+fm_target_home=${HOME:-}
+
+fm_usage() {
+    cat <<'EOF'
+Usage: fata-install [--profile NAME] [--dry-run | --check | --apply [--force]]
+
+Profiles:
+  desktop                     no battery, backlight, temperature, CPU, or memory
+  laptop-battery              add only the native Waybar battery module
+  laptop-backlight            add only the native Waybar display-backlight module
+  laptop-battery-backlight    add both optional native Waybar modules
+
+Modes:
+  --dry-run  print the exact managed-file deployment plan (default)
+  --check    validate declared runtime dependencies for the selected profile
+  --apply    run checks and copy only managed files; existing targets fail
+  --force    allow --apply to replace existing managed files only
+
+The helper installs fata-rofi into ~/.local/bin.  Hyprland and Waybar invoke
+that exact HOME-relative path, so deployment does not depend on PATH inheritance.
+EOF
+}
+
+fm_die() {
+    printf '%s\n' "${fm_program}: $*" >&2
+    exit 64
+}
+
+fm_warn() {
+    printf '%s\n' "${fm_program}: warning: $*" >&2
+}
+
+while [ "$#" -gt 0 ]; do
+    case "$1" in
+        --profile)
+            [ "$#" -ge 2 ] || fm_die "--profile requires a value"
+            fm_profile=$2
+            shift 2
+            ;;
+        --dry-run)
+            fm_mode=dry-run
+            shift
+            ;;
+        --check)
+            fm_mode=check
+            shift
+            ;;
+        --apply)
+            fm_mode=apply
+            shift
+            ;;
+        --force)
+            fm_force=1
+            shift
+            ;;
+        --help|-h)
+            fm_usage
+            exit 0
+            ;;
+        *)
+            fm_die "unknown argument: $1"
+            ;;
+    esac
+done
+
+case "$fm_profile" in
+    desktop|laptop-battery|laptop-backlight|laptop-battery-backlight) ;;
+    *) fm_die "unknown profile: $fm_profile" ;;
+esac
+
+[ -n "$fm_target_home" ] || fm_die "HOME must be set"
+[ "$fm_mode" = apply ] || [ "$fm_force" -eq 0 ] || fm_die "--force requires --apply"
+case "$fm_target_home" in
+    /*) ;;
+    *) fm_die "HOME must be an absolute path" ;;
+esac
+
+fm_script_dir=$(CDPATH= cd -P "$(dirname "$0")" && pwd)
+fm_root=$(CDPATH= cd -P "$fm_script_dir/.." && pwd)
+fm_config_home=${XDG_CONFIG_HOME:-"$fm_target_home/.config"}
+fm_bin_dir="$fm_target_home/.local/bin"
+fm_art_dir="$fm_target_home/.local/share/fata-morgana/art"
+case "$fm_config_home" in
+    /*) ;;
+    *) fm_die "XDG_CONFIG_HOME must be an absolute path" ;;
+esac
+
+fm_require_source() {
+    [ -f "$1" ] || fm_die "required source file is missing: $1"
+}
+
+fm_require_command() {
+    command -v "$1" >/dev/null 2>&1 || fm_die "required command is unavailable: $1"
+}
+
+fm_has_battery() {
+    for fm_device in /sys/class/power_supply/BAT*; do
+        [ -d "$fm_device" ] && return 0
+    done
+    return 1
+}
+
+fm_has_display_backlight() {
+    for fm_device in /sys/class/backlight/*; do
+        [ -d "$fm_device" ] && return 0
+    done
+    return 1
+}
+
+fm_preflight() {
+    fm_require_command Hyprland
+    fm_require_command kitty
+    fm_require_command rofi
+    fm_require_command mako
+    fm_require_command waybar
+    case "$fm_profile" in
+        laptop-battery|laptop-battery-backlight)
+            fm_has_battery || fm_die "selected profile needs a battery under /sys/class/power_supply"
+            ;;
+    esac
+    case "$fm_profile" in
+        laptop-backlight|laptop-battery-backlight)
+            fm_has_display_backlight || fm_die "selected profile needs a display backlight under /sys/class/backlight"
+            ;;
+    esac
+
+    fm_warn "preflight passed; verify the Waybar build has Hyprland, PulseAudio, network, and tray modules"
+    fm_warn "preflight cannot prove a running PulseAudio-compatible service; validate Waybar in the Wayland session"
+}
+
+fm_map_file() {
+    fm_source=$1
+    fm_target=$2
+    fm_require_source "$fm_source"
+    case "$fm_map_action" in
+        plan)
+            printf '%s\n' "copy $fm_source -> $fm_target"
+            ;;
+        conflicts)
+            if [ -L "$fm_target" ]; then
+                fm_conflicts=1
+                printf '%s\n' "refusing to write through symbolic link: $fm_target" >&2
+            elif [ -e "$fm_target" ] && [ "$fm_force" -eq 0 ]; then
+                fm_conflicts=1
+                printf '%s\n' "existing managed target: $fm_target" >&2
+            fi
+            ;;
+        copy)
+            mkdir -p "$(dirname "$fm_target")"
+            cp "$fm_source" "$fm_target"
+            ;;
+        *) fm_die "internal invalid map action: $fm_map_action" ;;
+    esac
+}
+
+fm_map_all() {
+    fm_map_file "$fm_root/config/hypr/hyprland.lua" "$fm_config_home/hypr/hyprland.lua"
+    for fm_name in appearance autostart bindings colors input monitors workspaces; do
+        fm_map_file "$fm_root/config/hypr/fata/$fm_name.lua" "$fm_config_home/hypr/fata/$fm_name.lua"
+    done
+    fm_map_file "$fm_root/config/hypr/fata/local.lua.example" "$fm_config_home/hypr/fata/local.lua.example"
+
+    fm_map_file "$fm_root/config/kitty/kitty.conf" "$fm_config_home/kitty/kitty.conf"
+    for fm_name in art colors layout; do
+        fm_map_file "$fm_root/config/kitty/fata/$fm_name.conf" "$fm_config_home/kitty/fata/$fm_name.conf"
+    done
+
+    fm_map_file "$fm_root/config/rofi/config.rasi" "$fm_config_home/rofi/config.rasi"
+    fm_map_file "$fm_root/config/rofi/fata.rasi" "$fm_config_home/rofi/fata.rasi"
+    for fm_name in art colors; do
+        fm_map_file "$fm_root/config/rofi/fata/$fm_name.rasi" "$fm_config_home/rofi/fata/$fm_name.rasi"
+    done
+
+    fm_map_file "$fm_root/config/mako/config" "$fm_config_home/mako/config"
+    fm_map_file "$fm_root/config/waybar/config.$fm_profile.jsonc" "$fm_config_home/waybar/config.jsonc"
+    fm_map_file "$fm_root/config/waybar/style.css" "$fm_config_home/waybar/style.css"
+    fm_map_file "$fm_root/config/waybar/fata/colors.css" "$fm_config_home/waybar/fata/colors.css"
+    fm_map_file "$fm_root/scripts/fata-rofi" "$fm_bin_dir/fata-rofi"
+
+    for fm_source in "$fm_root"/assets/art/fata-morgana/*.jpg; do
+        [ -f "$fm_source" ] || fm_die "no normalized Fata Morgana masters found"
+        fm_map_file "$fm_source" "$fm_art_dir/${fm_source##*/}"
+    done
+}
+
+case "$fm_mode" in
+    dry-run)
+        fm_map_action=plan
+        fm_map_all
+        ;;
+    check)
+        fm_preflight
+        ;;
+    apply)
+        fm_preflight
+        fm_conflicts=0
+        fm_map_action=conflicts
+        fm_map_all
+        [ "$fm_conflicts" -eq 0 ] || fm_die "refusing to replace managed files without --force"
+        fm_map_action=copy
+        fm_map_all
+        chmod 0755 "$fm_bin_dir/fata-rofi"
+        printf '%s\n' "${fm_program}: installed profile $fm_profile"
+        ;;
+esac

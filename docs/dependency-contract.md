@@ -10,12 +10,14 @@ implemented. Silent fallbacks are prohibited.
 |---|---|---|---|
 | Compositor | `Hyprland` 0.55+ | all profiles | Lua configuration only. |
 | Terminal | `kitty` | all profiles | Reads a Kitty-valid colour include and the approved-art glob. |
-| Launcher | `rofi` with Wayland support | all profiles | Rasi is validated before release; `fata-rofi` uses only POSIX `sh` plus this binary. |
+| Launcher | `rofi` with Wayland support | all profiles | Rasi is validated before release; `fata-rofi` uses only POSIX `sh` plus this binary. Hyprland and Waybar invoke its installed HOME-relative path, not an assumed user PATH. |
 | Notifications | `mako` | all profiles | Native Mako config; Dunst is not a hidden substitute. |
 | Panel | `waybar` | all profiles | Requires the Hyprland, PulseAudio, network, and tray modules enabled in the packaged build. |
+| Deployment | POSIX `sh` plus `cat`, `chmod`, `cp`, `dirname`, and `mkdir` | source checkout only | `scripts/fata-install` defaults to dry-run and never installs packages. |
 
-The exact distribution packages are intentionally not listed yet: package names
-vary by distribution, and the user has not selected a target distribution.
+Package mappings and current distribution constraints are documented in the
+root README. The installer never calls a package manager: package selection
+remains an explicit system-level action.
 
 ## Optional features
 
@@ -24,7 +26,7 @@ vary by distribution, and the user has not selected a target distribution.
 | Wallpaper management | One chosen backend, preflight required | wallpaper stage |
 | Clipboard history | `wl-paste`, `wl-copy`, and `cliphist` | only if its binds are requested |
 | Audio display and scroll control | Waybar PulseAudio module plus PulseAudio or PipeWire-Pulse service | every current Waybar profile |
-| Launcher cell | `fata-rofi` helper on `PATH` | every current Waybar profile |
+| Launcher cell | Installed `~/.local/bin/fata-rofi` helper | every current Waybar profile |
 | Laptop battery | Waybar native battery module and `/sys/class/power_supply/` data | explicitly selected battery profile only |
 | Laptop backlight | Waybar native backlight module and a udev-visible backlight device | explicitly selected backlight profile only |
 | CPU/GPU temperature | explicitly chosen backend | separate opt-in only |
@@ -34,8 +36,9 @@ vary by distribution, and the user has not selected a target distribution.
 - `desktop` is the default: no battery, backlight, temperature, power-profile,
   CPU, or memory module.
 - `laptop-battery`, `laptop-backlight`, and `laptop-battery-backlight` are
-  deliberate installation choices. They never auto-detect hardware or modify
-  the desktop profile.
+  deliberate installation choices. The installer never selects a profile from
+  discovered hardware or modifies the desktop profile. Once selected, Waybar's
+  documented native backlight module may choose the display backlight device.
 - Temperature is absent from all currently generated profiles. Adding it later
   requires a separately selected backend and a separate dependency declaration.
 - Local hardware facts such as connector names, refresh rates, device names,
