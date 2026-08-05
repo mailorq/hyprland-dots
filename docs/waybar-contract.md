@@ -22,10 +22,11 @@ represented.
 
 All profiles share only the daily desktop cells: static `MENU` launcher, ten
 Hyprland workspaces, per-output focused title, centered clock, volume, network
-state, and tray. `MENU` invokes only the already-declared `fata-rofi` helper;
-the custom module has static text and no polling `exec` process. Volume and
-brightness use their native Waybar module behaviours, not hidden `wpctl`,
-`pactl`, or `brightnessctl` scripts.
+state, and tray. `MENU` invokes only the already-declared `fata-rofi` helper
+through its explicit HOME-relative deployment path; the custom module has
+static text and no polling `exec` process. Volume and brightness use their
+native Waybar module behaviours, not hidden `wpctl`, `pactl`, or
+`brightnessctl` scripts.
 
 ## Geometry
 

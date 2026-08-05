@@ -25,7 +25,7 @@
   "custom/menu": {
     "format": "MENU",
     "tooltip": false,
-    "on-click": "fata-rofi"
+    "on-click": "/bin/sh -c 'exec \"$HOME/.local/bin/fata-rofi\"'"
   },
   "hyprland/workspaces": {
     "format": "{name}",

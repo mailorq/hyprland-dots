@@ -84,8 +84,8 @@ def main() -> None:
     }
     require(not desktop_modules & forbidden_desktop,
             "desktop profile must not expose hardware or performance monitoring")
-    require(desktop["custom/menu"]["on-click"] == "fata-rofi",  # type: ignore[index]
-            "the only custom module action must use the declared fata-rofi helper")
+    require(desktop["custom/menu"]["on-click"] == "/bin/sh -c 'exec \"$HOME/.local/bin/fata-rofi\"'",  # type: ignore[index]
+            "the only custom module action must use the installed fata-rofi helper without PATH inheritance")
     require("exec" not in desktop["custom/menu"],  # type: ignore[operator]
             "menu must be static and must not spawn a polling helper")
     require("\n" in desktop["network"]["tooltip-format-wifi"],  # type: ignore[index]

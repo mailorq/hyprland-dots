@@ -28,10 +28,11 @@ inspect `pictures/` or any unapproved file at runtime.
 
 The installation stage must deploy normalized masters to
 `~/.local/share/fata-morgana/art/`, configurations to their XDG directories,
-and optionally make `scripts/fata-rofi` available as `fata-rofi`. Mako's single
-generated config has no include path, so it remains valid when a user chooses a
-non-default `XDG_CONFIG_HOME`. Until that stage, the source tree is intentionally
-not copied into a live home directory.
+and `scripts/fata-rofi` to `~/.local/bin/fata-rofi`. Hyprland and Waybar call
+that exact HOME-relative path, so it does not depend on PATH inheritance. Mako's
+single generated config has no include path, so it remains valid when a user
+chooses a non-default `XDG_CONFIG_HOME`. Until that stage, the source tree is
+intentionally not copied into a live home directory.
 
 ## Geometry
 
@@ -55,9 +56,10 @@ Wayland host:
 python3 tools/build_theme_colors.py
 python3 tools/build_art_selectors.py
 python3 tools/validate_interaction_static.py
-rofi -rasi-validate ~/.config/rofi/config.rasi
-kitty --config ~/.config/kitty/kitty.conf --debug-config
-mako --config ~/.config/mako/config
+fm_config_home=${XDG_CONFIG_HOME:-"$HOME/.config"}
+rofi -rasi-validate "$fm_config_home/rofi/config.rasi"
+kitty --config "$fm_config_home/kitty/kitty.conf" --debug-config
+mako --config "$fm_config_home/mako/config"
 ```
 
 The final Mako command must be started inside a Wayland session and its stderr

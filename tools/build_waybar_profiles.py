@@ -26,7 +26,7 @@ def module_definitions() -> dict[str, dict[str, object]]:
         "custom/menu": {
             "format": "MENU",
             "tooltip": False,
-            "on-click": "fata-rofi",
+            "on-click": "/bin/sh -c 'exec \"$HOME/.local/bin/fata-rofi\"'",
         },
         "hyprland/workspaces": {
             "format": "{name}",
