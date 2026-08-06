@@ -1,0 +1,118 @@
+{
+  "schema_version": 1,
+  "collection": "The House in Fata Morgana — approved 16:9 wallpaper exports",
+  "source": "assets/art/fata-morgana/manifest.json",
+  "normalization": {
+    "target_aspect_ratio": "16:9",
+    "crop": "center only when approved",
+    "upscale": "never",
+    "metadata": "stripped"
+  },
+  "wallpapers": [
+    {
+      "id": "fm-016",
+      "file": "fata-morgana-016-violet-cloaked-portrait-wallpaper-16x9.jpg",
+      "source_file": "fata-morgana-016-violet-cloaked-portrait.jpg",
+      "source_sha256": "bd1196fc1f7666890122330c1d7333aabe7477435d7a9b53a324201fa05700d5",
+      "sha256": "d91aef402c2f4229dd47824480d6fce0ee2d56276185980c47145a8ca8fb96ff",
+      "dimensions": {
+        "width": 2048,
+        "height": 1152
+      },
+      "crop": "center",
+      "crop_box": {
+        "left": 0,
+        "top": 152,
+        "right": 2048,
+        "bottom": 1304
+      },
+      "crop_loss_percent": 20.9,
+      "fit_mode": "cover",
+      "default": true
+    },
+    {
+      "id": "fm-031",
+      "file": "fata-morgana-031-sleeping-maid-wallpaper-16x9.jpg",
+      "source_file": "fata-morgana-031-sleeping-maid.jpg",
+      "source_sha256": "8d1a232811457fa42ccdfa68356a0df2152b7e6bb83eea34856544103ee2d7c0",
+      "sha256": "00865de3115efedef80748124bbaaa562fa89c1d5d1d49f8ce30a161dddab3a7",
+      "dimensions": {
+        "width": 736,
+        "height": 414
+      },
+      "crop": "center",
+      "crop_box": {
+        "left": 0,
+        "top": 50,
+        "right": 736,
+        "bottom": 464
+      },
+      "crop_loss_percent": 19.5,
+      "fit_mode": "cover",
+      "default": false
+    },
+    {
+      "id": "fm-035",
+      "file": "fata-morgana-035-spotlight-figure-wallpaper-16x9.jpg",
+      "source_file": "fata-morgana-035-spotlight-figure.jpg",
+      "source_sha256": "9182b01f5d5f01f441a907c1879b22e4ba099ebfc66b97a7e914aab70c163b4d",
+      "sha256": "4247b51bd7f2b99b931de1e4469c2009563afab5e312978b68cb2d73a807fd96",
+      "dimensions": {
+        "width": 736,
+        "height": 414
+      },
+      "crop": "center",
+      "crop_box": {
+        "left": 0,
+        "top": 53,
+        "right": 736,
+        "bottom": 467
+      },
+      "crop_loss_percent": 20.4,
+      "fit_mode": "cover",
+      "default": false
+    },
+    {
+      "id": "fm-038",
+      "file": "fata-morgana-038-moonlit-sleep-wallpaper-16x9.jpg",
+      "source_file": "fata-morgana-038-moonlit-sleep.jpg",
+      "source_sha256": "0c1b223b1a9706f86bd33e74c6ed0c4ea3441e970ec04408e59dfe014d989185",
+      "sha256": "370fd0c89d264f049f0e541a6f663997996baf64c5ad3b55f2a43469f3833938",
+      "dimensions": {
+        "width": 736,
+        "height": 414
+      },
+      "crop": "native",
+      "crop_box": {
+        "left": 0,
+        "top": 0,
+        "right": 736,
+        "bottom": 414
+      },
+      "crop_loss_percent": 0.0,
+      "fit_mode": "cover",
+      "default": false
+    },
+    {
+      "id": "fm-040",
+      "file": "fata-morgana-040-butterfly-maid-wallpaper-16x9.jpg",
+      "source_file": "fata-morgana-040-butterfly-maid.jpg",
+      "source_sha256": "4e53e4e8cb88285a2439fe6438fd0e65998d58842660db86946d57ec1b05cd19",
+      "sha256": "7ce6f71e08e6f8c3ecfac10ef51bdbe7ef336a6d92607cd3306cb19809bdf2ad",
+      "dimensions": {
+        "width": 1456,
+        "height": 819
+      },
+      "crop": "center",
+      "crop_box": {
+        "left": 6,
+        "top": 110,
+        "right": 1462,
+        "bottom": 929
+      },
+      "crop_loss_percent": 21.9,
+      "fit_mode": "cover",
+      "default": false
+    }
+  ]
+}

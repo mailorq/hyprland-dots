@@ -22,8 +22,9 @@ Rofi, Mako, and lockscreen use. A shared-surface portrait cannot exceed a
 height-to-width ratio of 1.60: this retains `fm-026` at 1.555 while excluding
 vertical-16:9 compositions that would lose too much content in Kitty and Rofi.
 
-Five masters may later become QHD 16:9 desktop wallpapers with either native
-framing or a centered crop that removes at most 20.9% of the source area:
+Five masters have reproducible 16:9 desktop-wallpaper exports with either
+native framing or a centered crop that removes at most 21.9% of the source
+area. The exports retain the masters' original pixel density and never upscale:
 
 | Asset | Treatment |
 |---|---|
@@ -33,9 +34,12 @@ framing or a centered crop that removes at most 20.9% of the source area:
 | `fm-038` | native 16:9 |
 | `fm-040` | centered crop, 20.6% loss |
 
-No desktop wallpaper export is generated in this phase. That avoids repeating
-the rejected all-images-as-wallpapers approach, while keeping every image
-available to the application surfaces where portrait composition is useful.
+`tools/build_wallpapers.py` emits the five exact crops and a second manifest to
+`assets/wallpapers/fata-morgana/`. The default is `fm-016`, which has the
+highest source resolution and deliberate dark right-side negative space; the
+other four are available but never rotate automatically. The build uses only
+the already approved candidates from the art manifest: it cannot promote the
+remaining 35 images to wallpapers.
 
 ## Palette
 

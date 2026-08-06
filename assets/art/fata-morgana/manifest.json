@@ -910,7 +910,7 @@
         "eligible": true,
         "target_aspect_ratio": "16:9",
         "crop": "center",
-        "estimated_crop_loss_percent": 20.6
+        "estimated_crop_loss_percent": 21.9
       }
     },
     {
