@@ -1,62 +1,44 @@
-# Art and palette contract
+# Графические материалы и палитра
 
-The generated reference set contains 40 user-supplied Fata Morgana images. The raw
-`pictures/` directory is ignored and remains unchanged; the committed master
-collection is generated through a SHA-256 allowlist rather than source names.
-This prevents an accidental replacement or a foreign-title image from quietly
-becoming part of the theme.
+## Набор изображений
 
-## Rebuild and validation
+Проект включает 40 утверждённых материалов The House in Fata Morgana. Состав
+задаётся SHA-256 allowlist в <code>tools/build_art_assets.py</code>, а итоговые
+контрольные суммы и размеры публикуются в
+<code>assets/art/fata-morgana/manifest.json</code>. Неотслеживаемый каталог
+<code>pictures/</code> служит только входом для сборщика и не включается в
+установку.
 
-```text
-python -m pip install -r tools/requirements-assets.txt
-python tools/build_theme_colors.py
-python tools/build_art_assets.py
-python tools/build_art_assets.py --check
-```
+При подготовке мастер-арта сборщик корректирует EXIF-ориентацию, приводит
+изображение к sRGB/RGB, удаляет служебные метаданные и ограничивает максимальную
+сторону 2048 px. Кадрирование и увеличение запрещены. Любая замена исходника
+должна быть явно добавлена в allowlist, иначе сборка завершается ошибкой.
 
-`build_art_assets.py` creates 2048 px-or-smaller sRGB masters with clean
-English filenames. It corrects EXIF orientation and removes metadata but never
-crops or enlarges an illustration. Every master remains eligible for Kitty,
-Rofi, Mako, and lockscreen use. A shared-surface portrait cannot exceed a
-height-to-width ratio of 1.60: this retains `fm-026` at 1.555 while excluding
-vertical-16:9 compositions that would lose too much content in Kitty and Rofi.
+## Обои
 
-Five masters have reproducible 16:9 desktop-wallpaper exports with either
-native framing or a centered crop that removes at most 21.9% of the source
-area. The exports retain the masters' original pixel density and never upscale:
+Из утверждённых мастеров выделены пять 16:9-кандидатов. <code>fm-016</code>
+создаётся из нормализованного мастера. <code>fm-031</code>, <code>fm-035</code>,
+<code>fm-038</code> и <code>fm-040</code> — сохранённые вручную QHD-экспорты,
+которые проверяются без повторного кодирования. Полный контракт приведён в
+<a href="wallpaper-contract.md">документации обоев</a>.
 
-| Asset | Treatment |
-|---|---|
-| `fm-016` | centered crop, 20.9% loss |
-| `fm-031` | centered crop, 19.5% loss |
-| `fm-035` | centered crop, 20.4% loss |
-| `fm-038` | native 16:9 |
-| `fm-040` | centered crop, 20.6% loss |
+## Палитра
 
-`tools/build_wallpapers.py` emits the five exact crops and a second manifest to
-`assets/wallpapers/fata-morgana/`. The default is `fm-016`, which has the
-highest source resolution and deliberate dark right-side negative space; the
-other four are available but never rotate automatically. The build uses only
-the already approved candidates from the art manifest: it cannot promote the
-remaining 35 images to wallpapers.
+<code>theme/palette.json</code> — единственный источник цветовых токенов.
+Генераторы создают <code>colors.css</code> для Waybar, <code>colors.rasi</code>
+для Rofi, <code>colors.conf</code> для Kitty и <code>colors.lua</code> для
+Hyprland.
 
-## Palette
-
-`theme/palette.json` is the only color source. The four adapters are generated
-from it: `colors.css` for GTK 3/Waybar, `colors.rasi` for Rofi,
-`colors.conf` for Kitty, and `colors.lua` for Hyprland Lua.
-
-| Token | Hex | Use |
+| Токен | HEX | Назначение |
 |---|---|---|
-| `bg` | `#2C2D2E` | medium-dark overcast base |
-| `surface` | `#3C3B3B` | panel and elevated surface |
-| `surface_warm` | `#493B36` | restrained warm depth |
-| `fg` | `#E9E1D7` | primary bone text |
-| `fg_dim` | `#92949A` | secondary text, AA against `bg` |
-| `burgundy` | `#5F2F28` | gothic accent, not body text |
-| `brass` | `#B39A6A` | focused accent, AA against `bg` |
-| `storm` | `#8E9BA8` | cold overcast counterpoint |
+| <code>bg</code> | <code>#2C2D2E</code> | базовая поверхность |
+| <code>surface</code> | <code>#3C3B3B</code> | панели и карточки |
+| <code>surface_warm</code> | <code>#493B36</code> | тёплая глубина |
+| <code>fg</code> | <code>#E9E1D7</code> | основной текст |
+| <code>fg_dim</code> | <code>#92949A</code> | вторичный текст |
+| <code>burgundy</code> | <code>#5F2F28</code> | активное состояние |
+| <code>brass</code> | <code>#B39A6A</code> | фокус и акцент |
+| <code>storm</code> | <code>#8E9BA8</code> | холодный акцент |
 
-The verified contrast ratios are 10.66:1 for `fg` on `bg`, 4.55:1 for
-`fg_dim` on `bg`, and 5.09:1 for `brass` on `bg`.
+Контраст на <code>bg</code>: <code>fg</code> — 10.66:1, <code>fg_dim</code> —
+4.55:1, <code>brass</code> — 5.09:1.

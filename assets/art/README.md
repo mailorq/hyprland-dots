@@ -1,12 +1,28 @@
-# Fata Morgana art assets
+# Графические материалы
 
-`fata-morgana/` contains normalized, user-supplied reference art for local
-desktop use. The raw `pictures/` directory remains ignored and untouched.
+Каталог <code>fata-morgana/</code> содержит нормализованные исходные изображения,
+используемые интерфейсами темы. В репозиторий включены только материалы из
+утверждённого набора The House in Fata Morgana.
 
-Each committed JPEG is orientation-corrected, converted to sRGB RGB, stripped
-of metadata, and capped at a 2048 px long edge without cropping or upscaling.
-The manifest records the source and generated checksums, dimensions, reusable
-roles, and the small subset suitable for gentle 16:9 wallpaper crops.
+## Формат и происхождение
 
-The artwork has not been licence-audited for public redistribution. Confirm the
-rights and artist attribution before publishing a repository containing it.
+- Сборщик корректирует EXIF-ориентацию, приводит изображение к sRGB/RGB,
+  удаляет служебные метаданные и ограничивает максимальную сторону 2048 px.
+- Кадрирование и увеличение изображения на этапе подготовки мастера запрещены.
+- <code>manifest.json</code> фиксирует исходные и итоговые SHA-256, размеры и
+  разрешённые области использования.
+- Каталог <code>pictures/</code> не входит в сборку и остаётся игнорируемым
+  источником материалов.
+
+## Использование
+
+Все записи манифеста доступны Kitty и Rofi. Признак
+<code>wallpaper.eligible</code> используется исключительно для отбора исходников
+фоновых изображений.
+
+## Публикация
+
+Перед публичным распространением репозитория необходимо самостоятельно
+проверить право на распространение материалов, требования к атрибуции и
+служебные метаданные исходных JPEG. Исходно сохранённые мастера могут включать
+EXIF-данные.

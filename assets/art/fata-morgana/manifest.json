@@ -616,13 +616,13 @@
     {
       "id": "fm-027",
       "file": "fata-morgana-027-chained-figures.jpg",
-      "source_file": "wmremove-transformed (2).jpeg",
-      "source_sha256": "ab3b0b3161552c68639ccb123c185c81243a6087f0383bc8731f65b3bf00e2ec",
+      "source_file": "fata-morgana-027-chained-figures.jpeg",
+      "source_sha256": "c2cc355604e9d3a8486e58e21e2119e33eee1fb44e218c220bf5faa09bed0a41",
       "source_dimensions": {
         "width": 736,
         "height": 1041
       },
-      "sha256": "597e0fcbab4b215e92f66f5f9831af6950531fef57c58d998f87c6ccfcea6cc7",
+      "sha256": "988492397880fb81bbe2ae0f43de1f9af2ab88a446ffd7e7d90a894411f6b450",
       "dimensions": {
         "width": 736,
         "height": 1041
