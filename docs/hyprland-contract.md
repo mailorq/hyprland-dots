@@ -1,56 +1,61 @@
-# Hyprland contract
+# Конфигурация Hyprland
 
-The compositor target is Hyprland 0.55 or newer. Its entrypoint is
-`$XDG_CONFIG_HOME/hypr/hyprland.lua`; no `hyprland.conf`, `source =`, legacy
-`windowrule =`, legacy `animation =`, or `decoration:drop_shadow` is used.
+## Совместимость
 
-## Portable geometry
+Минимальная версия — Hyprland 0.55. Точка входа:
+<code>$XDG_CONFIG_HOME/hypr/hyprland.lua</code>. Конфигурация использует Lua
+API Hyprland; устаревшие файлы Hyprlang и директивы из них не поддерживаются.
 
-| Token | Value | QHD 2560x1440 result | FHD 1920x1080 result |
+## Сетка окон
+
+| Параметр | Значение | Результат на QHD | Результат на FHD |
 |---|---:|---:|---:|
-| `gaps_in` | 8 px | two tiled columns: 1264 px each | 944 px each |
-| `gaps_out` | 12 px | stable 12 px perimeter | stable 12 px perimeter |
-| `border_size` | 2 px | visible focus edge without bulk | same logical thickness |
-| `rounding` | 8 px | restrained, not pill-shaped | restrained, not pill-shaped |
+| <code>gaps_in</code> | 8 px | две плитки по 1264 px | две плитки по 944 px |
+| <code>gaps_out</code> | 12 px | периметр 12 px | периметр 12 px |
+| <code>border_size</code> | 2 px | отчётливая рамка фокуса | та же толщина |
+| <code>rounding</code> | 8 px | умеренное скругление | умеренное скругление |
 
-The two-column widths above derive from `(screen width - 2 * gaps_out -
-gaps_in) / 2`. Waybar will reserve its own top-layer space in Phase 5, so the
-compositor does not guess its exclusive zone.
+Ширина двух колонок вычисляется как
+<code>(ширина экрана - 2 × gaps_out - gaps_in) / 2</code>.
 
-## Display, workspace, and input policy
+## Мониторы, пространства и ввод
 
-- The portable monitor rule uses each display's preferred mode, automatic
-  position, and automatic scale. Real connector names, placement, and refresh
-  rates belong in the ignored `fata/local.lua`, copied from `local.lua.example`.
-- Workspaces 1–10 are persistent. They are intentionally not preassigned to a
-  monitor until the user supplies actual output names and desired split.
-- Mouse sensitivity stays at `0.0`; empty `accel_profile` preserves libinput's
-  device default. 1200 DPI alone does not justify a guessed curve.
-- `fata/bindings.lua` provides a deliberately small Super/Win baseline: Kitty,
-  Rofi, last-window focus, close, floating, fullscreen, and workspace 1–10.
-  `Super+Tab` is the Alt+Tab analogue and focuses the previously active window;
-  it does not pretend to be a workspace switcher. The only commands named by
-  bindings are mandatory `kitty` and the installed `fata-rofi` helper. The
-  Rofi bind uses the helper's exact HOME-relative deployment path so it does
-  not depend on a display manager propagating `~/.local/bin` into PATH.
+Базовое правило монитора использует предпочтительный режим, автоматическое
+расположение и масштаб. Фактические разъёмы, положение дисплеев, частота,
+раскладка и настройки мыши записываются в <code>fata/local.lua</code>, который
+создаётся из <code>local.lua.example</code> и игнорируется Git.
 
-## Motion and decoration
+Рабочие пространства 1–10 постоянны и не закреплены за конкретным монитором.
+Чувствительность мыши равна 0.0; профиль ускорения задаётся локально после
+проверки устройства.
 
-Window, layer, and workspace motion share one short Bézier curve. There are no
-border-angle loops, opacity dimming, blur, glow, wobble, or shadow effects in
-the baseline. The active border uses aged brass and the inactive border uses the
-muted structural token from the canonical palette.
+## Клавиатурные сочетания
 
-## Session services
+<code>fata/bindings.lua</code> содержит базовый набор с модификатором Super:
+Kitty, Rofi, переключение на последнее окно, закрытие окна, floating,
+fullscreen и пространства 1–10. <code>Super+Tab</code> переводит фокус на
+предыдущее окно. Rofi запускается через установленный
+<code>$HOME/.local/bin/fata-rofi</code>, поэтому не зависит от PATH менеджера
+входа.
 
-`fata/autostart.lua` listens only for `hyprland.start` and launches the declared
-`hyprpaper`, `mako`, and `waybar` binaries through `hl.exec_cmd()`. It does not
-launch a hardware monitor, tray applet, shell wrapper, or duplicate process on
-config reload. Every called binary is mandatory and preflighted by the
-installation helper.
+## Оформление и сеанс
 
-## Validation
+Оформление использует короткую общую кривую для окон, слоёв и рабочих
+пространств. Активная граница — латунный токен палитры, неактивная — структурный
+нейтральный токен.
 
-Run `python tools/validate_hyprland_static.py` after editing the config tree.
-On the Linux target, then run `hyprctl reload`, inspect its output, and capture
-`hyprctl monitors all` plus `hyprctl devices` before writing `fata/local.lua`.
+<code>fata/autostart.lua</code> реагирует на <code>hyprland.start</code> и
+запускает Hyprpaper, Mako и Waybar. Перезагрузка конфигурации не создаёт новый
+экземпляр сервисов.
+
+## Проверка
+
+~~~sh
+python tools/validate_hyprland_static.py
+hyprctl reload
+hyprctl monitors all
+hyprctl devices
+~~~
+
+Команды <code>hyprctl</code> выполняются в целевой Linux-сессии. Их вывод
+используется для заполнения локального файла оборудования.

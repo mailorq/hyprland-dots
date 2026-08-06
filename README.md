@@ -1,423 +1,202 @@
 # Fata Morgana Hyprland Dots
 
-Полный, модульный набор конфигураций Hyprland, Hyprpaper, Waybar, Rofi, Kitty и Mako в
-сдержанной эстетике *The House in Fata Morgana*. Это не копия исходных
-дотфайлов и не «готовый Arch-образ»: репозиторий заново строит только нужные
-интерфейсные поверхности и проверяет их контрактами.
+Конфигурационный набор для Hyprland 0.55+ в эстетике The House in Fata
+Morgana. В состав входят Hyprland, Hyprpaper, Waybar, Rofi, Kitty и Mako.
+Конфигурация использует Lua API Hyprland и поддерживает настольный профиль, а
+также явные профили для ноутбуков.
 
-Тема рассчитана в первую очередь на обычный ПК с основным QHD-монитором
-27 дюймов и дополнительным монитором, но не привязывает конфигурацию к
-конкретным разъёмам или частоте. Геометрия также остаётся читаемой на FHD.
-По умолчанию это именно desktop-профиль: на панели нет батареи, яркости,
-температуры, CPU, памяти или power-profile.
+## Совместимость
 
-## Часть I. Проект
-
-### Что входит
-
-| Компонент | Назначение |
+| Область | Требование |
 |---|---|
-| Hyprland | Lua-конфигурация 0.55+ с десятью пространствами, компактной сеткой и локальным файлом оборудования. |
-| Waybar | Верхняя панель из отдельных скруглённых ячеек; генерируемые desktop- и ноутбучные профили. |
-| Rofi | Wayland-лаунчер с проверяемым набором Fata Morgana-иллюстраций. |
-| Kitty | Терминал с той же палитрой и отдельными арт-настройками. |
-| Mako | Нативные Wayland-уведомления без Dunst и без скрытого второго демона. |
-| Hyprpaper | Официальный статичный backend обоев: один спокойный fallback без слайд-шоу. |
-| `scripts/fata-install` | Осторожное развёртывание только файлов этого репозитория. По умолчанию ничего не пишет. |
+| Композитор | Hyprland 0.55 или новее |
+| Сервисы сеанса | Hyprpaper, Mako, Waybar |
+| Клиентские приложения | Kitty и Rofi с поддержкой Wayland |
+| Аудио | PipeWire-Pulse или совместимый PulseAudio-сервис для Waybar |
+| Развёртывание | POSIX shell и стандартные утилиты <code>cat</code>, <code>chmod</code>, <code>cp</code>, <code>dirname</code>, <code>mkdir</code> |
 
-В визуале используются только утверждённые Fata Morgana-арты. Они могут
-повторно использоваться в Kitty и Rofi. Для будущих обоев подходят только
-нативные 16:9 либо изображения, допускающие небольшой осмысленный кроп; это
-не ограничивает их использование в других поверхностях.
+Пакеты и способ запуска Hyprland выбираются по документации используемой
+системы. Перед развёртыванием проверьте версию в работающей Wayland-сессии:
 
-### Базовые бинды
+~~~sh
+hyprctl version
+~~~
 
-`SUPER` — клавиша Win. Набор намеренно небольшой: он покрывает обычный
-ежедневный сценарий и не скрывает дополнительных программ или скриптов.
+## Состав проекта
 
-| Комбинация | Действие |
+| Путь | Назначение |
 |---|---|
-| `Super + Q` | Открыть Kitty. |
-| `Super + Tab` | Перевести фокус на последнее окно. Это компактный аналог Alt+Tab, а не смена рабочего пространства. |
-| `Super + F` | Открыть Fata Morgana Rofi в режиме приложений. |
-| `Super + Shift + C` | Корректно закрыть активное окно. |
-| `Super + Space` | Переключить floating-режим активного окна. |
-| `Super + M` | Переключить полноэкранный режим активного окна. |
-| `Super + 1` … `Super + 0` | Перейти на пространство 1…10 на текущем мониторе. |
-| `Super + Shift + 1` … `Super + Shift + 0` | Перенести активное окно на пространство 1…10. |
+| <code>config/hypr</code> | Lua-модули Hyprland и конфигурация Hyprpaper |
+| <code>config/waybar</code> | профили панели, CSS и палитра |
+| <code>config/rofi</code> | Rasi-конфигурация лаунчера |
+| <code>config/kitty</code> | конфигурация терминала |
+| <code>config/mako</code> | конфигурация уведомлений |
+| <code>assets/art</code> | утверждённые изображения и манифест |
+| <code>assets/wallpapers</code> | производные 16:9-обои |
+| <code>scripts</code> | развёртывание и запуск Rofi |
+| <code>tools</code> | генераторы и статические валидаторы |
 
-Каждый бинд имеет комментарий на английском и русском непосредственно в
-[`config/hypr/fata/bindings.lua`](config/hypr/fata/bindings.lua). В частности,
-`Super + Q` намеренно не закрывает окно: это привычное место для терминала,
-а безопасное закрытие вынесено на `Super + Shift + C`.
+## Развёртывание
 
-### Сетка и профили
+### 1. Получить исходники
+
+~~~sh
+git clone https://github.com/mailorq/hyprland-dots.git
+cd hyprland-dots
+~~~
+
+### 2. Выбрать профиль
+
+| Профиль | Назначение |
+|---|---|
+| <code>desktop</code> | настольный ПК; без батареи, подсветки, температуры, CPU, памяти и power-profile |
+| <code>laptop-battery</code> | добавить нативный индикатор батареи |
+| <code>laptop-backlight</code> | добавить нативный индикатор подсветки |
+| <code>laptop-battery-backlight</code> | добавить оба ноутбучных индикатора |
+
+### 3. Проверить план и зависимости
+
+~~~sh
+sh scripts/fata-install --profile desktop
+sh scripts/fata-install --profile desktop --check
+~~~
+
+Dry-run печатает список управляемых файлов. Preflight проверяет обязательные
+бинарные зависимости и наличие sysfs-устройств для выбранного ноутбучного
+профиля.
+
+### 4. Применить конфигурацию
+
+~~~sh
+sh scripts/fata-install --profile desktop --apply
+~~~
+
+При существующем управляемом файле установщик останавливается. После проверки
+различий допустима замена перечисленных в плане файлов:
+
+~~~sh
+sh scripts/fata-install --profile desktop --apply --force
+~~~
+
+Режим <code>--force</code> не удаляет каталоги, не следует символьным ссылкам
+в целевых путях и не меняет <code>fata/local.lua</code>.
+
+### 5. Запустить сеанс
+
+Выберите сессию Hyprland способом, принятым в вашей системе. При старте
+<code>fata/autostart.lua</code> запускает Hyprpaper, Mako и Waybar.
+<code>hyprpaper.service</code> не следует включать параллельно.
+
+## Локальная настройка оборудования
+
+Сначала получите фактические данные:
+
+~~~sh
+hyprctl monitors all
+hyprctl devices
+~~~
+
+Создайте локальный файл:
+
+~~~sh
+fm_config_home=${XDG_CONFIG_HOME:-"$HOME/.config"}
+cp "$fm_config_home/hypr/fata/local.lua.example" "$fm_config_home/hypr/fata/local.lua"
+~~~
+
+В <code>fata/local.lua</code> укажите имена выходов, режимы, частоту, положение
+дисплеев, раскладку и параметры мыши. Базовая чувствительность равна 0.0;
+профиль ускорения <code>flat</code> или <code>adaptive</code> задаётся после
+проверки устройства.
+
+~~~sh
+hyprctl reload
+~~~
+
+## Управление
+
+| Сочетание | Действие |
+|---|---|
+| <code>Super + Q</code> | открыть Kitty |
+| <code>Super + Tab</code> | перевести фокус на последнее активное окно |
+| <code>Super + F</code> | открыть Rofi |
+| <code>Super + Shift + C</code> | закрыть активное окно |
+| <code>Super + Space</code> | переключить floating-режим |
+| <code>Super + M</code> | переключить полноэкранный режим |
+| <code>Super + 1…0</code> | перейти на пространство 1…10 текущего монитора |
+| <code>Super + Shift + 1…0</code> | переместить окно на пространство 1…10 |
+
+## Геометрия
 
 | Параметр | Значение |
 |---|---:|
-| Внутренний/внешний gap Hyprland | 8 / 12 px |
-| Граница/скругление окна | 2 / 8 px |
+| Внутренний / внешний отступ окон | 8 / 12 px |
+| Граница / скругление окон | 2 / 8 px |
 | Высота Waybar | 40 px |
-| Верхний/горизонтальный отступ Waybar | 8 / 12 px |
+| Верхний / боковой отступ Waybar | 8 / 12 px |
 | Высота ячейки Waybar | 32 px |
 | Интервал между ячейками | 6 px |
 | Рабочие пространства | 1–10, постоянные |
 
-Профиль выбирается явно при установке:
+Палитра определяется в <code>theme/palette.json</code>. Палитра и
+компонентные адаптеры генерируются из одного источника.
 
-| Профиль | Дополнительные ячейки |
-|---|---|
-| `desktop` | Нет. Это значение по умолчанию. |
-| `laptop-battery` | Только нативная батарея Waybar. |
-| `laptop-backlight` | Только нативная яркость экрана Waybar. |
-| `laptop-battery-backlight` | Батарея и яркость. |
+## Изображения и обои
 
-Ни один профиль не показывает температуру, CPU, память или power-profile.
-Установщик проверяет sysfs батареи или подсветки только после явного выбора
-соответствующего профиля; оборудование не угадывается автоматически.
+Мастера изображений нормализуются в sRGB/RGB, получают корректную EXIF-ориентацию
+и ограничиваются максимальной стороной 2048 px. Сборка не кадрирует и не
+увеличивает изображение.
 
-### Обои
+Hyprpaper использует <code>fm-016</code> как fallback. Четыре дополнительных
+16:9-экспорта (<code>fm-031</code>, <code>fm-035</code>, <code>fm-038</code> и
+<code>fm-040</code>) — вручную подготовленные файлы 2560 x 1440; генератор
+проверяет и учитывает их, но не перекодирует. Остальные экспортируются из
+утверждённых мастеров без масштабирования.
 
-Из сорока утверждённых иллюстраций только пять имеют безопасную 16:9
-композицию. Их точные центральные кропы находятся в
-[`assets/wallpapers/fata-morgana`](assets/wallpapers/fata-morgana); ни один
-файл не апскейлится, не дорисовывается и не обрезается случайно при запуске.
+## Проверка
 
-По умолчанию Hyprpaper использует `fm-016` как один fallback для всех
-мониторов: у него самая высокая детализация, приглушённый бордовый акцент и
-достаточно тёмного поля для окон. Четыре других изображения — осознанные
-варианты, а не автоматическая ротация, которая меняла бы настроение рабочего
-стола без действия пользователя.
+Внутри Wayland-сессии:
 
-### Структура репозитория
-
-| Путь | Роль |
-|---|---|
-| [`config/hypr`](config/hypr) | Точка входа `hyprland.lua` и модули композитора. |
-| [`config/waybar`](config/waybar) | Исходные профили панели, CSS и палитра. |
-| [`config/rofi`](config/rofi) | Rasi-конфигурация лаунчера. |
-| [`config/kitty`](config/kitty) | Конфигурация Kitty. |
-| [`config/mako`](config/mako) | Конфигурация уведомлений. |
-| [`assets/art/fata-morgana`](assets/art/fata-morgana) | Нормализованные утверждённые мастера и манифест. |
-| [`scripts`](scripts) | Развёртывание и запуск Rofi. |
-| [`tools`](tools) | Генераторы и статические проверки. |
-| [`docs`](docs) | Технические контракты, архитектурные решения и расширенная установка. |
-
-## Часть II. Подробная установка
-
-### 0. Границы инструкции
-
-Выберите ровно один путь: Arch Linux, NixOS или Fedora. Команды в блоках без
-`sudo` выполняются обычным пользователем; `sudo` временно даёт права
-администратора. Не вводите команды из разделов другой системы.
-
-Установка ОС, разметка диска, прошивка, Secure Boot и видеодрайверы выходят за
-границы дотфайлов и могут повредить существующую систему. Перед началом:
-
-1. Скопируйте важные данные на независимый носитель и проверьте, что резервная
-   копия открывается.
-2. Скачайте образ только с официальной страницы дистрибутива, проверьте
-   контрольную сумму и создайте загрузочный USB. Запись USB обычно полностью
-   стирает выбранную флешку.
-3. В UEFI загрузитесь именно с подготовленного USB. Не форматируйте диск,
-   пока не увидели его размер и не уверены, что это нужный накопитель.
-4. Создайте обычного пользователя с `sudo`, настройте сеть и завершите базовую
-   установку ОС. Только затем ставьте графическую среду и эти дотфайлы.
-
-Официальные руководства установки ОС остаются первичным источником: [Arch
-Installation Guide](https://wiki.archlinux.org/title/Installation_guide),
-[NixOS manual](https://nixos.org/manual/nixos/stable/), [Fedora
-Workstation](https://fedoraproject.org/workstation/download/). Это намеренное
-разделение: оно не подменяет рискованные действия с диском набором команд,
-который невозможно безопасно угадать для чужого ПК.
-
-### 1. Общий порядок после установки ОС
-
-Независимо от дистрибутива порядок всегда один:
-
-1. Установить совместимый Hyprland и пять обязательных пользовательских
-   программ: Hyprpaper, Kitty, Wayland-версию Rofi, Mako и Waybar.
-2. Войти в настоящую сессию Hyprland и проверить версию:
-
-   ```sh
-   hyprctl version
-   ```
-
-   Нужен Hyprland **0.55 или новее**. Эти дотфайлы используют актуальный Lua
-   API, а не старый `hyprland.conf`/Hyprlang.
-3. Клонировать репозиторий и перейти в него:
-
-   ```sh
-   git clone https://github.com/mailorq/hyprland-dots.git
-   cd hyprland-dots
-   ```
-
-4. Сначала увидеть план без единой записи в домашнюю директорию:
-
-   ```sh
-   sh scripts/fata-install --profile desktop
-   ```
-
-5. Проверить реальные бинарные зависимости:
-
-   ```sh
-   sh scripts/fata-install --profile desktop --check
-   ```
-
-6. Только после успешной проверки выполнить развёртывание:
-
-   ```sh
-   sh scripts/fata-install --profile desktop --apply
-   ```
-
-7. Завершить сессию и выбрать Hyprland в менеджере входа либо запустить
-   выбранный системой UWSM-сеанс. Не запускайте второй Waybar вручную: его
-   поднимает `fata/autostart.lua` один раз на старт Hyprland. Этот же файл
-   запускает Hyprpaper; не включайте параллельно `hyprpaper.service` через
-   UWSM или пользовательский systemd.
-
-Если целевые файлы уже существуют, шаг 6 остановится до записи. Сначала
-сравните их с резервной копией и dry-run. Только когда замена именно этих
-файлов осознанна, допустим явный повтор:
-
-```sh
-sh scripts/fata-install --profile desktop --apply --force
-```
-
-`--force` не удаляет каталоги и не пишет через символьную ссылку, в том числе
-в одном из родительских каталогов. Он заменяет только именованные файлы из
-показанного плана.
-
-### 2. Arch Linux
-
-Для первого Arch проще использовать официальный установочный образ и пройти
-`archinstall` с минимальным профилем либо выполнить официальный ручной
-Installation Guide. До перехода дальше должны работать вход пользователя,
-сеть и `sudo`.
-
-После первой загрузки обновите систему и поставьте точный набор обязательных
-пакетов:
-
-```sh
-sudo pacman -Syu --needed git hyprland hyprpaper kitty rofi mako waybar \
-  pipewire pipewire-pulse wireplumber xdg-desktop-portal-hyprland
-```
-
-Пакет Arch `hyprland` в актуальном репозитории уже выше минимальной версии
-проекта. `rofi` — пакет, содержащий современную Wayland-поддержку; отдельный
-несуществующий пакет `rofi-wayland` для Arch вводить не нужно.
-
-Затем переходите к [общему порядку](#1-общий-порядок-после-установки-ос).
-Если менеджер входа не установлен, сначала настройте его по документации
-выбранного решения; тема сознательно не навязывает GDM, SDDM или greetd.
-
-### 3. NixOS
-
-NixOS подходит для проекта, но системные пакеты должны объявляться
-декларативно. После базовой установки NixOS отредактируйте
-`/etc/nixos/configuration.nix`: добавьте следующие атрибуты **внутрь уже
-существующего** блока `{ ... }`, не создавая второй верхнеуровневый блок и не
-заменяя весь файл. Если `environment.systemPackages` уже существует, добавьте
-в него элементы из списка, а не создавайте второе одноимённое присваивание.
-
-```nix
-programs.hyprland = {
-  enable = true;
-  withUWSM = true;
-  xwayland.enable = true;
-};
-
-environment.systemPackages = with pkgs; [
-  git
-  hyprpaper
-  kitty
-  rofi-wayland
-  mako
-  waybar
-];
-
-security.rtkit.enable = true;
-services.pipewire = {
-  enable = true;
-  alsa.enable = true;
-  alsa.support32Bit = true;
-  pulse.enable = true;
-};
-```
-
-Примените именно свою проверенную системную конфигурацию:
-
-```sh
-sudo nixos-rebuild switch
-```
-
-`withUWSM = true` — рекомендуемый сейчас маршрут запуска. Если у вас уже
-включен модуль Hyprland Home Manager, его systemd-интеграцию необходимо
-отключить, иначе она конфликтует с UWSM:
-
-```nix
-wayland.windowManager.hyprland.systemd.enable = false;
-```
-
-Этот репозиторий не требует Home Manager: после `nixos-rebuild switch`
-выполните [общий порядок](#1-общий-порядок-после-установки-ос) обычным
-пользователем. Не поручайте одновременно Home Manager и `fata-install`
-владеть одним и тем же конфигурационным файлом.
-
-Если `hyprctl version` показывает версию ниже 0.55, остановитесь. Нужен
-современный согласованный набор Hyprland и `xdg-desktop-portal-hyprland` из
-текущего канала либо из официального upstream flake; не смешивайте случайные
-пакеты разных ревизий. Точный пример с согласованными `package` и
-`portalPackage` приведён в [официальной странице NixOS о
-Hyprland](https://wiki.nixos.org/wiki/Hyprland).
-
-### 4. Fedora: текущий статус совместимости
-
-Fedora Workstation можно безопасно установить через официальный образ и Fedora
-Media Writer, однако на дату проверки официальный стабильный пакет Fedora 42
-предлагает Hyprland 0.45.2. Это ниже жёсткого минимума 0.55, поэтому эти Lua
-дотфайлы **не следует развёртывать на штатном Fedora 42 Hyprland**.
-
-Это не недоработка, которую можно исправить подменой пары строк: Fedora 0.45
-ожидает старую конфигурационную модель. Не откатывайте проект на Hyprlang и не
-копируйте непроверенные COPR-команды. Когда выбранный Fedora-источник даст
-Hyprland 0.55+, сначала выполните `hyprctl version`, затем используйте общий
-порядок. До этого Fedora остаётся системой для подготовки и проверки
-оборудования, но не поддерживаемой целью данного набора.
-
-### 5. Что именно разворачивает установщик
-
-`fata-install` копирует только следующие категории, а не весь репозиторий и
-не чужие конфигурационные каталоги:
-
-| Источник | Назначение |
-|---|---|
-| `config/hypr` | `$XDG_CONFIG_HOME/hypr` или `~/.config/hypr`. |
-| `config/hypr/hyprpaper.conf` | `~/.config/hypr/hyprpaper.conf`, как требует актуальный Hyprpaper. |
-| `config/kitty` | `$XDG_CONFIG_HOME/kitty`. |
-| `config/rofi` | `$XDG_CONFIG_HOME/rofi`. |
-| `config/mako` | `$XDG_CONFIG_HOME/mako`. |
-| Выбранный `config/waybar/config.<profile>.jsonc` | `$XDG_CONFIG_HOME/waybar/config.jsonc`. |
-| Общие CSS и палитра Waybar | `$XDG_CONFIG_HOME/waybar`. |
-| `scripts/fata-rofi` | `~/.local/bin/fata-rofi`. |
-| `assets/art/fata-morgana/*.jpg` | `~/.local/share/fata-morgana/art`. |
-| `assets/wallpapers/fata-morgana/*.jpg` | `~/.local/share/fata-morgana/wallpapers`. |
-
-`Super + F` и ячейка `MENU` вызывают этот последний скрипт по точному пути
-`$HOME/.local/bin/fata-rofi`, поэтому графическая сессия не обязана добавлять
-`~/.local/bin` в `PATH`. Скрипт запускает только `rofi` и проверяет имя арта
-против утверждённого манифеста.
-
-Файл `fata/local.lua.example` также копируется, но его активный аналог
-`fata/local.lua` никогда не перезаписывается. Это единственное место для
-реальных имён выходов, раскладки клавиатуры и лично проверенной реакции мыши.
-Физические 1200 DPI не превращаются автоматически в выдуманную sensitivity.
-
-### 6. Второй монитор, раскладка и мышь
-
-Сначала запустите Hyprland с переносимым правилом, затем в нём соберите факты:
-
-```sh
-hyprctl monitors all
-hyprctl devices
-```
-
-Лишь после этого создайте локальный файл и подставьте значения из вывода:
-
-```sh
-fm_config_home=${XDG_CONFIG_HOME:-"$HOME/.config"}
-cp "$fm_config_home/hypr/fata/local.lua.example" "$fm_config_home/hypr/fata/local.lua"
-```
-
-В примере уже показана схема QHD-экрана слева и второго дисплея справа.
-Замените только маркеры `<primary-output>`, `<secondary-output>`, режим и
-частоту на реальные значения. Для мыши выберите **один** из `flat` или
-`adaptive` только после теста; базовая конфигурация сохраняет нейтральную
-чувствительность `0.0` и дефолт libinput. После изменений выполните:
-
-```sh
-hyprctl reload
-```
-
-### 7. Смена desktop-профиля на ноутбучный
-
-Сначала проверьте план и наличие запрошенного оборудования:
-
-```sh
-sh scripts/fata-install --profile laptop-battery --check
-sh scripts/fata-install --profile laptop-battery
-```
-
-После проверки осознанно замените только активный набор управляемых файлов:
-
-```sh
-sh scripts/fata-install --profile laptop-battery --apply --force
-```
-
-Для яркости используйте `laptop-backlight`, для обоих нативных индикаторов —
-`laptop-battery-backlight`. Никогда не выбирайте ноутбучный профиль для ПК
-«на всякий случай»: это не добавляет полезных данных и создаёт ненужные
-ошибки модулей.
-
-### 8. Проверка после установки
-
-Выполните целевые проверки прямо в Wayland-сессии и посмотрите stderr каждой
-команды:
-
-```sh
+~~~sh
 fm_config_home=${XDG_CONFIG_HOME:-"$HOME/.config"}
 hyprctl reload
 hyprctl hyprpaper listactive
 rofi -rasi-validate "$fm_config_home/rofi/config.rasi"
 kitty --config "$fm_config_home/kitty/kitty.conf" --debug-config
+~~~
+
+Для проверки Mako и Waybar с явными путями к конфигурации остановите либо не
+запускайте их экземпляры, уже принадлежащие текущему сеансу:
+
+~~~sh
+mako --config "$fm_config_home/mako/config"
 waybar --config "$fm_config_home/waybar/config.jsonc" --style "$fm_config_home/waybar/style.css"
-```
+~~~
 
-Проверьте вручную:
+## Разработка
 
-1. `Super + Q`, `Super + Tab`, `Super + F` и закрытие окна работают.
-2. Все десять пространств отображаются и переключаются на обоих мониторах.
-3. `MENU` открывает Rofi, а Kitty и Rofi используют утверждённые изображения.
-4. `hyprctl hyprpaper listactive` показывает `fm-016` на каждом мониторе.
-5. На desktop-профиле нет батареи, яркости, температуры, CPU, памяти и
-   power-profile.
-6. У Waybar нет предупреждений о JSON или GTK CSS, а у Hyprland — ошибок Lua.
-
-Windows не может доказать эти финальные проверки: они специально оставлены
-частью установки на реальном Linux-компьютере.
-
-Команды Mako и Waybar запускают соответствующие процессы для проверки. Не
-оставляйте второй экземпляр после теста и не запускайте их поверх уже
-работающих экземпляров, созданных автозапуском Hyprland.
-
-### 9. Разработка и обновление темы
-
-После изменения исходников не копируйте файлы вручную. Сначала обновите ветку,
-сгенерируйте адаптеры и запустите статические контракты:
-
-```sh
-git pull --ff-only
-python3 tools/build_art_assets.py --check
-python3 tools/build_wallpapers.py
-python3 tools/build_art_selectors.py
+~~~sh
 python3 tools/build_theme_colors.py
+python3 tools/build_art_assets.py --check
+python3 tools/build_wallpapers.py --check
+python3 tools/build_art_selectors.py
 python3 tools/build_waybar_profiles.py
 python3 tools/validate_hyprland_static.py
 python3 tools/validate_interaction_static.py
 python3 tools/validate_waybar_static.py
-python3 tools/validate_install_static.py
 python3 tools/validate_wallpapers_static.py
+python3 tools/validate_install_static.py
 sh -n scripts/fata-install
-```
+sh scripts/fata-install --profile desktop
+~~~
 
-Для пересборки самих арт-мастеров нужен явный Python-зависимый инструмент из
-[`tools/requirements-assets.txt`](tools/requirements-assets.txt); обычному
-пользователю он не нужен, потому что утверждённые экспорты уже находятся в
-репозитории. После успешных проверок снова выполните dry-run и примените
-изменения только к нужному профилю.
+## Документация
 
-Дополнительные технические контракты находятся в [`docs`](docs):
-[Hyprland](docs/hyprland-contract.md), [Waybar](docs/waybar-contract.md),
-[зависимости и профили](docs/dependency-contract.md),
-[установка](docs/installing.md), [арт/палитра](docs/art-palette-contract.md) и
-[обои](docs/wallpaper-contract.md).
+- <a href="docs/architecture-decisions.md">архитектура</a>
+- <a href="docs/installing.md">развёртывание</a>
+- <a href="docs/hyprland-contract.md">Hyprland</a>
+- <a href="docs/waybar-contract.md">Waybar</a>
+- <a href="docs/interaction-surfaces-contract.md">Kitty, Rofi и Mako</a>
+- <a href="docs/wallpaper-contract.md">обои и Hyprpaper</a>
+- <a href="docs/art-palette-contract.md">графические материалы и палитра</a>
+- <a href="docs/dependency-contract.md">зависимости и профили</a>
+- <a href="docs/implementation-plan.md">инженерский процесс</a>

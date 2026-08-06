@@ -1,11 +1,15 @@
-# Fata Morgana wallpapers
+# Фоновые изображения
 
-`fata-morgana/` is generated only by `tools/build_wallpapers.py` from the five
-masters marked as wallpaper-eligible in `assets/art/fata-morgana/manifest.json`.
-Every export has an exact 16:9 crop, retains its source pixels without upscale,
-and has a manifest-recorded source checksum and crop box.
+Каталог <code>fata-morgana/</code> содержит утверждённые 16:9-экспорты для
+Hyprpaper. Их состав определяется полем <code>wallpaper.eligible</code> в
+манифесте артов.
 
-The default fallback is `fm-016`: it has the highest source resolution of the
-approved set, a calm dark-right area for window contrast, and an intentionally
-restrained burgundy/light focus. The other four exports are selectable assets,
-not an automatic slideshow.
+<code>fm-016</code> создаётся детерминированно из мастера с центральным
+кадрированием без масштабирования. <code>fm-031</code>, <code>fm-035</code>,
+<code>fm-038</code> и <code>fm-040</code> — вручную подготовленные экспортные
+файлы 2560 x 1440. <code>tools/build_wallpapers.py</code> не перекодирует их:
+он проверяет формат и размер, затем фиксирует контрольную сумму и происхождение
+в <code>manifest.json</code>.
+
+Стандартный фон — <code>fm-016</code>. Остальные четыре изображения доступны
+для локального выбора; автоматическая ротация не настраивается.

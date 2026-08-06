@@ -1,87 +1,68 @@
-# Installation and preflight
+# Развёртывание
 
-`scripts/fata-install` deploys only files owned by this repository. Invoke the
-tracked source with `sh scripts/fata-install`; the installed `fata-rofi` helper
-is made executable by the deployment. The installer is a
-POSIX shell helper, not a distribution installer: it never invokes a package
-manager, starts a daemon, chooses a laptop profile automatically, or removes
-an existing configuration directory.
+## Назначение установщика
 
-## Before deployment
+<code>scripts/fata-install</code> переносит в домашний каталог только
+управляемые файлы проекта. Он не устанавливает системные пакеты, не запускает
+демоны и не определяет профиль оборудования автоматически.
 
-The active graphical session needs `Hyprland`, `hyprpaper`, `kitty`,
-Wayland-capable `rofi`, `mako`, and a Waybar build with Hyprland, PulseAudio,
-network, and tray modules. The deployment writes `fata-rofi` to
-`~/.local/bin`, and the `MENU` cell plus `Super+F` invoke that exact
-HOME-relative path. They therefore do not depend on the display manager
-inheriting `~/.local/bin` in `PATH`.
+### Целевые пути
 
-Choose the hardware profile deliberately:
-
-| Profile | Use when |
+| Источник | Назначение |
 |---|---|
-| `desktop` | normal PC install; no hardware-monitoring cells |
-| `laptop-battery` | a laptop needs only its battery cell |
-| `laptop-backlight` | a laptop needs only the native display-brightness cell |
-| `laptop-battery-backlight` | both optional laptop cells are desired |
+| <code>config/hypr</code> | <code>$XDG_CONFIG_HOME/hypr</code> |
+| <code>config/hypr/hyprpaper.conf</code> | <code>~/.config/hypr/hyprpaper.conf</code> |
+| <code>config/kitty</code>, <code>config/rofi</code>, <code>config/mako</code>, <code>config/waybar</code> | соответствующие каталоги <code>$XDG_CONFIG_HOME</code> |
+| <code>scripts/fata-rofi</code> | <code>~/.local/bin/fata-rofi</code> |
+| арты | <code>~/.local/share/fata-morgana/art</code> |
+| обои | <code>~/.local/share/fata-morgana/wallpapers</code> |
 
-Temperature, power profile, CPU, and memory are not install options. The
-installer verifies `/sys/class/power_supply/BAT*` or `/sys/class/backlight/*`
-only after the respective laptop profile was requested; it never uses these
-paths to choose a profile on the user's behalf.
+Hyprpaper использует документированный путь
+<code>~/.config/hypr/hyprpaper.conf</code> независимо от
+<code>XDG_CONFIG_HOME</code>.
 
-The artwork paths are intentionally fixed at
-`~/.local/share/fata-morgana/art/` and `~/.local/share/fata-morgana/wallpapers/`
-because Kitty, `fata-rofi`, and Hyprpaper use those HOME-relative locations.
-Hyprland, Kitty, Rofi, Mako, and Waybar configuration files use
-`XDG_CONFIG_HOME` when it is set, otherwise `~/.config`. Current Hyprpaper
-looks specifically for `~/.config/hypr/hyprpaper.conf`, so that one documented
-file is always deployed there rather than guessed under a custom XDG path.
+## Порядок работы
 
-## Safe workflow
+Из корня репозитория:
 
-From the repository root, inspect the exact plan first:
-
-```sh
+~~~sh
+# Показать план без записи файлов
 sh scripts/fata-install --profile desktop
-```
 
-After installing the required packages, run the non-mutating dependency check:
-
-```sh
+# Проверить зависимости
 sh scripts/fata-install --profile desktop --check
-```
 
-Deploy only after both checks are understood:
-
-```sh
+# Развернуть профиль
 sh scripts/fata-install --profile desktop --apply
-```
+~~~
 
-If a managed destination file already exists, the deployment stops before it
-writes anything. Review the difference yourself; only then, if replacing that
-exact managed file is intended, repeat with `--force`:
+Если управляемый файл уже существует, развёртывание останавливается. Для
+сознательной замены конкретных управляемых файлов:
 
-```sh
+~~~sh
 sh scripts/fata-install --profile desktop --apply --force
-```
+~~~
 
-`--force` can replace only the named files in the plan. It refuses to write
-through a destination symbolic link **or a symbolic-link ancestor** and never
-deletes files or directories. Local Hyprland and Kitty overrides remain
-untouched.
+Режим <code>--force</code> не удаляет каталогов и отклоняет целевой путь,
+содержащий символьную ссылку на любом уровне. Локальный файл
+<code>fata/local.lua</code> не изменяется.
 
-After deployment, the next Hyprland start launches only Hyprpaper, Mako, and
-Waybar. A plain `hyprctl reload` intentionally does not create a second
-instance of any of these processes. Do not also enable `hyprpaper.service`
-through UWSM or the user systemd manager: this configuration, not that service,
-owns Hyprpaper startup.
+## Профили
 
-## Post-install runtime gate
+| Профиль | Назначение |
+|---|---|
+| <code>desktop</code> | ПК без аппаратных ячеек панели |
+| <code>laptop-battery</code> | ноутбук с индикатором батареи |
+| <code>laptop-backlight</code> | ноутбук с индикатором яркости |
+| <code>laptop-battery-backlight</code> | оба индикатора |
 
-Run these commands inside the target Wayland session and inspect stderr:
+## Сеанс после установки
 
-```sh
+<code>fata/autostart.lua</code> запускает Hyprpaper, Mako и Waybar при старте
+Hyprland. Не включайте одновременно <code>hyprpaper.service</code> через UWSM
+или пользовательский systemd.
+
+~~~sh
 fm_config_home=${XDG_CONFIG_HOME:-"$HOME/.config"}
 hyprctl reload
 hyprctl hyprpaper listactive
@@ -89,11 +70,8 @@ rofi -rasi-validate "$fm_config_home/rofi/config.rasi"
 kitty --config "$fm_config_home/kitty/kitty.conf" --debug-config
 mako --config "$fm_config_home/mako/config"
 waybar --config "$fm_config_home/waybar/config.jsonc" --style "$fm_config_home/waybar/style.css"
-```
+~~~
 
-Verify all ten workspace buttons on both monitors, the `MENU` cell, and the
-absence of battery, backlight, temperature, CPU, memory, and power-profile
-cells in the `desktop` profile. These are target-system checks; they cannot be
-proven from Windows. Run the Mako and Waybar commands when an instance of the
-same daemon is not already owned by the current session; they are parser and
-stderr tests, not services to leave duplicated in the background.
+Эти проверки выполняются в работающей Wayland-сессии. Mako и Waybar запускайте
+как диагностические процессы только при отсутствии экземпляров, которыми уже
+владеет текущая сессия.
