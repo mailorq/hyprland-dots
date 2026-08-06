@@ -82,7 +82,7 @@ def main() -> int:
         errors.append("missing Fata session autostart module")
     else:
         autostart = autostart_file.read_text(encoding="utf-8")
-        for fragment in ('hl.on("hyprland.start"', 'hl.exec_cmd("mako")', 'hl.exec_cmd("waybar")'):
+        for fragment in ('hl.on("hyprland.start"', 'hl.exec_cmd("hyprpaper")', 'hl.exec_cmd("mako")', 'hl.exec_cmd("waybar")'):
             if fragment not in autostart:
                 errors.append(f"autostart lacks {fragment}")
         if "&" in autostart:

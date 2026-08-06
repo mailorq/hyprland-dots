@@ -43,10 +43,10 @@ muted structural token from the canonical palette.
 
 ## Session services
 
-`fata/autostart.lua` listens only for `hyprland.start` and launches `mako` plus
-`waybar` through `hl.exec_cmd()`. It does not launch a wallpaper daemon, a
-hardware monitor, a tray applet, a shell wrapper, or a duplicate process on
-config reload. Both called binaries are mandatory and preflighted by the
+`fata/autostart.lua` listens only for `hyprland.start` and launches the declared
+`hyprpaper`, `mako`, and `waybar` binaries through `hl.exec_cmd()`. It does not
+launch a hardware monitor, tray applet, shell wrapper, or duplicate process on
+config reload. Every called binary is mandatory and preflighted by the
 installation helper.
 
 ## Validation

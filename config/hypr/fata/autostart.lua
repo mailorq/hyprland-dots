@@ -3,6 +3,7 @@
 -- not spawn duplicates.  hl.exec_cmd() is already asynchronous: no shell
 -- backgrounding or process-detection helper is required.
 hl.on("hyprland.start", function()
+    hl.exec_cmd("hyprpaper")
     hl.exec_cmd("mako")
     hl.exec_cmd("waybar")
 end)

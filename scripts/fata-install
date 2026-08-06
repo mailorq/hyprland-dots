@@ -93,6 +93,7 @@ fm_root=$(CDPATH= cd -P "$fm_script_dir/.." && pwd)
 fm_config_home=${XDG_CONFIG_HOME:-"$fm_target_home/.config"}
 fm_bin_dir="$fm_target_home/.local/bin"
 fm_art_dir="$fm_target_home/.local/share/fata-morgana/art"
+fm_wallpaper_dir="$fm_target_home/.local/share/fata-morgana/wallpapers"
 case "$fm_config_home" in
     /*) ;;
     *) fm_die "XDG_CONFIG_HOME must be an absolute path" ;;
@@ -104,6 +105,15 @@ fm_require_source() {
 
 fm_require_command() {
     command -v "$1" >/dev/null 2>&1 || fm_die "required command is unavailable: $1"
+}
+
+fm_has_symlink_in_target_path() {
+    fm_probe=$1
+    while :; do
+        [ -L "$fm_probe" ] && return 0
+        [ "$fm_probe" = / ] && return 1
+        fm_probe=$(dirname "$fm_probe")
+    done
 }
 
 fm_has_battery() {
@@ -122,6 +132,7 @@ fm_has_display_backlight() {
 
 fm_preflight() {
     fm_require_command Hyprland
+    fm_require_command hyprpaper
     fm_require_command kitty
     fm_require_command rofi
     fm_require_command mako
@@ -150,9 +161,9 @@ fm_map_file() {
             printf '%s\n' "copy $fm_source -> $fm_target"
             ;;
         conflicts)
-            if [ -L "$fm_target" ]; then
+            if fm_has_symlink_in_target_path "$fm_target"; then
                 fm_conflicts=1
-                printf '%s\n' "refusing to write through symbolic link: $fm_target" >&2
+                printf '%s\n' "refusing to write through symbolic link in target path: $fm_target" >&2
             elif [ -e "$fm_target" ] && [ "$fm_force" -eq 0 ]; then
                 fm_conflicts=1
                 printf '%s\n' "existing managed target: $fm_target" >&2
@@ -172,6 +183,9 @@ fm_map_all() {
         fm_map_file "$fm_root/config/hypr/fata/$fm_name.lua" "$fm_config_home/hypr/fata/$fm_name.lua"
     done
     fm_map_file "$fm_root/config/hypr/fata/local.lua.example" "$fm_config_home/hypr/fata/local.lua.example"
+    # hyprpaper's current official lookup path is ~/.config/hypr/hyprpaper.conf,
+    # independently of an optional XDG_CONFIG_HOME override used by Hyprland.
+    fm_map_file "$fm_root/config/hypr/hyprpaper.conf" "$fm_target_home/.config/hypr/hyprpaper.conf"
 
     fm_map_file "$fm_root/config/kitty/kitty.conf" "$fm_config_home/kitty/kitty.conf"
     for fm_name in art colors layout; do
@@ -193,6 +207,10 @@ fm_map_all() {
     for fm_source in "$fm_root"/assets/art/fata-morgana/*.jpg; do
         [ -f "$fm_source" ] || fm_die "no normalized Fata Morgana masters found"
         fm_map_file "$fm_source" "$fm_art_dir/${fm_source##*/}"
+    done
+    for fm_source in "$fm_root"/assets/wallpapers/fata-morgana/*.jpg; do
+        [ -f "$fm_source" ] || fm_die "no approved Fata Morgana wallpaper exports found"
+        fm_map_file "$fm_source" "$fm_wallpaper_dir/${fm_source##*/}"
     done
 }
 

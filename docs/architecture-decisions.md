@@ -23,17 +23,17 @@ Baseline date: 2026-08-04.
 - Default Waybar geometry: 40 px bar height, 32 px module height, 8 px top
   margin, 12 px horizontal margins, 10 px module horizontal padding, and 6 px
   inter-module spacing.
-- Provide 10 numbered workspaces. Monitor assignment will be defined in Phase
-  3 together with the user's bindings.
+- Provide 10 numbered workspaces. Actual monitor assignment remains a local
+  override because connector names cannot be safely inferred from this repo.
 
 ## Desktop and laptop profiles
 
 - The default installation profile is `desktop`.
 - The desktop Waybar must not contain battery, backlight, power-profile, or
   temperature modules.
-- A future installer may offer an explicit `laptop` profile. Battery and
-  backlight modules are opt-in; temperature remains a separate opt-in rather
-  than an implicit laptop default.
+- The installer offers explicit battery, backlight, and combined laptop
+  profiles. Temperature remains a separate opt-in rather than an implicit
+  laptop default.
 - Profile-specific Waybar JSONC files must not call absent helper utilities.
 
 ## Pointer input
@@ -61,6 +61,9 @@ Baseline date: 2026-08-04.
   tolerate a small, deliberate crop to 16:9. Wallpaper exports must not use
   blurred side-fill, framed portrait layouts, subject distortion, or generative
   fill.
+- Hyprpaper is the declared static wallpaper backend. It starts once with the
+  session, uses one fallback image across unknown outputs, and has no automatic
+  slideshow, preloading, or helper script.
 
 ## Documentation references
 
@@ -69,3 +72,4 @@ Baseline date: 2026-08-04.
 - GTK 3 CSS overview: <https://docs.gtk.org/gtk3/css-overview.html>
 - Rofi theme format: <https://davatorium.github.io/rofi/current/rofi-theme.5/>
 - Kitty configuration: <https://sw.kovidgoyal.net/kitty/conf/>
+- Hyprpaper configuration: <https://wiki.hypr.land/Hypr-Ecosystem/hyprpaper/>

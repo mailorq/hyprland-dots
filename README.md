@@ -1,6 +1,6 @@
 # Fata Morgana Hyprland Dots
 
-Полный, модульный набор конфигураций Hyprland, Waybar, Rofi, Kitty и Mako в
+Полный, модульный набор конфигураций Hyprland, Hyprpaper, Waybar, Rofi, Kitty и Mako в
 сдержанной эстетике *The House in Fata Morgana*. Это не копия исходных
 дотфайлов и не «готовый Arch-образ»: репозиторий заново строит только нужные
 интерфейсные поверхности и проверяет их контрактами.
@@ -22,6 +22,7 @@
 | Rofi | Wayland-лаунчер с проверяемым набором Fata Morgana-иллюстраций. |
 | Kitty | Терминал с той же палитрой и отдельными арт-настройками. |
 | Mako | Нативные Wayland-уведомления без Dunst и без скрытого второго демона. |
+| Hyprpaper | Официальный статичный backend обоев: один спокойный fallback без слайд-шоу. |
 | `scripts/fata-install` | Осторожное развёртывание только файлов этого репозитория. По умолчанию ничего не пишет. |
 
 В визуале используются только утверждённые Fata Morgana-арты. Они могут
@@ -75,6 +76,19 @@
 Установщик проверяет sysfs батареи или подсветки только после явного выбора
 соответствующего профиля; оборудование не угадывается автоматически.
 
+### Обои
+
+Из сорока утверждённых иллюстраций только пять имеют безопасную 16:9
+композицию. Их точные центральные кропы находятся в
+[`assets/wallpapers/fata-morgana`](assets/wallpapers/fata-morgana); ни один
+файл не апскейлится, не дорисовывается и не обрезается случайно при запуске.
+
+По умолчанию Hyprpaper использует `fm-016` как один fallback для всех
+мониторов: у него самая высокая детализация, приглушённый бордовый акцент и
+достаточно тёмного поля для окон. Четыре других изображения — осознанные
+варианты, а не автоматическая ротация, которая меняла бы настроение рабочего
+стола без действия пользователя.
+
 ### Структура репозитория
 
 | Путь | Роль |
@@ -122,7 +136,7 @@ Workstation](https://fedoraproject.org/workstation/download/). Это намер
 Независимо от дистрибутива порядок всегда один:
 
 1. Установить совместимый Hyprland и пять обязательных пользовательских
-   программ: Kitty, Wayland-версию Rofi, Mako и Waybar.
+   программ: Hyprpaper, Kitty, Wayland-версию Rofi, Mako и Waybar.
 2. Войти в настоящую сессию Hyprland и проверить версию:
 
    ```sh
@@ -158,7 +172,9 @@ Workstation](https://fedoraproject.org/workstation/download/). Это намер
 
 7. Завершить сессию и выбрать Hyprland в менеджере входа либо запустить
    выбранный системой UWSM-сеанс. Не запускайте второй Waybar вручную: его
-   поднимает `fata/autostart.lua` один раз на старт Hyprland.
+   поднимает `fata/autostart.lua` один раз на старт Hyprland. Этот же файл
+   запускает Hyprpaper; не включайте параллельно `hyprpaper.service` через
+   UWSM или пользовательский systemd.
 
 Если целевые файлы уже существуют, шаг 6 остановится до записи. Сначала
 сравните их с резервной копией и dry-run. Только когда замена именно этих
@@ -168,8 +184,9 @@ Workstation](https://fedoraproject.org/workstation/download/). Это намер
 sh scripts/fata-install --profile desktop --apply --force
 ```
 
-`--force` не удаляет каталоги и не пишет через символьную ссылку. Он заменяет
-только именованные файлы из показанного плана.
+`--force` не удаляет каталоги и не пишет через символьную ссылку, в том числе
+в одном из родительских каталогов. Он заменяет только именованные файлы из
+показанного плана.
 
 ### 2. Arch Linux
 
@@ -182,7 +199,7 @@ Installation Guide. До перехода дальше должны работа
 пакетов:
 
 ```sh
-sudo pacman -Syu --needed git hyprland kitty rofi mako waybar \
+sudo pacman -Syu --needed git hyprland hyprpaper kitty rofi mako waybar \
   pipewire pipewire-pulse wireplumber xdg-desktop-portal-hyprland
 ```
 
@@ -212,6 +229,7 @@ programs.hyprland = {
 
 environment.systemPackages = with pkgs; [
   git
+  hyprpaper
   kitty
   rofi-wayland
   mako
@@ -275,6 +293,7 @@ Hyprland 0.55+, сначала выполните `hyprctl version`, затем 
 | Источник | Назначение |
 |---|---|
 | `config/hypr` | `$XDG_CONFIG_HOME/hypr` или `~/.config/hypr`. |
+| `config/hypr/hyprpaper.conf` | `~/.config/hypr/hyprpaper.conf`, как требует актуальный Hyprpaper. |
 | `config/kitty` | `$XDG_CONFIG_HOME/kitty`. |
 | `config/rofi` | `$XDG_CONFIG_HOME/rofi`. |
 | `config/mako` | `$XDG_CONFIG_HOME/mako`. |
@@ -282,6 +301,7 @@ Hyprland 0.55+, сначала выполните `hyprctl version`, затем 
 | Общие CSS и палитра Waybar | `$XDG_CONFIG_HOME/waybar`. |
 | `scripts/fata-rofi` | `~/.local/bin/fata-rofi`. |
 | `assets/art/fata-morgana/*.jpg` | `~/.local/share/fata-morgana/art`. |
+| `assets/wallpapers/fata-morgana/*.jpg` | `~/.local/share/fata-morgana/wallpapers`. |
 
 `Super + F` и ячейка `MENU` вызывают этот последний скрипт по точному пути
 `$HOME/.local/bin/fata-rofi`, поэтому графическая сессия не обязана добавлять
@@ -347,6 +367,7 @@ sh scripts/fata-install --profile laptop-battery --apply --force
 ```sh
 fm_config_home=${XDG_CONFIG_HOME:-"$HOME/.config"}
 hyprctl reload
+hyprctl hyprpaper listactive
 rofi -rasi-validate "$fm_config_home/rofi/config.rasi"
 kitty --config "$fm_config_home/kitty/kitty.conf" --debug-config
 waybar --config "$fm_config_home/waybar/config.jsonc" --style "$fm_config_home/waybar/style.css"
@@ -357,9 +378,10 @@ waybar --config "$fm_config_home/waybar/config.jsonc" --style "$fm_config_home/w
 1. `Super + Q`, `Super + Tab`, `Super + F` и закрытие окна работают.
 2. Все десять пространств отображаются и переключаются на обоих мониторах.
 3. `MENU` открывает Rofi, а Kitty и Rofi используют утверждённые изображения.
-4. На desktop-профиле нет батареи, яркости, температуры, CPU, памяти и
+4. `hyprctl hyprpaper listactive` показывает `fm-016` на каждом мониторе.
+5. На desktop-профиле нет батареи, яркости, температуры, CPU, памяти и
    power-profile.
-5. У Waybar нет предупреждений о JSON или GTK CSS, а у Hyprland — ошибок Lua.
+6. У Waybar нет предупреждений о JSON или GTK CSS, а у Hyprland — ошибок Lua.
 
 Windows не может доказать эти финальные проверки: они специально оставлены
 частью установки на реальном Linux-компьютере.
@@ -376,6 +398,7 @@ Windows не может доказать эти финальные провер�
 ```sh
 git pull --ff-only
 python3 tools/build_art_assets.py --check
+python3 tools/build_wallpapers.py
 python3 tools/build_art_selectors.py
 python3 tools/build_theme_colors.py
 python3 tools/build_waybar_profiles.py
@@ -383,6 +406,7 @@ python3 tools/validate_hyprland_static.py
 python3 tools/validate_interaction_static.py
 python3 tools/validate_waybar_static.py
 python3 tools/validate_install_static.py
+python3 tools/validate_wallpapers_static.py
 sh -n scripts/fata-install
 ```
 
@@ -395,4 +419,5 @@ sh -n scripts/fata-install
 Дополнительные технические контракты находятся в [`docs`](docs):
 [Hyprland](docs/hyprland-contract.md), [Waybar](docs/waybar-contract.md),
 [зависимости и профили](docs/dependency-contract.md),
-[установка](docs/installing.md) и [арт/палитра](docs/art-palette-contract.md).
+[установка](docs/installing.md), [арт/палитра](docs/art-palette-contract.md) и
+[обои](docs/wallpaper-contract.md).

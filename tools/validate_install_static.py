@@ -27,8 +27,8 @@ def main() -> None:
     require("--force requires --apply" in text, "force must require explicit apply mode")
     require("XDG_CONFIG_HOME must be an absolute path" in text,
             "installer must not write through a relative XDG_CONFIG_HOME")
-    require("refusing to write through symbolic link" in text,
-            "installer must not overwrite through a destination symlink")
+    require("fm_has_symlink_in_target_path" in text and "refusing to write through symbolic link in target path" in text,
+            "installer must reject a destination symlink or a symlinked ancestor")
     require("refusing to replace managed files without --force" in text,
             "installer must reject existing managed files by default")
     require("rm " not in text and "rm\n" not in text,
@@ -45,6 +45,7 @@ def main() -> None:
         require(profile in text, f"installer lacks explicit {profile} profile")
     for fragment in (
         "fm_require_command Hyprland",
+        "fm_require_command hyprpaper",
         "fm_require_command kitty",
         "fm_require_command rofi",
         "fm_require_command mako",
@@ -52,9 +53,11 @@ def main() -> None:
         "fm_has_battery || fm_die",
         "fm_has_display_backlight || fm_die",
         "appearance autostart bindings colors input monitors workspaces",
+        "config/hypr/hyprpaper.conf",
         "config.$fm_profile.jsonc",
         "fata-rofi",
         "assets/art/fata-morgana/*.jpg",
+        "assets/wallpapers/fata-morgana/*.jpg",
     ):
         require(fragment in text, f"installer lacks required route or preflight: {fragment!r}")
 

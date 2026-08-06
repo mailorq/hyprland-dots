@@ -56,7 +56,7 @@ Fata Morgana semantic palette.
   generation rule.
 - Palette adapters are byte-for-byte synchronized with the canonical tokens.
 
-## 3. Hyprland compositor — baseline ready for runtime validation; personal binds pending
+## 3. Hyprland compositor — static baseline and approved binds complete; runtime validation pending
 
 **Purpose:** create a current Hyprland 0.55+ Lua configuration for the desktop
 workflow.
@@ -67,8 +67,8 @@ workflow.
   `hl.config`, `hl.monitor`, `hl.bind`, and `hl.window_rule` APIs.
 - Add a 10-workspace desktop workflow, QHD-first but FHD-safe logical geometry,
   and a local, Git-ignored monitor override for real output names.
-- Integrate the user's supplied keybindings only after they are provided;
-  never fabricate or silently replace them.
+- Keep only the approved compact Super/Win baseline: Kitty, Rofi, last-window
+  focus, close, floating, fullscreen, and workspaces 1–10.
 - Configure mouse behavior after the user chooses flat or adaptive
   acceleration; 1200 DPI alone is not a compositor sensitivity value.
 
@@ -78,7 +78,7 @@ workflow.
 - No legacy `source =`, `windowrule =`, `animation =`, or deprecated
   `decoration:drop_shadow` syntax remains.
 
-## 4. Kitty, Rofi, and Mako — in progress
+## 4. Kitty, Rofi, and Mako — static implementation complete; runtime validation pending
 
 **Purpose:** apply the mansion visual system to focused interaction surfaces.
 
@@ -96,7 +96,7 @@ workflow.
 - Kitty parses its config, Rofi validates its Rasi files, and Mako starts with
   the selected configuration on Wayland.
 
-## 5. Waybar, profiles, integration, and final QA — in progress
+## 5. Waybar, profiles, integration, and final QA — static implementation complete; runtime validation pending
 
 **Purpose:** build the final desktop panel and installation profile selection.
 
@@ -120,6 +120,30 @@ workflow.
 - Every called binary is declared, checked, and either mandatory or clearly
   opt-in.
 - The final self-audit is clean and the user receives commit-sized file groups.
+
+## 6. Curated wallpapers and Hyprpaper — static implementation complete; runtime validation pending
+
+**Purpose:** add a stable wallpaper layer without promoting every reference
+image to a desktop background or creating a second untracked daemon.
+
+**Work**
+
+- Export only the five manifest-approved 16:9 compositions from the committed
+  masters. Centre-crop only where already approved; never upscale, stretch,
+  generate fill, or include retired and foreign-title imagery.
+- Choose the most detailed muted composition as the single fallback for unknown
+  outputs. Keep the other four exports available without automatic rotation.
+- Configure only the current documented Hyprpaper syntax, disable the splash,
+  and start one declared `hyprpaper` process through `hyprland.start`.
+- Treat `hyprpaper` as a mandatory, explicitly preflighted dependency and
+  deploy its documented config path plus the generated wallpaper files.
+
+**Exit gate**
+
+- The wallpaper manifest, exact 16:9 crop dimensions, source hashes, and
+  Hyprpaper configuration pass static validation.
+- On Linux, Hyprpaper starts without stderr errors and
+  `hyprctl hyprpaper listactive` reports the fallback on each active output.
 
 ## Required checkpoint protocol
 
