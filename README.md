@@ -13,7 +13,7 @@ Morgana. В состав входят Hyprland, Hyprpaper, Waybar, Rofi, Kitty �
 | Сервисы сеанса | Hyprpaper, Mako, Waybar |
 | Клиентские приложения | Kitty и Rofi с поддержкой Wayland |
 | Аудио | PipeWire-Pulse или совместимый PulseAudio-сервис для Waybar |
-| Развёртывание | POSIX shell и стандартные утилиты <code>cat</code>, <code>chmod</code>, <code>cp</code>, <code>dirname</code>, <code>mkdir</code> |
+| Развёртывание | POSIX shell и стандартные утилиты <code>cat</code>, <code>chmod</code>, <code>cp</code>, <code>dirname</code>, <code>mkdir</code>, <code>pwd</code> |
 
 Пакеты и способ запуска Hyprland выбираются по документации используемой
 системы. Перед развёртыванием проверьте версию в работающей Wayland-сессии:

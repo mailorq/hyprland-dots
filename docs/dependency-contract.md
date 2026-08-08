@@ -10,7 +10,7 @@
 | Лаунчер | rofi с поддержкой Wayland | все профили |
 | Уведомления | mako | все профили |
 | Панель | waybar с модулями Hyprland, PulseAudio, network и tray | все профили |
-| Развёртывание | POSIX sh, cat, chmod, cp, dirname, mkdir | локальный checkout |
+| Развёртывание | POSIX sh, cat, chmod, cp, dirname, mkdir, pwd | локальный checkout |
 
 Установщик выполняет предварительную проверку бинарных файлов перед
 развёртыванием. Выбор пакетов и системных сервисов остаётся задачей
