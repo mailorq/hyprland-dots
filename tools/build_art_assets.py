@@ -26,13 +26,13 @@ MAX_LONG_EDGE = 2048
 # The current approved maximum is fm-026 at 1.555; 1.60 leaves a small margin
 # while rejecting the retired fm-032 composition at 1.777.
 MAX_PORTRAIT_HEIGHT_TO_WIDTH = 1.60
-SHARED_ROLES = ("kitty", "rofi", "mako", "lockscreen")
+SHARED_ROLES = ("kitty", "rofi")
 WALLPAPER_CANDIDATES = {
-    "82fea3a44d36e42fbcc7fb5a1c2861272bf6005113ea0c2a0f88fef929a59b92": ("center", 20.9),
+    "82fea3a44d36e42fbcc7fb5a1c2861272bf6005113ea0c2a0f88fef929a59b92": ("center", 21.0),
     "13f614c020b3824b394f65a75180db7e32e85f2be0c953659dd155d71acddc35": ("center", 19.5),
     "7148db18c753e55c576ad9aa7e29217986f7347c0d6222ca38d8878c69d4b735": ("center", 20.4),
     "5cbfc0ae80280a196e9316aa4068163ee431a90cc24565060127da8a6f95db04": ("native", 0.0),
-    "95885c07024a23397d2054a75d316d6c0b1981e857c4aeccca8bed0c5bb5ea57": ("center", 21.9),
+    "95885c07024a23397d2054a75d316d6c0b1981e857c4aeccca8bed0c5bb5ea57": ("center", 20.5),
 }
 
 
@@ -292,6 +292,8 @@ def verify(input_dir: Path, output_dir: Path) -> int:
                 errors.append(f"manifest source checksum mismatch: {entry_id}")
             if not isinstance(entry.get("source_file"), str) or not entry["source_file"]:
                 errors.append(f"manifest source filename missing: {entry_id}")
+            if entry.get("roles") != list(SHARED_ROLES):
+                errors.append(f"manifest role mapping mismatch: {entry_id}")
             if entry.get("wallpaper") != wallpaper_metadata(source_hash):
                 errors.append(f"manifest wallpaper metadata mismatch: {entry_id}")
             path = output_dir / expected_file
