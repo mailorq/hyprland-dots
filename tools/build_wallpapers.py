@@ -24,6 +24,16 @@ OUTPUT_DIR = ROOT / "assets" / "wallpapers" / "fata-morgana"
 TARGET_WIDTH = 16
 TARGET_HEIGHT = 9
 DEFAULT_WALLPAPER_ID = "fm-016"
+# These five files are manually curated QHD exports.  They remain ordinary
+# manifest-backed wallpaper candidates, but their image data is intentionally
+# owned by the curator rather than regenerated from a reduced art master.
+CURATED_EXPORT_DIMENSIONS = {
+    "fm-016": (2560, 1440),
+    "fm-031": (2560, 1440),
+    "fm-035": (2560, 1440),
+    "fm-038": (2560, 1440),
+    "fm-040": (2560, 1440),
+}
 
 
 def sha256(path: Path) -> str:
@@ -73,14 +83,32 @@ def render_candidate(item: dict[str, object], output_dir: Path) -> dict[str, obj
     source_path = MASTER_DIR / str(item["file"])
     if not source_path.is_file():
         raise RuntimeError(f"missing wallpaper master: {source_path}")
+    candidate_id = str(item["id"])
+    target_path = output_dir / output_filename(item)
     with Image.open(source_path) as source:
         if source.mode != "RGB":
             raise RuntimeError(f"wallpaper master is not RGB: {source_path.name}")
         box = crop_box(source.width, source.height)
-        rendered = source.crop(box)
-    target_path = output_dir / output_filename(item)
-    rendered.save(target_path, "JPEG", quality=94, subsampling=0, optimize=True, progressive=True)
-    crop_area = rendered.width * rendered.height
+
+        if candidate_id in CURATED_EXPORT_DIMENSIONS:
+            expected_dimensions = CURATED_EXPORT_DIMENSIONS[candidate_id]
+            if not target_path.is_file():
+                raise RuntimeError(f"missing curated wallpaper export: {target_path.name}")
+            with Image.open(target_path) as curated:
+                if curated.mode != "RGB" or curated.size != expected_dimensions:
+                    raise RuntimeError(
+                        f"curated wallpaper has invalid metadata: {target_path.name}; "
+                        f"expected RGB {expected_dimensions[0]}x{expected_dimensions[1]}"
+                    )
+                rendered_dimensions = curated.size
+            export_mode = "curated"
+        else:
+            rendered = source.crop(box)
+            rendered.save(target_path, "JPEG", quality=94, subsampling=0, optimize=True, progressive=True)
+            rendered_dimensions = rendered.size
+            export_mode = "generated"
+
+    crop_area = (box[2] - box[0]) * (box[3] - box[1])
     source_area = int(item["dimensions"]["width"]) * int(item["dimensions"]["height"])  # type: ignore[index]
     return {
         "id": item["id"],
@@ -88,11 +116,12 @@ def render_candidate(item: dict[str, object], output_dir: Path) -> dict[str, obj
         "source_file": item["file"],
         "source_sha256": item["sha256"],
         "sha256": sha256(target_path),
-        "dimensions": {"width": rendered.width, "height": rendered.height},
+        "dimensions": {"width": rendered_dimensions[0], "height": rendered_dimensions[1]},
         "crop": item["wallpaper"]["crop"],  # type: ignore[index]
         "crop_box": {"left": box[0], "top": box[1], "right": box[2], "bottom": box[3]},
         "crop_loss_percent": round((1 - crop_area / source_area) * 100, 1),
         "fit_mode": "cover",
+        "export_mode": export_mode,
         "default": item["id"] == DEFAULT_WALLPAPER_ID,
     }
 
@@ -102,7 +131,7 @@ def build(output_dir: Path) -> None:
     output_dir.mkdir(parents=True, exist_ok=True)
     records = [render_candidate(item, output_dir) for item in candidates]
     manifest = {
-        "schema_version": 1,
+        "schema_version": 2,
         "collection": "The House in Fata Morgana — approved 16:9 wallpaper exports",
         "source": "assets/art/fata-morgana/manifest.json",
         "normalization": {
@@ -132,6 +161,8 @@ def verify(output_dir: Path) -> int:
         errors.append("missing wallpaper manifest.json")
     else:
         manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
+        if manifest.get("schema_version") != 2:
+            errors.append("wallpaper manifest schema must be version 2")
         records = manifest.get("wallpapers", [])
         candidate_by_id = {item["id"]: item for item in candidates}
         if {record.get("id") for record in records} != set(candidate_by_id):
@@ -149,6 +180,12 @@ def verify(output_dir: Path) -> int:
             width = dimensions.get("width")
             height = dimensions.get("height")
             path = output_dir / str(record.get("file", ""))
+            expected_mode = "curated" if record.get("id") in CURATED_EXPORT_DIMENSIONS else "generated"
+            if record.get("export_mode") != expected_mode:
+                errors.append(f"wallpaper export mode mismatch: {record.get('id')}")
+            expected_dimensions = CURATED_EXPORT_DIMENSIONS.get(str(record.get("id")))
+            if expected_dimensions is not None and (width, height) != expected_dimensions:
+                errors.append(f"curated wallpaper dimensions mismatch: {record.get('file')}")
             if not isinstance(width, int) or not isinstance(height, int) or width * TARGET_HEIGHT != height * TARGET_WIDTH:
                 errors.append(f"wallpaper is not exact 16:9: {record.get('file')}")
             elif not path.is_file():
