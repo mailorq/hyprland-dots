@@ -1,0 +1,47 @@
+# Generated from theme/palette.json by tools/build_theme_colors.py.
+# Do not hand-edit: Mako include paths cannot portably follow XDG_CONFIG_HOME.
+max-history=20
+sort=-time
+layer=top
+anchor=top-right
+width=380
+height=160
+outer-margin=8
+margin=4
+padding=12
+border-size=2
+border-radius=8
+font=sans-serif 11
+markup=1
+format=<b>%s</b>\n%b
+text-alignment=left
+icons=1
+icon-location=left
+max-icon-size=40
+icon-border-radius=6
+actions=1
+default-timeout=6000
+ignore-timeout=0
+max-visible=3
+on-button-left=invoke-default-action
+on-button-right=dismiss
+
+background-color=#2C2D2EFF
+text-color=#E9E1D7FF
+border-color=#B39A6AFF
+progress-color=over #D0B77EFF
+
+[urgency=low]
+border-color=#8E9BA8FF
+text-color=#B9B0A5FF
+
+[urgency=normal]
+border-color=#B39A6AFF
+
+[urgency=high]
+background-color=#5F2F28FF
+border-color=#C9796CFF
+text-color=#F5F0E8FF
+progress-color=over #C9796CFF
+default-timeout=0
+ignore-timeout=1

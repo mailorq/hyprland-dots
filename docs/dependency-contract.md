@@ -1,60 +1,59 @@
-# Dependency and profile contract
+# Зависимости и профили
 
-The project names a binary only when the component that invokes it owns that
-dependency. A feature is either mandatory, optional through a profile, or not
-implemented. Silent fallbacks are prohibited.
+## Обязательная среда
 
-## Baseline runtime
-
-| Component | Mandatory binary | Scope | Notes |
-|---|---|---|---|
-| Compositor | `Hyprland` 0.55+ | all profiles | Lua configuration only. |
-| Terminal | `kitty` | all profiles | Reads a Kitty-valid colour include. |
-| Launcher | `rofi` with Wayland support | all profiles | Rasi is validated before release. |
-| Notifications | `mako` | all profiles | Native Mako config; Dunst is not a hidden substitute. |
-| Panel | `waybar` | all profiles | One desktop config; laptop additions are explicit. |
-
-The exact distribution packages are intentionally not listed yet: package names
-vary by distribution, and the user has not selected a target distribution.
-
-## Optional features
-
-| Feature | Required binary/service | Selected by |
+| Компонент | Требование | Область |
 |---|---|---|
-| Wallpaper management | One chosen backend, preflight required | wallpaper stage |
-| Clipboard history | `wl-paste`, `wl-copy`, and `cliphist` | only if its binds are requested |
-| Audio controls | `wpctl` / a compatible PipeWire session | only if audio module or binds are enabled |
-| Laptop battery | Waybar battery backend | laptop profile only |
-| Laptop backlight | `brightnessctl` | laptop profile only |
-| CPU/GPU temperature | explicitly chosen backend | separate opt-in only |
+| Композитор | Hyprland 0.55+ | все профили |
+| Обои | hyprpaper | все профили |
+| Терминал | kitty | все профили |
+| Лаунчер | rofi с поддержкой Wayland | все профили |
+| Уведомления | mako | все профили |
+| Панель | waybar с модулями Hyprland, PulseAudio, network и tray | все профили |
+| Развёртывание | POSIX sh, cat, chmod, cp, dirname, mkdir, pwd | локальный checkout |
 
-## Profile contract
+Установщик выполняет предварительную проверку бинарных файлов перед
+развёртыванием. Выбор пакетов и системных сервисов остаётся задачей
+дистрибутива; соответствующие команды приведены в корневом README.
 
-- `desktop` is the default: no battery, backlight, temperature, or power-profile
-  module.
-- `laptop` is selected deliberately by the installation workflow; it does not
-  auto-detect hardware or modify the desktop profile.
-- Local hardware facts such as connector names, refresh rates, device names,
-  and GPU-specific environment variables live in Git-ignored local overrides.
-- A missing optional dependency hides no errors: the relevant profile is not
-  installed until its preflight passes.
+## Профили Waybar
 
-## Validation contract
-
-| Surface | Required check before handoff |
+| Профиль | Дополнительные модули |
 |---|---|
-| Lua | Static Lua parse where available, then `hyprctl reload` on the target system. |
-| Hyprland | Inspect reload output and `hyprctl monitors all` / `hyprctl devices` against local overrides. |
-| Rofi | `rofi -rasi-validate` for every Rasi file. |
-| Kitty | Launch a controlled Kitty instance with the intended `--config` path and inspect stderr; use Kitty's `debug_config` action for runtime diagnostics. |
-| Mako | Start using the intended config and inspect stderr on a Wayland session. |
-| Waybar | Start with explicit config/style paths and inspect stderr for JSONC or GTK CSS diagnostics. |
-| Scripts | `shellcheck` when a shell helper exists; every external command is preflighted. |
+| <code>desktop</code> | отсутствуют |
+| <code>laptop-battery</code> | батарея |
+| <code>laptop-backlight</code> | подсветка |
+| <code>laptop-battery-backlight</code> | батарея и подсветка |
 
-## Source references
+Профиль выбирается параметром <code>--profile</code>. Для батареи проверяется
+<code>/sys/class/power_supply/BAT*</code>, для подсветки —
+<code>/sys/class/backlight/*</code>. Температура, CPU, память и
+power-profile не поставляются в существующих профилях.
 
-- [Hyprland Lua configuration](https://wiki.hypr.land/Configuring/Start/)
-- [Rofi theme syntax](https://davatorium.github.io/rofi/current/rofi-theme.5/)
-- [Kitty configuration](https://sw.kovidgoyal.net/kitty/conf/)
-- [Mako configuration](https://www.mankier.com/5/mako)
-- [Waybar upstream](https://github.com/Alexays/Waybar)
+## Внешние команды
+
+<code>fata-rofi</code> зависит только от POSIX <code>sh</code> и
+Wayland-версии Rofi. Hyprland и Waybar запускают установленный файл по полному
+пути <code>$HOME/.local/bin/fata-rofi</code>; пользовательский PATH не является
+частью контракта запуска.
+
+## Проверка
+
+| Поверхность | Проверка на Linux |
+|---|---|
+| Hyprland | <code>hyprctl reload</code>, <code>hyprctl monitors all</code>, <code>hyprctl devices</code> |
+| Hyprpaper | <code>hyprctl hyprpaper listactive</code> и stderr процесса |
+| Rofi | <code>rofi -rasi-validate</code> |
+| Kitty | <code>kitty --debug-config</code> |
+| Mako | запуск с целевой конфигурацией и stderr |
+| Waybar | запуск с явными путями config/style и stderr |
+| Скрипты | <code>sh -n</code>; ShellCheck при наличии в рабочей среде |
+
+## Первичные источники
+
+- <a href="https://wiki.hypr.land/Configuring/Start/">Hyprland Lua configuration</a>
+- <a href="https://wiki.hypr.land/Hypr-Ecosystem/hyprpaper/">Hyprpaper</a>
+- <a href="https://davatorium.github.io/rofi/current/rofi-theme.5/">Rofi Rasi</a>
+- <a href="https://sw.kovidgoyal.net/kitty/conf/">Kitty</a>
+- <a href="https://www.mankier.com/5/mako">Mako</a>
+- <a href="https://github.com/Alexays/Waybar">Waybar</a>

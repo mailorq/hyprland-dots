@@ -1,0 +1,134 @@
+@import url("fata/colors.css");
+
+/* 40 px bar minus 4 px margins above and below yields a 32 px cell track. */
+* {
+    border: none;
+    border-radius: 0;
+    min-height: 0;
+    font-family: serif;
+    font-size: 12px;
+}
+
+window#waybar {
+    background-color: transparent;
+    color: @fm_fg;
+}
+
+#custom-menu,
+#workspaces,
+#window,
+#clock,
+#pulseaudio,
+#network,
+#tray,
+#battery,
+#backlight {
+    background-color: @fm_bg;
+    color: @fm_fg;
+    border: 2px solid @fm_border;
+    border-radius: 8px;
+    margin: 4px 3px;
+    padding: 0 10px;
+}
+
+#custom-menu {
+    color: @fm_brass_bright;
+    font-weight: 600;
+    padding: 0 11px;
+}
+
+#workspaces {
+    padding: 0 4px;
+}
+
+#workspaces button {
+    background-color: transparent;
+    color: @fm_fg_dim;
+    border: 1px solid transparent;
+    border-radius: 6px;
+    margin: 2px 1px;
+    min-width: 22px;
+    padding: 0 7px;
+}
+
+#workspaces button.persistent {
+    color: @fm_fg_muted;
+}
+
+#workspaces button.visible {
+    color: @fm_fg;
+}
+
+#workspaces button.active {
+    background-color: @fm_burgundy;
+    border-color: @fm_brass;
+    color: @fm_white;
+}
+
+#workspaces button.urgent {
+    background-color: @fm_danger;
+    border-color: @fm_danger;
+    color: @fm_white;
+}
+
+#workspaces button.workspace-hover {
+    background-color: @fm_surface_warm;
+    color: @fm_white;
+}
+
+#window {
+    background-color: @fm_bg_cool;
+    min-width: 240px;
+    padding: 0 12px;
+}
+
+#clock {
+    border-color: @fm_brass;
+    color: @fm_brass_bright;
+    font-weight: 600;
+    padding: 0 12px;
+}
+
+#pulseaudio.muted,
+#network.disconnected,
+#network.disabled,
+#network.linked {
+    background-color: @fm_surface;
+    color: @fm_fg_muted;
+}
+
+#battery.charging,
+#battery.plugged {
+    border-color: @fm_moss;
+    color: @fm_moss;
+}
+
+#battery.warning {
+    border-color: @fm_brass;
+    color: @fm_brass_bright;
+}
+
+#battery.critical {
+    background-color: @fm_burgundy;
+    border-color: @fm_danger;
+    color: @fm_white;
+}
+
+#backlight {
+    color: @fm_storm;
+}
+
+#tray {
+    padding: 0 8px;
+}
+
+tooltip {
+    background-color: @fm_bg_deep;
+    border: 1px solid @fm_brass;
+    border-radius: 6px;
+    color: @fm_fg;
+}
+
+tooltip label {
+    padding: 4px 6px;
+}

@@ -1,0 +1,25 @@
+-- Copy this file to `fata/local.lua` after deployment, then replace every
+-- placeholder with facts from `hyprctl monitors all` and `hyprctl devices`.
+-- The real local.lua is ignored by Git and loaded after the portable defaults.
+
+-- Example explicit monitor map; delete or adjust the second rule if needed.
+-- hl.monitor({
+--     output = "<primary-output>",
+--     mode = "2560x1440@<refresh>",
+--     position = "0x0",
+--     scale = 1,
+-- })
+-- hl.monitor({
+--     output = "<secondary-output>",
+--     mode = "<native-mode>",
+--     position = "2560x0",
+--     scale = 1,
+-- })
+
+-- Pick exactly one acceleration policy only after testing it with the 1200 DPI
+-- mouse. Empty accel_profile in the portable config leaves libinput's default.
+-- hl.config({ input = { accel_profile = "flat", sensitivity = 0.0 } })
+-- hl.config({ input = { accel_profile = "adaptive", sensitivity = 0.0 } })
+
+-- Keep keyboard layout and options local as well; no layout is assumed here.
+-- hl.config({ input = { kb_layout = "us,ru", kb_options = "grp:win_space_toggle" } })

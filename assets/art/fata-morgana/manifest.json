@@ -26,9 +26,7 @@
       },
       "roles": [
         "kitty",
-        "rofi",
-        "mako",
-        "lockscreen"
+        "rofi"
       ],
       "wallpaper": {
         "eligible": false
@@ -50,9 +48,7 @@
       },
       "roles": [
         "kitty",
-        "rofi",
-        "mako",
-        "lockscreen"
+        "rofi"
       ],
       "wallpaper": {
         "eligible": false
@@ -74,9 +70,7 @@
       },
       "roles": [
         "kitty",
-        "rofi",
-        "mako",
-        "lockscreen"
+        "rofi"
       ],
       "wallpaper": {
         "eligible": false
@@ -98,9 +92,7 @@
       },
       "roles": [
         "kitty",
-        "rofi",
-        "mako",
-        "lockscreen"
+        "rofi"
       ],
       "wallpaper": {
         "eligible": false
@@ -122,9 +114,7 @@
       },
       "roles": [
         "kitty",
-        "rofi",
-        "mako",
-        "lockscreen"
+        "rofi"
       ],
       "wallpaper": {
         "eligible": false
@@ -146,9 +136,7 @@
       },
       "roles": [
         "kitty",
-        "rofi",
-        "mako",
-        "lockscreen"
+        "rofi"
       ],
       "wallpaper": {
         "eligible": false
@@ -170,9 +158,7 @@
       },
       "roles": [
         "kitty",
-        "rofi",
-        "mako",
-        "lockscreen"
+        "rofi"
       ],
       "wallpaper": {
         "eligible": false
@@ -194,9 +180,7 @@
       },
       "roles": [
         "kitty",
-        "rofi",
-        "mako",
-        "lockscreen"
+        "rofi"
       ],
       "wallpaper": {
         "eligible": false
@@ -218,9 +202,7 @@
       },
       "roles": [
         "kitty",
-        "rofi",
-        "mako",
-        "lockscreen"
+        "rofi"
       ],
       "wallpaper": {
         "eligible": false
@@ -242,9 +224,7 @@
       },
       "roles": [
         "kitty",
-        "rofi",
-        "mako",
-        "lockscreen"
+        "rofi"
       ],
       "wallpaper": {
         "eligible": false
@@ -266,9 +246,7 @@
       },
       "roles": [
         "kitty",
-        "rofi",
-        "mako",
-        "lockscreen"
+        "rofi"
       ],
       "wallpaper": {
         "eligible": false
@@ -283,16 +261,14 @@
         "width": 1036,
         "height": 1280
       },
-      "sha256": "a1adc70b5dc62a3fa224f3ac6bca969e8a2ef900f55d2ec3be6d6bba0aab42cf",
+      "sha256": "425b6d7d15c2894aaa99985d7456b6808f204b87620589c453f01846de549e01",
       "dimensions": {
-        "width": 1036,
-        "height": 1280
+        "width": 736,
+        "height": 909
       },
       "roles": [
         "kitty",
-        "rofi",
-        "mako",
-        "lockscreen"
+        "rofi"
       ],
       "wallpaper": {
         "eligible": false
@@ -314,9 +290,7 @@
       },
       "roles": [
         "kitty",
-        "rofi",
-        "mako",
-        "lockscreen"
+        "rofi"
       ],
       "wallpaper": {
         "eligible": false
@@ -331,16 +305,14 @@
         "width": 1892,
         "height": 1419
       },
-      "sha256": "ca3adc0bee7c3e1c3ae112929ebc8eb0c9becf0ace0947141ae36b460da01368",
+      "sha256": "aad7e31936e609f72d67e897e6542ae0b4d3dfc27511b36dbb2d2f7323eaff39",
       "dimensions": {
-        "width": 1892,
-        "height": 1419
+        "width": 736,
+        "height": 552
       },
       "roles": [
         "kitty",
-        "rofi",
-        "mako",
-        "lockscreen"
+        "rofi"
       ],
       "wallpaper": {
         "eligible": false
@@ -355,22 +327,20 @@
         "width": 5870,
         "height": 4175
       },
-      "sha256": "bd1196fc1f7666890122330c1d7333aabe7477435d7a9b53a324201fa05700d5",
+      "sha256": "f82cd510d89c3d85261046cd279969dfb68faeabab3e97640c65f23b6641d065",
       "dimensions": {
-        "width": 2048,
-        "height": 1457
+        "width": 736,
+        "height": 524
       },
       "roles": [
         "kitty",
-        "rofi",
-        "mako",
-        "lockscreen"
+        "rofi"
       ],
       "wallpaper": {
         "eligible": true,
         "target_aspect_ratio": "16:9",
         "crop": "center",
-        "estimated_crop_loss_percent": 20.9
+        "estimated_crop_loss_percent": 21.0
       }
     },
     {
@@ -382,16 +352,14 @@
         "width": 998,
         "height": 1383
       },
-      "sha256": "74ffc85abc1a46205a037dd07bf51ba3cfb365063dc0184bfe77cd39ce7d4f44",
+      "sha256": "f98c76abfb76af7b024dff2144b0ccaae922691a4df498df5f0475cada92d177",
       "dimensions": {
-        "width": 998,
-        "height": 1383
+        "width": 736,
+        "height": 1020
       },
       "roles": [
         "kitty",
-        "rofi",
-        "mako",
-        "lockscreen"
+        "rofi"
       ],
       "wallpaper": {
         "eligible": false
@@ -406,16 +374,14 @@
         "width": 2976,
         "height": 4210
       },
-      "sha256": "cbb0137092394699bd51af8736a0bd788a0dac53471acfcaceda6f30ac5e39b7",
+      "sha256": "5e8a99173024310de478db465243064897e4cb8c7344516e7e6b3fc511759b9f",
       "dimensions": {
-        "width": 1448,
-        "height": 2048
+        "width": 736,
+        "height": 1041
       },
       "roles": [
         "kitty",
-        "rofi",
-        "mako",
-        "lockscreen"
+        "rofi"
       ],
       "wallpaper": {
         "eligible": false
@@ -430,16 +396,14 @@
         "width": 993,
         "height": 1395
       },
-      "sha256": "9c2cfe4ed2a61e40eb5cdd7af822315ba718fbe360eda5093dd62c1b38902b91",
+      "sha256": "35ea7de5de9810a8e9261b95583e1f8562a6e65d8ce1f47889f18588d431a02a",
       "dimensions": {
-        "width": 993,
-        "height": 1395
+        "width": 736,
+        "height": 1034
       },
       "roles": [
         "kitty",
-        "rofi",
-        "mako",
-        "lockscreen"
+        "rofi"
       ],
       "wallpaper": {
         "eligible": false
@@ -454,16 +418,14 @@
         "width": 993,
         "height": 1395
       },
-      "sha256": "d4d5a9311ba1c10d32d822c2ce8dea62d3459495a23ddaabd06cd6e482a54483",
+      "sha256": "d0b30c323a08136d60bd13662ce71b99a85590695ddec0d5176efbbacd648b95",
       "dimensions": {
-        "width": 993,
-        "height": 1395
+        "width": 736,
+        "height": 1034
       },
       "roles": [
         "kitty",
-        "rofi",
-        "mako",
-        "lockscreen"
+        "rofi"
       ],
       "wallpaper": {
         "eligible": false
@@ -485,9 +447,7 @@
       },
       "roles": [
         "kitty",
-        "rofi",
-        "mako",
-        "lockscreen"
+        "rofi"
       ],
       "wallpaper": {
         "eligible": false
@@ -509,9 +469,7 @@
       },
       "roles": [
         "kitty",
-        "rofi",
-        "mako",
-        "lockscreen"
+        "rofi"
       ],
       "wallpaper": {
         "eligible": false
@@ -533,9 +491,7 @@
       },
       "roles": [
         "kitty",
-        "rofi",
-        "mako",
-        "lockscreen"
+        "rofi"
       ],
       "wallpaper": {
         "eligible": false
@@ -557,9 +513,7 @@
       },
       "roles": [
         "kitty",
-        "rofi",
-        "mako",
-        "lockscreen"
+        "rofi"
       ],
       "wallpaper": {
         "eligible": false
@@ -581,9 +535,7 @@
       },
       "roles": [
         "kitty",
-        "rofi",
-        "mako",
-        "lockscreen"
+        "rofi"
       ],
       "wallpaper": {
         "eligible": false
@@ -605,9 +557,7 @@
       },
       "roles": [
         "kitty",
-        "rofi",
-        "mako",
-        "lockscreen"
+        "rofi"
       ],
       "wallpaper": {
         "eligible": false
@@ -616,22 +566,20 @@
     {
       "id": "fm-027",
       "file": "fata-morgana-027-chained-figures.jpg",
-      "source_file": "wmremove-transformed (2).jpeg",
-      "source_sha256": "ab3b0b3161552c68639ccb123c185c81243a6087f0383bc8731f65b3bf00e2ec",
+      "source_file": "fata-morgana-027-chained-figures.jpeg",
+      "source_sha256": "c2cc355604e9d3a8486e58e21e2119e33eee1fb44e218c220bf5faa09bed0a41",
       "source_dimensions": {
         "width": 736,
         "height": 1041
       },
-      "sha256": "597e0fcbab4b215e92f66f5f9831af6950531fef57c58d998f87c6ccfcea6cc7",
+      "sha256": "988492397880fb81bbe2ae0f43de1f9af2ab88a446ffd7e7d90a894411f6b450",
       "dimensions": {
         "width": 736,
         "height": 1041
       },
       "roles": [
         "kitty",
-        "rofi",
-        "mako",
-        "lockscreen"
+        "rofi"
       ],
       "wallpaper": {
         "eligible": false
@@ -653,9 +601,7 @@
       },
       "roles": [
         "kitty",
-        "rofi",
-        "mako",
-        "lockscreen"
+        "rofi"
       ],
       "wallpaper": {
         "eligible": false
@@ -677,9 +623,7 @@
       },
       "roles": [
         "kitty",
-        "rofi",
-        "mako",
-        "lockscreen"
+        "rofi"
       ],
       "wallpaper": {
         "eligible": false
@@ -701,39 +645,13 @@
       },
       "roles": [
         "kitty",
-        "rofi",
-        "mako",
-        "lockscreen"
+        "rofi"
       ],
       "wallpaper": {
         "eligible": true,
         "target_aspect_ratio": "16:9",
         "crop": "center",
         "estimated_crop_loss_percent": 19.5
-      }
-    },
-    {
-      "id": "fm-032",
-      "file": "fata-morgana-032-crimson-streaked-portrait.jpg",
-      "source_file": "Без названия (10).jpg",
-      "source_sha256": "7050edc0f251a3f4f60ce04db624ee0178280dc35f4ab48aa96fadbdc3736d8d",
-      "source_dimensions": {
-        "width": 736,
-        "height": 1308
-      },
-      "sha256": "7d5b9846ff400b03c45d0bbcee1de3f0bc785fd2ba24c0d7824872b5ce969087",
-      "dimensions": {
-        "width": 736,
-        "height": 1308
-      },
-      "roles": [
-        "kitty",
-        "rofi",
-        "mako",
-        "lockscreen"
-      ],
-      "wallpaper": {
-        "eligible": false
       }
     },
     {
@@ -752,9 +670,7 @@
       },
       "roles": [
         "kitty",
-        "rofi",
-        "mako",
-        "lockscreen"
+        "rofi"
       ],
       "wallpaper": {
         "eligible": false
@@ -776,9 +692,7 @@
       },
       "roles": [
         "kitty",
-        "rofi",
-        "mako",
-        "lockscreen"
+        "rofi"
       ],
       "wallpaper": {
         "eligible": false
@@ -800,9 +714,7 @@
       },
       "roles": [
         "kitty",
-        "rofi",
-        "mako",
-        "lockscreen"
+        "rofi"
       ],
       "wallpaper": {
         "eligible": true,
@@ -827,9 +739,7 @@
       },
       "roles": [
         "kitty",
-        "rofi",
-        "mako",
-        "lockscreen"
+        "rofi"
       ],
       "wallpaper": {
         "eligible": false
@@ -851,9 +761,7 @@
       },
       "roles": [
         "kitty",
-        "rofi",
-        "mako",
-        "lockscreen"
+        "rofi"
       ],
       "wallpaper": {
         "eligible": false
@@ -875,9 +783,7 @@
       },
       "roles": [
         "kitty",
-        "rofi",
-        "mako",
-        "lockscreen"
+        "rofi"
       ],
       "wallpaper": {
         "eligible": true,
@@ -895,16 +801,14 @@
         "width": 1472,
         "height": 1104
       },
-      "sha256": "9fd3280dd101603604f20c64e881765d7f26a8877bb3f0a80268e38eaaf3c17f",
+      "sha256": "68f6cf6d5236c741e812e2209721331cecd40308491a884b7e942199766e76e0",
       "dimensions": {
-        "width": 1472,
-        "height": 1104
+        "width": 736,
+        "height": 552
       },
       "roles": [
         "kitty",
-        "rofi",
-        "mako",
-        "lockscreen"
+        "rofi"
       ],
       "wallpaper": {
         "eligible": false
@@ -919,22 +823,20 @@
         "width": 1468,
         "height": 1040
       },
-      "sha256": "4e53e4e8cb88285a2439fe6438fd0e65998d58842660db86946d57ec1b05cd19",
+      "sha256": "306a20809c399c7144f01fedfa28300a5cd457a5c4a60e637c6be86b031022ee",
       "dimensions": {
-        "width": 1468,
-        "height": 1040
+        "width": 736,
+        "height": 521
       },
       "roles": [
         "kitty",
-        "rofi",
-        "mako",
-        "lockscreen"
+        "rofi"
       ],
       "wallpaper": {
         "eligible": true,
         "target_aspect_ratio": "16:9",
         "crop": "center",
-        "estimated_crop_loss_percent": 20.6
+        "estimated_crop_loss_percent": 20.5
       }
     },
     {
@@ -953,9 +855,7 @@
       },
       "roles": [
         "kitty",
-        "rofi",
-        "mako",
-        "lockscreen"
+        "rofi"
       ],
       "wallpaper": {
         "eligible": false
@@ -977,9 +877,7 @@
       },
       "roles": [
         "kitty",
-        "rofi",
-        "mako",
-        "lockscreen"
+        "rofi"
       ],
       "wallpaper": {
         "eligible": false
@@ -1001,9 +899,7 @@
       },
       "roles": [
         "kitty",
-        "rofi",
-        "mako",
-        "lockscreen"
+        "rofi"
       ],
       "wallpaper": {
         "eligible": false

@@ -1,0 +1,110 @@
+@import "fata/colors.rasi"
+@import "fata/art.rasi"
+
+* {
+    font: "sans-serif 12";
+    background-color: transparent;
+    text-color: @fm-fg;
+}
+
+window {
+    width: 42%;
+    location: center;
+    anchor: center;
+    transparency: "real";
+    background-color: #2C2D2EDE;
+    background-image: @fm-rofi-art;
+    border: 2px;
+    border-color: @fm-brass;
+    border-radius: 12px;
+    padding: 16px;
+}
+
+mainbox {
+    background-color: transparent;
+    spacing: 10px;
+}
+
+inputbar {
+    background-color: #171716CC;
+    border: 1px;
+    border-color: @fm-border;
+    border-radius: 8px;
+    padding: 8px 10px;
+    spacing: 8px;
+}
+
+prompt {
+    text-color: @fm-brass-bright;
+}
+
+entry {
+    placeholder: "Search";
+    placeholder-color: @fm-fg-dim;
+    cursor-color: @fm-brass-bright;
+    cursor-width: 2px;
+}
+
+case-indicator {
+    text-color: @fm-fg-dim;
+}
+
+listview {
+    background-color: transparent;
+    columns: 1;
+    lines: 7;
+    fixed-height: true;
+    dynamic: false;
+    scrollbar: false;
+    spacing: 6px;
+}
+
+element {
+    background-color: #202023B8;
+    border: 1px;
+    border-color: transparent;
+    border-radius: 8px;
+    padding: 8px 10px;
+    spacing: 10px;
+}
+
+element normal.normal {
+    text-color: @fm-fg;
+}
+
+element selected.normal {
+    background-color: #5F2F28E8;
+    border-color: @fm-brass;
+    text-color: @fm-white;
+}
+
+element normal.urgent,
+element selected.urgent {
+    border-color: @fm-danger;
+}
+
+element-icon {
+    background-color: transparent;
+    size: 28px;
+    vertical-align: 0.5;
+}
+
+element-text {
+    background-color: transparent;
+    vertical-align: 0.5;
+    highlight: bold @fm-brass-bright;
+}
+
+mode-switcher {
+    enabled: false;
+}
+
+@media ( min-width: 2200px ) {
+    window {
+        width: 38%;
+    }
+
+    listview {
+        lines: 9;
+    }
+}
