@@ -43,6 +43,18 @@ def main() -> None:
     artwork = build_art_selectors.load_artwork()
     filenames = sorted(str(item["file"]) for item in artwork)
     default = build_art_selectors.default_filename(artwork)
+    for unsafe_filename in (
+        "../outside.jpg",
+        "fata-morgana-001-$(touch-pwned).jpg",
+        'fata-morgana-001-quote".jpg',
+        "fata-morgana-001-newline\n.jpg",
+    ):
+        try:
+            build_art_selectors.rofi_launcher([unsafe_filename], unsafe_filename)
+        except ValueError:
+            pass
+        else:
+            fail(f"art selector accepted shell-unsafe filename: {unsafe_filename!r}")
     exact(ROOT / "config" / "kitty" / "fata" / "art.conf", build_art_selectors.kitty_config())
     exact(ROOT / "config" / "rofi" / "fata" / "art.rasi", build_art_selectors.rofi_theme())
     exact(ROOT / "scripts" / "fata-rofi", build_art_selectors.rofi_launcher(filenames, default))

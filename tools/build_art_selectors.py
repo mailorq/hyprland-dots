@@ -8,6 +8,7 @@ random-selection utilities: the manifest is the allowlist.
 from __future__ import annotations
 
 import json
+import re
 from pathlib import Path
 
 
@@ -18,6 +19,14 @@ ROFI_ART_PATH = ROOT / "config" / "rofi" / "fata" / "art.rasi"
 ROFI_LAUNCHER_PATH = ROOT / "scripts" / "fata-rofi"
 DATA_ART_DIR = "${HOME}/.local/share/fata-morgana/art"
 DEFAULT_ART_ID = "fm-038"
+ARTWORK_ID_PATTERN = re.compile(r"fm-[0-9]{3}")
+ARTWORK_FILENAME_PATTERN = re.compile(r"fata-morgana-[0-9]{3}-[a-z0-9]+(?:-[a-z0-9]+)*\.jpg")
+
+
+def validate_artwork_filename(filename: object) -> str:
+    if not isinstance(filename, str) or not ARTWORK_FILENAME_PATTERN.fullmatch(filename):
+        raise ValueError(f"invalid generated artwork filename: {filename!r}")
+    return filename
 
 
 def load_artwork() -> list[dict[str, object]]:
@@ -28,14 +37,17 @@ def load_artwork() -> list[dict[str, object]]:
 
     filenames: set[str] = set()
     for item in artwork:
+        if not isinstance(item, dict):
+            raise ValueError("art manifest contains a non-object artwork entry")
+        artwork_id = item.get("id")
+        if not isinstance(artwork_id, str) or not ARTWORK_ID_PATTERN.fullmatch(artwork_id):
+            raise ValueError(f"invalid artwork ID: {artwork_id!r}")
         roles = item.get("roles", [])
-        filename = item.get("file")
-        if not isinstance(filename, str) or not filename.endswith(".jpg"):
-            raise ValueError(f"invalid generated artwork filename: {filename!r}")
+        filename = validate_artwork_filename(item.get("file"))
         if filename in filenames:
             raise ValueError(f"duplicate generated artwork filename: {filename}")
-        if "kitty" not in roles or "rofi" not in roles:
-            raise ValueError(f"{item.get('id')} is missing a Kitty or Rofi role")
+        if not isinstance(roles, list) or set(roles) != {"kitty", "rofi"}:
+            raise ValueError(f"{artwork_id} must target exactly Kitty and Rofi")
         filenames.add(filename)
     return artwork
 
@@ -74,7 +86,12 @@ def rofi_theme() -> str:
 
 
 def rofi_launcher(filenames: list[str], default: str) -> str:
-    allowed = "|\n        ".join(f'"{filename}"' for filename in filenames)
+    approved = [validate_artwork_filename(filename) for filename in filenames]
+    if not approved:
+        raise ValueError("cannot generate a launcher without approved artwork")
+    if default not in approved:
+        raise ValueError("the default artwork must be in the approved catalogue")
+    allowed = "|\n        ".join(f'"{filename}"' for filename in approved)
     return f"""#!/bin/sh
 # Generated from assets/art/fata-morgana/manifest.json by
 # tools/build_art_selectors.py.
