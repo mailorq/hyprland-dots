@@ -1,65 +1,52 @@
-# Архитектура
+# Архитектурные решения
 
-## Границы платформы
+## Конфигурационная модель
 
-Поддерживаемая база — Hyprland 0.55+ с Lua-точкой входа
-<code>hyprland.lua</code>. Конфигурации используют нативные форматы каждого
-компонента: Lua, Rasi, Kitty, Mako и GTK 3 CSS. Зависимости среды выполнения и
-сборки перечислены в <a href="dependency-contract.md">спецификации зависимостей</a>.
+Hyprland 0.55+ использует Lua entry point `config/hypr/hyprland.lua`. Конфигурация разделена по областям ответственности:
 
-## Оборудование и геометрия
+| Модуль | Владелец |
+|---|---|
+| `fata/appearance.lua` | gaps, borders, rounding, decoration и анимации |
+| `fata/input.lua` | нейтральная pointer sensitivity и cursor size |
+| `fata/monitors.lua` | переносимый fallback `preferred/auto` |
+| `fata/workspaces.lua` | десять persistent numeric workspaces |
+| `fata/bindings.lua` | базовые Super-привязки |
+| `fata/autostart.lua` | Hyprpaper, Mako и Waybar на `hyprland.start` |
+| `fata/colors.lua` | сгенерированная палитра |
+| `fata/local.lua` | неотслеживаемые параметры конкретного оборудования |
 
-Расчётная конфигурация включает основной дисплей 2560x1440 и дополнительный
-дисплей 1920x1080. Значения задаются в логических пикселях и не содержат имён
-разъёмов, частоты или масштабирования конкретного оборудования.
+Каждый обязательный Lua-модуль подключается через `require()`. Отсутствие `fata/local.lua` — единственное штатно подавляемое исключение. Любая другая ошибка local-модуля остаётся видимой, чтобы не скрывать неисправную конфигурацию оборудования.
 
-| Элемент | Значение |
-|---|---:|
-| Внутренний отступ окон | 8 px |
-| Внешний отступ окон | 12 px |
-| Граница окна | 2 px |
-| Скругление окна | 8 px |
-| Высота Waybar | 40 px |
-| Высота ячейки Waybar | 32 px |
-| Верхний / боковой отступ панели | 8 / 12 px |
-| Интервал между ячейками | 6 px |
-| Рабочие пространства | 1–10 |
+## Границы переносимости
 
-Имена выходов, режимы, размещение мониторов, раскладка и параметры конкретной
-мыши находятся в неотслеживаемом <code>fata/local.lua</code>. Базовая
-чувствительность указателя равна 0.0; выбор профиля ускорения остаётся
-локальной настройкой.
+Базовая конфигурация не содержит названий видеовыходов, частоты, масштаба, раскладки или модели мыши. Эти данные нельзя достоверно вывести из размера монитора или аппаратного DPI. После первого запуска пользователь копирует `local.lua.example` в `local.lua` и вносит фактические значения из `hyprctl monitors all` и `hyprctl devices`.
 
-## Профили панели
+Характеристики 27″ QHD и 23″ FHD влияют только на выбранную плотность интерфейса: компактные 8/12 px gaps, 2 px border, 8 px rounding, 40 px Waybar и 12 pt Kitty. Они не кодируются как аппаратные правила.
 
-<code>desktop</code> — профиль по умолчанию. Он содержит рабочие пространства,
-заголовок активного окна, часы, звук, сеть и трей. Модули батареи и подсветки
-появляются только в явно выбранных ноутбучных профилях. Температура, CPU,
-память и профиль энергопотребления не входят в поставляемую панель.
+## UI-слои
 
-## Визуальная система
+Waybar использует строгий JSON в файлах с расширением `.jsonc`: это упрощает машинную проверку без comment stripper. CSS использует только селекторы и свойства, ожидаемые GTK CSS для Waybar; не применяются `-gtk-` хаки, CSS variables, `box-shadow`, transitions или keyframes.
 
-Палитра строится вокруг средне-тёмных графитовых поверхностей, приглушённого
-бордового акцента, латуни и холодного серого. Канонический источник цветов —
-<code>theme/palette.json</code>; форматы компонентов генерируются из него.
+Rofi использует Rasi, а не GTK CSS. Фон передаётся через переменную `FM_ROFI_ART`, которую формирует `fata-rofi` после allowlist-проверки имени файла. Kitty использует документированную обработку JPEG glob для одобренного каталога и не включает remote control. Mako получает самодостаточный конфиг без non-portable include path и без `exec` hooks.
 
-Используются только утверждённые изображения The House in Fata Morgana.
-Портретные материалы применяются в Kitty и Rofi без растяжения. Для обоев
-допускаются лишь нативные 16:9-кадры или зафиксированные умеренные центральные
-кадры без дорисовки и боковых заполнителей.
+## Контент и генераторы
 
-## Владение сервисами
+`theme/palette.json` — единственный источник палитры. `tools/build_theme_colors.py` синхронизирует адаптеры Hyprland, Waybar, Rofi, Kitty и Mako.
 
-Сеанс Hyprland запускает Hyprpaper, Mako и Waybar через
-<code>fata/autostart.lua</code>. Для Hyprpaper этот механизм является единым
-владельцем процесса: сервис <code>hyprpaper.service</code> не включается
-параллельно.
+`assets/art/fata-morgana/manifest.json` задаёт утверждённые masters, их хеши и роли. `tools/build_art_selectors.py` генерирует Kitty/Rofi adapters и shell allowlist. Имена файлов, ID и роли валидируются до генерации, поэтому JSON не может внедрить shell syntax в `fata-rofi`.
 
-## Первичные источники
+`assets/wallpapers/fata-morgana/manifest.json` задаёт пять утверждённых QHD-экспортов. Art и wallpaper builders по умолчанию выполняют только проверку; для записи требуется явный `--rebuild-frozen-assets`. Это предотвращает случайную перекодировку, изменение размера или замену зафиксированных изображений.
 
-- <a href="https://wiki.hypr.land/Configuring/Start/">Hyprland Lua configuration</a>
-- <a href="https://wiki.hypr.land/Configuring/Basics/Variables/">Hyprland variables</a>
-- <a href="https://docs.gtk.org/gtk3/css-overview.html">GTK 3 CSS</a>
-- <a href="https://davatorium.github.io/rofi/current/rofi-theme.5/">Rofi Rasi</a>
-- <a href="https://sw.kovidgoyal.net/kitty/conf/">Kitty configuration</a>
-- <a href="https://wiki.hypr.land/Hypr-Ecosystem/hyprpaper/">Hyprpaper</a>
+## Целостность и поставка
+
+`tools/build_release_manifest.py` формирует `assets/deployment.sha256` для каждого файла, который `fata-install` реально разворачивает. Перед dry-run, `--check` и `--apply` установщик запускает `sha256sum -c`. Манифест предотвращает использование неполного или случайно изменённого checkout.
+
+Манифест не является подписью: он хранится в том же checkout, что и код. Доверие к происхождению обеспечивается проверенным Git remote, code review и, для опубликованного релиза, подписанным тегом.
+
+При `--apply` installer выполняет conflict pass до первой записи. При `--force` исходные target-файлы сохраняются под `~/.local/state/fata-morgana/backups/`. Каждая новая версия создаётся `mktemp`, получает ожидаемый режим и публикуется `mv`. Главный `hyprland.lua` публикуется последним: все требуемые модули к этому времени уже находятся на месте.
+
+Набор файлов не является атомарной транзакцией: остановка процесса после нескольких успешных publish-операций способна оставить смешанную версию конфигурации. Backup нужен именно для восстановления существующих файлов после `--force`; первая чистая установка не удаляет ничего и не нуждается в автоматическом rollback.
+
+## Проверка
+
+`tools/validate_release.py` объединяет неизменяющие проверки manifests, asset hash/dimensions, Lua structure, generated adapters, JSON/CSS/Rasi contracts и installer safety. `tools/test_install_integration.sh` проверяет first install, конфликт, forced update и restore в изолированном `mktemp`-home с подставными бинарниками. Нативные парсеры Hyprland, Waybar, Rofi, Kitty и Mako дополнительно проверяются внутри реальной Wayland-сессии.
