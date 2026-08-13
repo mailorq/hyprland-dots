@@ -1,108 +1,147 @@
-# Развёртывание
+# Развёртывание и восстановление
 
-## Назначение установщика
+`scripts/fata-install` разворачивает только перечисленные в нём пользовательские файлы. Он не вызывает пакетный менеджер, не использует `sudo`, не удаляет каталоги и не пытается определить тип устройства эвристически.
 
-<code>scripts/fata-install</code> переносит в домашний каталог только
-управляемые файлы проекта. Он не устанавливает системные пакеты, не запускает
-демоны и не определяет профиль оборудования автоматически.
+## Предварительные условия
 
-## Предварительная проверка среды
+Установите компоненты Wayland-сессии стандартным для вашей системы способом. Для всех профилей необходимы:
 
-Установите Hyprland и пользовательские приложения способом, принятым в вашей
-системе. Затем проверьте, что необходимые бинарники доступны из текущего
-окружения:
+```sh
+for command in Hyprland hyprpaper waybar rofi kitty mako sha256sum; do
+    command -v "$command" || exit 1
+done
+```
 
-~~~sh
-command -v Hyprland
-command -v hyprpaper
-command -v waybar
-command -v rofi
-command -v kitty
-command -v mako
-~~~
+Требуется Hyprland 0.55 или новее с Lua-конфигурацией. Waybar должен быть собран с модулями `hyprland/workspaces`, `hyprland/window`, `pulseaudio`, `network` и `tray`; `pulseaudio` работает с PulseAudio-совместимым сервером. Rofi должен работать в Wayland-сеансе.
 
-В работающей Wayland-сессии дополнительно проверьте версию Hyprland:
+Проверка версии в уже запущенной сессии:
 
-~~~sh
+```sh
 hyprctl version
-~~~
+```
 
-Для профиля <code>desktop</code> не требуются батарея, подсветка, температурные
-сенсоры, CPU/RAM-виджеты или power-profile. Ноутбучные профили используют
-только нативные модули батареи и подсветки Waybar, поэтому перед их выбором
-проверьте наличие соответствующих sysfs-устройств:
+Для ноутбучных профилей подтвердите наличие соответствующих sysfs-устройств:
 
-~~~sh
+```sh
 ls /sys/class/power_supply/BAT* 2>/dev/null
 ls /sys/class/backlight/* 2>/dev/null
-~~~
+```
 
-### Целевые пути
+## Выбор профиля
 
-| Источник | Назначение |
+| Профиль | Содержимое панели |
 |---|---|
-| <code>config/hypr</code> | <code>$XDG_CONFIG_HOME/hypr</code> |
-| <code>config/hypr/hyprpaper.conf</code> | <code>~/.config/hypr/hyprpaper.conf</code> |
-| <code>config/kitty</code>, <code>config/rofi</code>, <code>config/mako</code>, <code>config/waybar</code> | соответствующие каталоги <code>$XDG_CONFIG_HOME</code> |
-| <code>scripts/fata-rofi</code> | <code>~/.local/bin/fata-rofi</code> |
-| арты | <code>~/.local/share/fata-morgana/art</code> |
-| обои | <code>~/.local/share/fata-morgana/wallpapers</code> |
+| `desktop` | меню, десять workspaces, заголовок окна, часы, звук, сеть, tray |
+| `laptop-battery` | desktop + battery |
+| `laptop-backlight` | desktop + backlight |
+| `laptop-battery-backlight` | desktop + battery + backlight |
 
-Hyprpaper использует документированный путь
-<code>~/.config/hypr/hyprpaper.conf</code> независимо от
-<code>XDG_CONFIG_HOME</code>.
+Ни один профиль не добавляет temperature, CPU, memory или power-profile module. Установщик прекращает работу до записи, если выбранный ноутбучный профиль не находит необходимое sysfs-устройство.
 
-## Порядок работы
+## Обычное развёртывание
 
-Из корня репозитория:
+Все команды запускаются из корня проверенного checkout:
 
-~~~sh
-# Показать план без записи файлов
+```sh
+# Верифицировать checksum-манифест и увидеть список будущих файлов.
 sh scripts/fata-install --profile desktop
 
-# Проверить зависимости
+# Верифицировать checksum-манифест, программы и аппаратные условия профиля.
 sh scripts/fata-install --profile desktop --check
 
-# Развернуть профиль
+# Развернуть конфигурацию, если ни один управляемый target ещё не существует.
 sh scripts/fata-install --profile desktop --apply
-~~~
+```
 
-Если управляемый файл уже существует, развёртывание останавливается. Для
-сознательной замены конкретных управляемых файлов:
+По умолчанию `--apply` отказывается заменять уже существующий управляемый файл. Это включает и файлы, созданные предыдущим запуском проекта, и несвязанные пользовательские файлы с тем же путём. Символьная ссылка в любом сегменте целевого пути также отклоняется.
 
-~~~sh
+## Обновление
+
+Сначала изучите изменения и повторите dry-run. Затем выполните явную замену:
+
+```sh
+git pull --ff-only
+sh scripts/fata-install --profile desktop
 sh scripts/fata-install --profile desktop --apply --force
-~~~
+```
 
-Режим <code>--force</code> не удаляет каталогов и отклоняет целевой путь,
-содержащий символьную ссылку на любом уровне. Локальный файл
-<code>fata/local.lua</code> не изменяется.
+При `--force` каждый существующий regular file до замены копируется в:
 
-## Профили
+```text
+~/.local/state/fata-morgana/backups/<UTC-timestamp-pid>/
+```
 
-| Профиль | Назначение |
+Внутри backup-каталога воспроизводится логическая структура target-файлов, а `targets.tsv` содержит сопоставление исходного target и backup-пути. Публикация каждой новой версии происходит через временный файл и `mv`, поэтому отдельный файл не бывает виден в усечённом виде.
+
+## Восстановление
+
+`--restore` не принимает произвольные пути: каталог должен находиться внутри `~/.local/state/fata-morgana/backups/` текущего `HOME`, не быть символьной ссылкой и содержать `targets.tsv`.
+
+```sh
+backup_dir="$HOME/.local/state/fata-morgana/backups/<UTC-timestamp-pid>"
+sh scripts/fata-install --restore "$backup_dir"
+```
+
+Восстановление использует текущие `HOME` и `XDG_CONFIG_HOME`; они должны совпадать со значениями во время обновления. Возвращаются только файлы, которые были заменены `--force` и потому существуют в backup-каталоге. Сценарий намеренно не удаляет файлы, созданные первой или прерванной установкой.
+
+## Целевые пути
+
+| Источник checkout | Target |
 |---|---|
-| <code>desktop</code> | ПК без аппаратных ячеек панели |
-| <code>laptop-battery</code> | ноутбук с индикатором батареи |
-| <code>laptop-backlight</code> | ноутбук с индикатором яркости |
-| <code>laptop-battery-backlight</code> | оба индикатора |
+| `config/hypr` | `$XDG_CONFIG_HOME/hypr` |
+| `config/hypr/hyprpaper.conf` | `~/.config/hypr/hyprpaper.conf` |
+| `config/kitty`, `config/rofi`, `config/mako`, `config/waybar` | соответствующие каталоги `$XDG_CONFIG_HOME` |
+| `scripts/fata-rofi` | `~/.local/bin/fata-rofi` |
+| `assets/art/fata-morgana/*.jpg` | `~/.local/share/fata-morgana/art/` |
+| `assets/wallpapers/fata-morgana/*.jpg` | `~/.local/share/fata-morgana/wallpapers/` |
 
-## Сеанс после установки
+Все текстовые конфигурации получают режим `0644`; `fata-rofi` — `0755`; изображения — `0644`. `fata/local.lua` не находится в списке target-файлов и не перезаписывается.
 
-<code>fata/autostart.lua</code> запускает Hyprpaper, Mako и Waybar при старте
-Hyprland. Не включайте одновременно <code>hyprpaper.service</code> через UWSM
-или пользовательский systemd.
+Hyprpaper по документированному контракту читает `~/.config/hypr/hyprpaper.conf`, даже если пользователь переопределил `XDG_CONFIG_HOME`. Это единственное намеренное исключение из общего XDG-маршрута.
 
-~~~sh
+## Локальная конфигурация оборудования
+
+После первого развёртывания создайте локальный override:
+
+```sh
+fm_config_home=${XDG_CONFIG_HOME:-"$HOME/.config"}
+cp "$fm_config_home/hypr/fata/local.lua.example" "$fm_config_home/hypr/fata/local.lua"
+hyprctl monitors all
+hyprctl devices
+```
+
+В `local.lua` укажите реальные имена выходов, режимы, размещение экранов, раскладку и параметры указателя. Портативная конфигурация специально не содержит фиктивных connector names и не пытается вывести DPI мыши в sensitivity.
+
+## Проверка после запуска сессии
+
+```sh
 fm_config_home=${XDG_CONFIG_HOME:-"$HOME/.config"}
 hyprctl reload
+hyprctl monitors all
 hyprctl hyprpaper listactive
 rofi -rasi-validate "$fm_config_home/rofi/config.rasi"
 kitty --config "$fm_config_home/kitty/kitty.conf" --debug-config
+```
+
+Если Mako и Waybar ещё не запущены текущей сессией, их можно запустить с явными путями для чтения stderr:
+
+```sh
 mako --config "$fm_config_home/mako/config"
 waybar --config "$fm_config_home/waybar/config.jsonc" --style "$fm_config_home/waybar/style.css"
-~~~
+```
 
-Эти проверки выполняются в работающей Wayland-сессии. Mako и Waybar запускайте
-как диагностические процессы только при отсутствии экземпляров, которыми уже
-владеет текущая сессия.
+Не включайте одновременно unit `hyprpaper.service` и автозапуск Hyprpaper из `fata/autostart.lua`. То же правило относится к дублирующим экземплярам Mako и Waybar.
+
+## Сценарии отказа
+
+| Симптом | Причина | Действие |
+|---|---|---|
+| `deployment source integrity check failed` | checkout повреждён или изменён после генерации checksum-манифеста | восстановить проверенный checkout; не обходить проверку |
+| `existing managed target` | target существует, а `--force` не указан | сравнить файл с проектом или выполнить осознанный `--force` |
+| отказ из-за symbolic link | путь ведёт через symlink | использовать обычный каталог или разворачивать конфигурацию вручную после проверки маршрута |
+| Waybar не показывает workspaces или не переключает их | несовместимость конкретной сборки Waybar с Hyprland Lua IPC | проверить версию/сборку Waybar и runtime-логи в целевой сессии |
+| отсутствует звук в панели | нет PulseAudio-совместимого сервера или модуль не собран | запустить совместимый аудиосервис и проверить модули Waybar |
+| отсутствует фон | Hyprpaper не запущен или выбран неверный путь | проверить `hyprctl hyprpaper listactive` и единственность владельца процесса |
+| прерывание во время `--apply` | файловая система или питание оборвали набор независимых publish-операций | при обновлении выполнить `--restore` из backup; при первой установке удалить только явно созданные управляемые файлы или повторить `--apply --force` после проверки |
+
+Checksum-манифест контролирует содержимое файлов, разворачиваемых установщиком. Он не заменяет проверку происхождения Git remote или подписи релизного тега.
