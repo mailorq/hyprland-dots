@@ -1,8 +1,10 @@
-"""Build the non-destructive Fata Morgana art master collection.
+"""Build or verify the Fata Morgana art master collection.
 
 The source directory is intentionally ignored by Git. Every input is matched by
 SHA-256, not filename, so accidental replacements and out-of-scope art fail the
-build instead of quietly entering the desktop theme.
+build instead of quietly entering the desktop theme. The committed image assets
+are frozen for the v1.x line: this tool verifies them by default and requires an
+explicit acknowledgement before it can write an image or either manifest.
 """
 
 from __future__ import annotations
@@ -326,11 +328,23 @@ def main() -> int:
     parser.add_argument("--output-dir", default=str(DEFAULT_OUTPUT_DIR))
     parser.add_argument("--ids", nargs="+", metavar="FM_ID", help="rebuild only named approved master IDs")
     parser.add_argument("--check", action="store_true", help="validate existing masters without writing files")
+    parser.add_argument(
+        "--rebuild-frozen-assets",
+        action="store_true",
+        help="allow writes to frozen masters and manifest; reserved for an approved asset revision",
+    )
     args = parser.parse_args()
     input_dir = resolve_path(args.input_dir)
     output_dir = resolve_path(args.output_dir)
     if args.check:
+        if args.rebuild_frozen_assets or args.ids:
+            parser.error("--check cannot be combined with rebuild options")
         return verify(input_dir, output_dir)
+    if not args.rebuild_frozen_assets:
+        parser.error(
+            "asset writes are disabled by default; use --check or "
+            "--rebuild-frozen-assets after an approved asset revision"
+        )
     if not input_dir.is_dir():
         raise RuntimeError(f"input directory does not exist: {input_dir}")
     if args.ids:

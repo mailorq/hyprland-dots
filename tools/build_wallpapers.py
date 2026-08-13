@@ -1,9 +1,11 @@
-"""Build deterministic 16:9 wallpapers from approved Fata Morgana masters.
+"""Build or verify deterministic 16:9 Fata Morgana wallpapers.
 
 The script deliberately reads the committed artwork manifest rather than the
 untracked raw-reference directory.  It can therefore make only the five assets
 already approved for gentle 16:9 framing, never inventing a new crop candidate,
-upscaling an image, or using a title outside the catalogue.
+upscaling an image, or using a title outside the catalogue. The curated exports
+are frozen for the v1.x line: this tool verifies them by default and requires an
+explicit acknowledgement before it can write an image or its manifest.
 """
 
 from __future__ import annotations
@@ -11,6 +13,7 @@ from __future__ import annotations
 import argparse
 import hashlib
 import json
+import re
 import sys
 from pathlib import Path
 
@@ -34,6 +37,12 @@ CURATED_EXPORT_DIMENSIONS = {
     "fm-038": (2560, 1440),
     "fm-040": (2560, 1440),
 }
+APPROVED_CANDIDATE_IDS = frozenset(CURATED_EXPORT_DIMENSIONS)
+ARTWORK_ID_PATTERN = re.compile(r"fm-[0-9]{3}")
+ARTWORK_FILENAME_PATTERN = re.compile(
+    r"fata-morgana-(?P<index>[0-9]{3})-[a-z0-9]+(?:-[a-z0-9]+)*\.jpg"
+)
+SHA256_PATTERN = re.compile(r"[0-9a-f]{64}")
 
 
 def sha256(path: Path) -> str:
@@ -44,20 +53,77 @@ def sha256(path: Path) -> str:
     return digest.hexdigest()
 
 
+def validate_artwork_filename(value: object) -> str:
+    if not isinstance(value, str) or not ARTWORK_FILENAME_PATTERN.fullmatch(value):
+        raise ValueError(f"invalid master artwork filename: {value!r}")
+    return value
+
+
+def validate_master_path(filename: object) -> Path:
+    filename = validate_artwork_filename(filename)
+    path = MASTER_DIR / filename
+    try:
+        path.resolve(strict=True).relative_to(MASTER_DIR.resolve())
+    except (FileNotFoundError, ValueError) as error:
+        raise ValueError(f"master artwork path escapes or is missing: {filename}") from error
+    if not path.is_file() or path.is_symlink():
+        raise ValueError(f"master artwork must be a regular file: {filename}")
+    return path
+
+
+def validate_master_item(item: object) -> dict[str, object]:
+    if not isinstance(item, dict):
+        raise ValueError("master manifest contains a non-object artwork entry")
+    artwork_id = item.get("id")
+    filename = validate_artwork_filename(item.get("file"))
+    filename_match = ARTWORK_FILENAME_PATTERN.fullmatch(filename)
+    assert filename_match is not None
+    if not isinstance(artwork_id, str) or not ARTWORK_ID_PATTERN.fullmatch(artwork_id):
+        raise ValueError(f"invalid master artwork ID: {artwork_id!r}")
+    if artwork_id != f"fm-{filename_match.group('index')}":
+        raise ValueError(f"master artwork ID and filename index differ: {artwork_id} / {filename}")
+    if not isinstance(item.get("sha256"), str) or not SHA256_PATTERN.fullmatch(item["sha256"]):
+        raise ValueError(f"invalid master checksum: {artwork_id}")
+    dimensions = item.get("dimensions")
+    if not isinstance(dimensions, dict) or not all(
+        isinstance(dimensions.get(axis), int) and dimensions[axis] > 0
+        for axis in ("width", "height")
+    ):
+        raise ValueError(f"invalid master dimensions: {artwork_id}")
+    wallpaper = item.get("wallpaper")
+    if not isinstance(wallpaper, dict) or not isinstance(wallpaper.get("eligible"), bool):
+        raise ValueError(f"invalid wallpaper metadata: {artwork_id}")
+    if wallpaper["eligible"]:
+        if wallpaper.get("target_aspect_ratio") != "16:9":
+            raise ValueError(f"unsupported wallpaper aspect ratio: {artwork_id}")
+        if wallpaper.get("crop") not in {"center", "native"}:
+            raise ValueError(f"unsupported wallpaper crop policy: {artwork_id}")
+        loss_percent = wallpaper.get("estimated_crop_loss_percent")
+        if not isinstance(loss_percent, (int, float)) or not 0 <= loss_percent <= 100:
+            raise ValueError(f"invalid wallpaper crop loss: {artwork_id}")
+    validate_master_path(filename)
+    return item
+
+
 def load_candidates() -> list[dict[str, object]]:
     manifest = json.loads(MASTER_MANIFEST.read_text(encoding="utf-8"))
-    candidates = [
-        item
-        for item in manifest["artwork"]
-        if item.get("wallpaper", {}).get("eligible") is True
-    ]
+    if not isinstance(manifest, dict) or manifest.get("schema_version") != 1:
+        raise ValueError("master manifest schema must be version 1")
+    artwork = manifest.get("artwork")
+    if not isinstance(artwork, list):
+        raise ValueError("master manifest artwork must be a list")
+    validated = [validate_master_item(item) for item in artwork]
+    ids = [str(item["id"]) for item in validated]
+    if len(ids) != len(set(ids)):
+        raise ValueError("master manifest contains duplicate artwork IDs")
+    candidates = [item for item in validated if item["wallpaper"]["eligible"] is True]  # type: ignore[index]
     if not candidates:
         raise RuntimeError("no approved wallpaper candidates in the master manifest")
-    if {item["id"] for item in candidates} != {"fm-016", "fm-031", "fm-035", "fm-038", "fm-040"}:
+    if {item["id"] for item in candidates} != APPROVED_CANDIDATE_IDS:
         raise RuntimeError("wallpaper candidate inventory changed; review framing before export")
     if DEFAULT_WALLPAPER_ID not in {item["id"] for item in candidates}:
         raise RuntimeError("default wallpaper is not in the approved candidate inventory")
-    return candidates
+    return sorted(candidates, key=lambda item: str(item["id"]))
 
 
 def crop_box(width: int, height: int) -> tuple[int, int, int, int]:
@@ -76,13 +142,11 @@ def crop_box(width: int, height: int) -> tuple[int, int, int, int]:
 
 
 def output_filename(item: dict[str, object]) -> str:
-    return Path(str(item["file"])).stem + "-wallpaper-16x9.jpg"
+    return Path(validate_artwork_filename(item["file"])).stem + "-wallpaper-16x9.jpg"
 
 
 def render_candidate(item: dict[str, object], output_dir: Path) -> dict[str, object]:
-    source_path = MASTER_DIR / str(item["file"])
-    if not source_path.is_file():
-        raise RuntimeError(f"missing wallpaper master: {source_path}")
+    source_path = validate_master_path(item["file"])
     candidate_id = str(item["id"])
     target_path = output_dir / output_filename(item)
     with Image.open(source_path) as source:
@@ -151,7 +215,11 @@ def build(output_dir: Path) -> None:
 
 def verify(output_dir: Path) -> int:
     errors: list[str] = []
-    candidates = load_candidates()
+    try:
+        candidates = load_candidates()
+    except (OSError, ValueError, KeyError, json.JSONDecodeError) as error:
+        print(f"invalid master manifest: {error}", file=sys.stderr)
+        return 1
     expected = {output_filename(item) for item in candidates}
     actual = {path.name for path in output_dir.glob("*.jpg")} if output_dir.is_dir() else set()
     if expected != actual:
@@ -160,10 +228,20 @@ def verify(output_dir: Path) -> int:
     if not manifest_path.is_file():
         errors.append("missing wallpaper manifest.json")
     else:
-        manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
+        try:
+            manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
+        except json.JSONDecodeError as error:
+            errors.append(f"invalid wallpaper manifest JSON: {error}")
+            manifest = {}
+        if not isinstance(manifest, dict):
+            errors.append("wallpaper manifest root must be an object")
+            manifest = {}
         if manifest.get("schema_version") != 2:
             errors.append("wallpaper manifest schema must be version 2")
         records = manifest.get("wallpapers", [])
+        if not isinstance(records, list) or not all(isinstance(record, dict) for record in records):
+            errors.append("wallpaper manifest entries must be objects")
+            records = []
         candidate_by_id = {item["id"]: item for item in candidates}
         if {record.get("id") for record in records} != set(candidate_by_id):
             errors.append("wallpaper manifest candidate IDs do not match approved masters")
@@ -174,12 +252,19 @@ def verify(output_dir: Path) -> int:
             candidate = candidate_by_id.get(record.get("id"))
             if candidate is None:
                 continue
+            expected_file = output_filename(candidate)
+            if record.get("file") != expected_file:
+                errors.append(f"wallpaper filename mismatch: {record.get('id')}")
+                continue
             if record.get("source_file") != candidate.get("file") or record.get("source_sha256") != candidate.get("sha256"):
                 errors.append(f"wallpaper source provenance mismatch: {record.get('id')}")
             dimensions = record.get("dimensions", {})
+            if not isinstance(dimensions, dict):
+                errors.append(f"invalid wallpaper dimensions: {record.get('id')}")
+                continue
             width = dimensions.get("width")
             height = dimensions.get("height")
-            path = output_dir / str(record.get("file", ""))
+            path = output_dir / expected_file
             expected_mode = "curated" if record.get("id") in CURATED_EXPORT_DIMENSIONS else "generated"
             if record.get("export_mode") != expected_mode:
                 errors.append(f"wallpaper export mode mismatch: {record.get('id')}")
@@ -188,7 +273,7 @@ def verify(output_dir: Path) -> int:
                 errors.append(f"curated wallpaper dimensions mismatch: {record.get('file')}")
             if not isinstance(width, int) or not isinstance(height, int) or width * TARGET_HEIGHT != height * TARGET_WIDTH:
                 errors.append(f"wallpaper is not exact 16:9: {record.get('file')}")
-            elif not path.is_file():
+            elif not path.is_file() or path.is_symlink():
                 errors.append(f"wallpaper listed but missing: {path.name}")
             elif sha256(path) != record.get("sha256"):
                 errors.append(f"wallpaper checksum mismatch: {path.name}")
@@ -207,12 +292,24 @@ def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--output-dir", default=str(OUTPUT_DIR))
     parser.add_argument("--check", action="store_true", help="validate existing wallpapers without writing files")
+    parser.add_argument(
+        "--rebuild-frozen-assets",
+        action="store_true",
+        help="allow writes to frozen wallpaper exports and manifest; reserved for an approved asset revision",
+    )
     args = parser.parse_args()
     output_dir = Path(args.output_dir)
     if not output_dir.is_absolute():
         output_dir = ROOT / output_dir
     if args.check:
+        if args.rebuild_frozen_assets:
+            parser.error("--check cannot be combined with --rebuild-frozen-assets")
         return verify(output_dir)
+    if not args.rebuild_frozen_assets:
+        parser.error(
+            "wallpaper writes are disabled by default; use --check or "
+            "--rebuild-frozen-assets after an approved asset revision"
+        )
     build(output_dir)
     return verify(output_dir)
 

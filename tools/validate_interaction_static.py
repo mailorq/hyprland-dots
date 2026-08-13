@@ -34,6 +34,14 @@ def exact(path: Path, expected: str) -> None:
     require(actual == expected, f"generated adapter drift in {path.relative_to(ROOT)}")
 
 
+def requires_value_error(artwork: object, description: str) -> None:
+    try:
+        build_art_selectors.validate_artwork(artwork)
+    except ValueError:
+        return
+    fail(f"art selector accepted malformed catalogue: {description}")
+
+
 def main() -> None:
     colors = build_theme_colors.load_palette()
     exact(ROOT / "config" / "kitty" / "fata" / "colors.conf", build_theme_colors.kitty(colors))
@@ -43,6 +51,15 @@ def main() -> None:
     artwork = build_art_selectors.load_artwork()
     filenames = sorted(str(item["file"]) for item in artwork)
     default = build_art_selectors.default_filename(artwork)
+    duplicate_id = [dict(item) for item in artwork]
+    duplicate_id[1]["id"] = duplicate_id[0]["id"]
+    requires_value_error(duplicate_id, "duplicate artwork ID")
+    mismatched_index = [dict(item) for item in artwork]
+    mismatched_index[0]["id"] = "fm-999"
+    requires_value_error(mismatched_index, "ID/filename index mismatch")
+    duplicate_role = [dict(item) for item in artwork]
+    duplicate_role[0]["roles"] = ["kitty", "rofi", "rofi"]
+    requires_value_error(duplicate_role, "duplicate role")
     for unsafe_filename in (
         "../outside.jpg",
         "fata-morgana-001-$(touch-pwned).jpg",

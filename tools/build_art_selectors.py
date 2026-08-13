@@ -14,13 +14,16 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 MANIFEST_PATH = ROOT / "assets" / "art" / "fata-morgana" / "manifest.json"
+MASTER_DIR = MANIFEST_PATH.parent
 KITTY_ART_PATH = ROOT / "config" / "kitty" / "fata" / "art.conf"
 ROFI_ART_PATH = ROOT / "config" / "rofi" / "fata" / "art.rasi"
 ROFI_LAUNCHER_PATH = ROOT / "scripts" / "fata-rofi"
 DATA_ART_DIR = "${HOME}/.local/share/fata-morgana/art"
 DEFAULT_ART_ID = "fm-038"
 ARTWORK_ID_PATTERN = re.compile(r"fm-[0-9]{3}")
-ARTWORK_FILENAME_PATTERN = re.compile(r"fata-morgana-[0-9]{3}-[a-z0-9]+(?:-[a-z0-9]+)*\.jpg")
+ARTWORK_FILENAME_PATTERN = re.compile(
+    r"fata-morgana-(?P<index>[0-9]{3})-[a-z0-9]+(?:-[a-z0-9]+)*\.jpg"
+)
 
 
 def validate_artwork_filename(filename: object) -> str:
@@ -29,13 +32,12 @@ def validate_artwork_filename(filename: object) -> str:
     return filename
 
 
-def load_artwork() -> list[dict[str, object]]:
-    manifest = json.loads(MANIFEST_PATH.read_text(encoding="utf-8"))
-    artwork = manifest["artwork"]
+def validate_artwork(artwork: object) -> list[dict[str, object]]:
     if not isinstance(artwork, list) or not artwork:
         raise ValueError("art manifest contains no artwork")
 
     filenames: set[str] = set()
+    ids: set[str] = set()
     for item in artwork:
         if not isinstance(item, dict):
             raise ValueError("art manifest contains a non-object artwork entry")
@@ -44,12 +46,29 @@ def load_artwork() -> list[dict[str, object]]:
             raise ValueError(f"invalid artwork ID: {artwork_id!r}")
         roles = item.get("roles", [])
         filename = validate_artwork_filename(item.get("file"))
+        filename_match = ARTWORK_FILENAME_PATTERN.fullmatch(filename)
+        assert filename_match is not None
+        if artwork_id != f"fm-{filename_match.group('index')}":
+            raise ValueError(f"artwork ID and filename index differ: {artwork_id} / {filename}")
+        if artwork_id in ids:
+            raise ValueError(f"duplicate artwork ID: {artwork_id}")
         if filename in filenames:
             raise ValueError(f"duplicate generated artwork filename: {filename}")
-        if not isinstance(roles, list) or set(roles) != {"kitty", "rofi"}:
+        if roles != ["kitty", "rofi"]:
             raise ValueError(f"{artwork_id} must target exactly Kitty and Rofi")
+        master = MASTER_DIR / filename
+        if not master.is_file() or master.is_symlink():
+            raise ValueError(f"approved artwork master is missing or not regular: {filename}")
+        ids.add(artwork_id)
         filenames.add(filename)
     return artwork
+
+
+def load_artwork() -> list[dict[str, object]]:
+    manifest = json.loads(MANIFEST_PATH.read_text(encoding="utf-8"))
+    if not isinstance(manifest, dict) or manifest.get("schema_version") != 1:
+        raise ValueError("art manifest schema must be version 1")
+    return validate_artwork(manifest.get("artwork"))
 
 
 def default_filename(artwork: list[dict[str, object]]) -> str:
