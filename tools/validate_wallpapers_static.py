@@ -21,7 +21,24 @@ def require(condition: bool, message: str) -> None:
         fail(message)
 
 
+def requires_value_error(callback: object, description: str) -> None:
+    try:
+        callback()  # type: ignore[operator]
+    except ValueError:
+        return
+    fail(f"wallpaper builder accepted unsafe manifest data: {description}")
+
+
 def main() -> None:
+    for unsafe_filename in (
+        "../outside.jpg",
+        "fata-morgana-016-quote\".jpg",
+        "fata-morgana-016-newline\n.jpg",
+    ):
+        requires_value_error(
+            lambda value=unsafe_filename: build_wallpapers.validate_master_path(value),
+            unsafe_filename,
+        )
     require(build_wallpapers.verify(build_wallpapers.OUTPUT_DIR) == 0,
             "wallpaper exports are invalid")
 
