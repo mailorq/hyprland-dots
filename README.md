@@ -22,6 +22,23 @@ Morgana. В состав входят Hyprland, Hyprpaper, Waybar, Rofi, Kitty �
 hyprctl version
 ~~~
 
+Минимальный набор пользовательских программ должен быть доступен в текущем
+окружении до запуска установщика:
+
+~~~sh
+command -v Hyprland
+command -v hyprpaper
+command -v waybar
+command -v rofi
+command -v kitty
+command -v mako
+~~~
+
+Для корректной работы панели также нужен PulseAudio-совместимый аудиосервис.
+На ноутбуках аппаратные модули Waybar включаются только выбранным профилем и
+требуют соответствующих устройств в <code>/sys/class/power_supply</code> или
+<code>/sys/class/backlight</code>.
+
 ## Состав проекта
 
 | Путь | Назначение |

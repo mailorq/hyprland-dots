@@ -91,7 +91,7 @@ def rofi_launcher(filenames: list[str], default: str) -> str:
         raise ValueError("cannot generate a launcher without approved artwork")
     if default not in approved:
         raise ValueError("the default artwork must be in the approved catalogue")
-    allowed = "|\n        ".join(f'"{filename}"' for filename in approved)
+    allowed = "|\\\n        ".join(f'"{filename}"' for filename in approved)
     return f"""#!/bin/sh
 # Generated from assets/art/fata-morgana/manifest.json by
 # tools/build_art_selectors.py.

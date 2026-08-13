@@ -57,7 +57,10 @@ def main() -> None:
             fail(f"art selector accepted shell-unsafe filename: {unsafe_filename!r}")
     exact(ROOT / "config" / "kitty" / "fata" / "art.conf", build_art_selectors.kitty_config())
     exact(ROOT / "config" / "rofi" / "fata" / "art.rasi", build_art_selectors.rofi_theme())
-    exact(ROOT / "scripts" / "fata-rofi", build_art_selectors.rofi_launcher(filenames, default))
+    expected_rofi_launcher = build_art_selectors.rofi_launcher(filenames, default)
+    require("|\n" not in expected_rofi_launcher,
+            "Rofi launcher must not split POSIX case alternatives after a pipe")
+    exact(ROOT / "scripts" / "fata-rofi", expected_rofi_launcher)
 
     manifest = json.loads(
         (ROOT / "assets" / "art" / "fata-morgana" / "manifest.json").read_text(encoding="utf-8")
