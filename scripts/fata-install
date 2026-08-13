@@ -1,10 +1,9 @@
 #!/bin/sh
-# Install a reviewed Fata Morgana profile without touching unrelated files.
+# Deploy a verified Fata Morgana profile without touching unrelated files.
 #
-# The default is a dry-run.  Writes require --apply; replacing a file already
-# owned by the target environment also requires --force.  Runtime dependencies
-# are deliberately checked before a real deployment instead of being installed
-# or guessed by this script.
+# The default is a dry-run. Writes require --apply; overwriting an existing
+# managed target also requires --force. A forced replacement is backed up and
+# each published file is atomically renamed into place.
 set -eu
 
 fm_program=${0##*/}
@@ -12,10 +11,22 @@ fm_profile=desktop
 fm_mode=dry-run
 fm_force=0
 fm_target_home=${HOME:-}
+fm_backup_dir=
+fm_restore_dir=
+fm_temp=
+
+fm_cleanup_temp() {
+    if [ -n "${fm_temp:-}" ] && [ -f "$fm_temp" ]; then
+        rm -f "$fm_temp"
+    fi
+}
+
+trap 'fm_cleanup_temp' 0
+trap 'fm_cleanup_temp; exit 128' 1 2 15
 
 fm_usage() {
     cat <<'EOF'
-Usage: fata-install [--profile NAME] [--dry-run | --check | --apply [--force]]
+Usage: fata-install [--profile NAME] [--dry-run | --check | --apply [--force] | --restore DIR]
 
 Profiles:
   desktop                     no battery, backlight, temperature, CPU, or memory
@@ -24,12 +35,13 @@ Profiles:
   laptop-battery-backlight    add both optional native Waybar modules
 
 Modes:
-  --dry-run  print the exact managed-file deployment plan (default)
-  --check    validate declared runtime dependencies for the selected profile
-  --apply    run checks and copy only managed files; existing targets fail
-  --force    allow --apply to replace existing managed files only
+  --dry-run  verify deployment sources and print the managed-file plan (default)
+  --check    verify deployment sources and runtime dependencies
+  --apply    run all checks and deploy only managed files; existing targets fail
+  --force    allow --apply to replace existing managed files after backup
+  --restore  restore overwritten managed files from a prior --force backup
 
-The helper installs fata-rofi into ~/.local/bin.  Hyprland and Waybar invoke
+The helper installs fata-rofi into ~/.local/bin. Hyprland and Waybar invoke
 that exact HOME-relative path, so deployment does not depend on PATH inheritance.
 EOF
 }
@@ -66,6 +78,12 @@ while [ "$#" -gt 0 ]; do
             fm_force=1
             shift
             ;;
+        --restore)
+            [ "$#" -ge 2 ] || fm_die "--restore requires a backup directory"
+            fm_mode=restore
+            fm_restore_dir=$2
+            shift 2
+            ;;
         --help|-h)
             fm_usage
             exit 0
@@ -94,6 +112,7 @@ fm_config_home=${XDG_CONFIG_HOME:-"$fm_target_home/.config"}
 fm_bin_dir="$fm_target_home/.local/bin"
 fm_art_dir="$fm_target_home/.local/share/fata-morgana/art"
 fm_wallpaper_dir="$fm_target_home/.local/share/fata-morgana/wallpapers"
+fm_deployment_manifest="$fm_root/assets/deployment.sha256"
 case "$fm_config_home" in
     /*) ;;
     *) fm_die "XDG_CONFIG_HOME must be an absolute path" ;;
@@ -101,6 +120,7 @@ esac
 
 fm_require_source() {
     [ -f "$1" ] || fm_die "required source file is missing: $1"
+    [ ! -L "$1" ] || fm_die "required source file must not be a symbolic link: $1"
 }
 
 fm_require_command() {
@@ -130,6 +150,15 @@ fm_has_display_backlight() {
     return 1
 }
 
+fm_verify_release() {
+    fm_require_command sha256sum
+    [ -f "$fm_deployment_manifest" ] || fm_die "missing deployment checksum manifest"
+    [ ! -L "$fm_deployment_manifest" ] || fm_die "deployment checksum manifest must not be a symbolic link"
+    if ! (cd "$fm_root" && sha256sum -c "assets/deployment.sha256"); then
+        fm_die "deployment source integrity check failed; restore a clean, reviewed checkout"
+    fi
+}
+
 fm_preflight() {
     fm_require_command Hyprland
     fm_require_command hyprpaper
@@ -148,89 +177,196 @@ fm_preflight() {
             ;;
     esac
 
-    fm_warn "preflight passed; verify the Waybar build has Hyprland, PulseAudio, network, and tray modules"
-    fm_warn "preflight cannot prove a running PulseAudio-compatible service; validate Waybar in the Wayland session"
+    fm_warn "preflight passed; validate Waybar's Hyprland, PulseAudio, network, and tray modules in the Wayland session"
+    fm_warn "preflight cannot prove a running PulseAudio-compatible service or a compatible Waybar Hyprland IPC backend"
+}
+
+fm_validate_backup_relative_path() {
+    case "$1" in
+        ""|/*|*".."*) fm_die "internal unsafe backup path: $1" ;;
+    esac
+}
+
+fm_validate_restore_dir() {
+    case "$fm_restore_dir" in
+        "$fm_target_home"/.local/state/fata-morgana/backups/*) ;;
+        *) fm_die "--restore must reference a backup directory under $fm_target_home/.local/state/fata-morgana/backups" ;;
+    esac
+    [ -d "$fm_restore_dir" ] || fm_die "backup directory does not exist: $fm_restore_dir"
+    [ ! -L "$fm_restore_dir" ] || fm_die "backup directory must not be a symbolic link: $fm_restore_dir"
+    [ -f "$fm_restore_dir/targets.tsv" ] || fm_die "backup directory is missing targets.tsv"
+    [ ! -L "$fm_restore_dir/targets.tsv" ] || fm_die "backup manifest must not be a symbolic link"
+    if fm_has_symlink_in_target_path "$fm_restore_dir"; then
+        fm_die "refusing to restore through a symbolic link: $fm_restore_dir"
+    fi
+}
+
+fm_publish_file() {
+    fm_publish_source=$1
+    fm_publish_target=$2
+    fm_publish_mode=$3
+    fm_target_dir=$(dirname "$fm_publish_target")
+    mkdir -p "$fm_target_dir"
+    fm_temp=$(mktemp "$fm_target_dir/.fata-install.XXXXXX")
+    cp "$fm_publish_source" "$fm_temp"
+    chmod "$fm_publish_mode" "$fm_temp"
+    mv -f "$fm_temp" "$fm_publish_target"
+    fm_temp=
 }
 
 fm_map_file() {
     fm_source=$1
     fm_target=$2
-    fm_require_source "$fm_source"
+    fm_backup_relative=$3
+    fm_file_mode=$4
+    fm_validate_backup_relative_path "$fm_backup_relative"
     case "$fm_map_action" in
         plan)
+            fm_require_source "$fm_source"
             printf '%s\n' "copy $fm_source -> $fm_target"
             ;;
+        validate)
+            fm_require_source "$fm_source"
+            ;;
         conflicts)
+            fm_require_source "$fm_source"
             if fm_has_symlink_in_target_path "$fm_target"; then
                 fm_conflicts=1
                 printf '%s\n' "refusing to write through symbolic link in target path: $fm_target" >&2
+            elif [ -e "$fm_target" ] && [ ! -f "$fm_target" ]; then
+                fm_conflicts=1
+                printf '%s\n' "managed target is not a regular file: $fm_target" >&2
             elif [ -e "$fm_target" ] && [ "$fm_force" -eq 0 ]; then
                 fm_conflicts=1
                 printf '%s\n' "existing managed target: $fm_target" >&2
             fi
             ;;
         copy)
-            mkdir -p "$(dirname "$fm_target")"
-            cp "$fm_source" "$fm_target"
+            fm_require_source "$fm_source"
+            if [ -e "$fm_target" ]; then
+                fm_backup_path="$fm_backup_dir/$fm_backup_relative"
+                mkdir -p "$(dirname "$fm_backup_path")"
+                cp "$fm_target" "$fm_backup_path"
+                printf '%s\t%s\n' "$fm_target" "$fm_backup_relative" >> "$fm_backup_dir/targets.tsv"
+            fi
+            fm_publish_file "$fm_source" "$fm_target" "$fm_file_mode"
+            ;;
+        restore)
+            fm_restore_source="$fm_restore_dir/$fm_backup_relative"
+            if [ -e "$fm_restore_source" ] || [ -L "$fm_restore_source" ]; then
+                fm_require_source "$fm_restore_source"
+                if fm_has_symlink_in_target_path "$fm_target"; then
+                    fm_die "refusing to restore through symbolic link in target path: $fm_target"
+                fi
+                if [ -e "$fm_target" ] && [ ! -f "$fm_target" ]; then
+                    fm_die "managed restore target is not a regular file: $fm_target"
+                fi
+                fm_publish_file "$fm_restore_source" "$fm_target" "$fm_file_mode"
+                fm_restored_count=$((fm_restored_count + 1))
+            fi
             ;;
         *) fm_die "internal invalid map action: $fm_map_action" ;;
     esac
 }
 
 fm_map_all() {
-    fm_map_file "$fm_root/config/hypr/hyprland.lua" "$fm_config_home/hypr/hyprland.lua"
     for fm_name in appearance autostart bindings colors input monitors workspaces; do
-        fm_map_file "$fm_root/config/hypr/fata/$fm_name.lua" "$fm_config_home/hypr/fata/$fm_name.lua"
+        fm_map_file "$fm_root/config/hypr/fata/$fm_name.lua" "$fm_config_home/hypr/fata/$fm_name.lua" "config/hypr/fata/$fm_name.lua" 0644
     done
-    fm_map_file "$fm_root/config/hypr/fata/local.lua.example" "$fm_config_home/hypr/fata/local.lua.example"
-    # hyprpaper's current official lookup path is ~/.config/hypr/hyprpaper.conf,
+    fm_map_file "$fm_root/config/hypr/fata/local.lua.example" "$fm_config_home/hypr/fata/local.lua.example" "config/hypr/fata/local.lua.example" 0644
+    # hyprpaper's official lookup path is ~/.config/hypr/hyprpaper.conf,
     # independently of an optional XDG_CONFIG_HOME override used by Hyprland.
-    fm_map_file "$fm_root/config/hypr/hyprpaper.conf" "$fm_target_home/.config/hypr/hyprpaper.conf"
+    fm_map_file "$fm_root/config/hypr/hyprpaper.conf" "$fm_target_home/.config/hypr/hyprpaper.conf" "config/hypr/hyprpaper.conf" 0644
 
-    fm_map_file "$fm_root/config/kitty/kitty.conf" "$fm_config_home/kitty/kitty.conf"
+    fm_map_file "$fm_root/config/kitty/kitty.conf" "$fm_config_home/kitty/kitty.conf" "config/kitty/kitty.conf" 0644
     for fm_name in art colors layout; do
-        fm_map_file "$fm_root/config/kitty/fata/$fm_name.conf" "$fm_config_home/kitty/fata/$fm_name.conf"
+        fm_map_file "$fm_root/config/kitty/fata/$fm_name.conf" "$fm_config_home/kitty/fata/$fm_name.conf" "config/kitty/fata/$fm_name.conf" 0644
     done
 
-    fm_map_file "$fm_root/config/rofi/config.rasi" "$fm_config_home/rofi/config.rasi"
-    fm_map_file "$fm_root/config/rofi/fata.rasi" "$fm_config_home/rofi/fata.rasi"
+    fm_map_file "$fm_root/config/rofi/config.rasi" "$fm_config_home/rofi/config.rasi" "config/rofi/config.rasi" 0644
+    fm_map_file "$fm_root/config/rofi/fata.rasi" "$fm_config_home/rofi/fata.rasi" "config/rofi/fata.rasi" 0644
     for fm_name in art colors; do
-        fm_map_file "$fm_root/config/rofi/fata/$fm_name.rasi" "$fm_config_home/rofi/fata/$fm_name.rasi"
+        fm_map_file "$fm_root/config/rofi/fata/$fm_name.rasi" "$fm_config_home/rofi/fata/$fm_name.rasi" "config/rofi/fata/$fm_name.rasi" 0644
     done
 
-    fm_map_file "$fm_root/config/mako/config" "$fm_config_home/mako/config"
-    fm_map_file "$fm_root/config/waybar/config.$fm_profile.jsonc" "$fm_config_home/waybar/config.jsonc"
-    fm_map_file "$fm_root/config/waybar/style.css" "$fm_config_home/waybar/style.css"
-    fm_map_file "$fm_root/config/waybar/fata/colors.css" "$fm_config_home/waybar/fata/colors.css"
-    fm_map_file "$fm_root/scripts/fata-rofi" "$fm_bin_dir/fata-rofi"
+    fm_map_file "$fm_root/config/mako/config" "$fm_config_home/mako/config" "config/mako/config" 0644
+    fm_map_file "$fm_root/config/waybar/config.$fm_profile.jsonc" "$fm_config_home/waybar/config.jsonc" "config/waybar/config.jsonc" 0644
+    fm_map_file "$fm_root/config/waybar/style.css" "$fm_config_home/waybar/style.css" "config/waybar/style.css" 0644
+    fm_map_file "$fm_root/config/waybar/fata/colors.css" "$fm_config_home/waybar/fata/colors.css" "config/waybar/fata/colors.css" 0644
+    fm_map_file "$fm_root/scripts/fata-rofi" "$fm_bin_dir/fata-rofi" "bin/fata-rofi" 0755
 
     for fm_source in "$fm_root"/assets/art/fata-morgana/*.jpg; do
         [ -f "$fm_source" ] || fm_die "no normalized Fata Morgana masters found"
-        fm_map_file "$fm_source" "$fm_art_dir/${fm_source##*/}"
+        fm_name=${fm_source##*/}
+        fm_map_file "$fm_source" "$fm_art_dir/$fm_name" "art/$fm_name" 0644
     done
     for fm_source in "$fm_root"/assets/wallpapers/fata-morgana/*.jpg; do
         [ -f "$fm_source" ] || fm_die "no approved Fata Morgana wallpaper exports found"
-        fm_map_file "$fm_source" "$fm_wallpaper_dir/${fm_source##*/}"
+        fm_name=${fm_source##*/}
+        fm_map_file "$fm_source" "$fm_wallpaper_dir/$fm_name" "wallpapers/$fm_name" 0644
     done
+
+    # Hyprland reloads the entry point as it is saved. Publish it last so every
+    # module it requires already exists at its target path.
+    fm_map_file "$fm_root/config/hypr/hyprland.lua" "$fm_config_home/hypr/hyprland.lua" "config/hypr/hyprland.lua" 0644
+}
+
+fm_prepare_backup_dir() {
+    [ "$fm_force" -eq 1 ] || return 0
+    fm_require_command date
+    fm_backup_dir="$fm_target_home/.local/state/fata-morgana/backups/$(date -u +%Y%m%dT%H%M%SZ)-$$"
+    if fm_has_symlink_in_target_path "$fm_backup_dir"; then
+        fm_die "refusing to create backups through a symbolic link: $fm_backup_dir"
+    fi
+    mkdir -p "$fm_backup_dir"
+    : > "$fm_backup_dir/targets.tsv"
 }
 
 case "$fm_mode" in
     dry-run)
+        fm_verify_release
         fm_map_action=plan
         fm_map_all
         ;;
     check)
+        fm_verify_release
+        fm_map_action=validate
+        fm_map_all
         fm_preflight
         ;;
     apply)
+        fm_verify_release
         fm_preflight
+        fm_require_command chmod
+        fm_require_command cp
+        fm_require_command mkdir
+        fm_require_command mktemp
+        fm_require_command mv
+        fm_require_command rm
         fm_conflicts=0
         fm_map_action=conflicts
         fm_map_all
         [ "$fm_conflicts" -eq 0 ] || fm_die "refusing to replace managed files without --force"
+        fm_prepare_backup_dir
         fm_map_action=copy
         fm_map_all
-        chmod 0755 "$fm_bin_dir/fata-rofi"
+        if [ -n "$fm_backup_dir" ]; then
+            printf '%s\n' "${fm_program}: backups created in $fm_backup_dir"
+        fi
         printf '%s\n' "${fm_program}: installed profile $fm_profile"
+        ;;
+    restore)
+        fm_validate_restore_dir
+        fm_require_command chmod
+        fm_require_command cp
+        fm_require_command mkdir
+        fm_require_command mktemp
+        fm_require_command mv
+        fm_require_command rm
+        fm_restored_count=0
+        fm_map_action=restore
+        fm_map_all
+        [ "$fm_restored_count" -gt 0 ] || fm_die "backup contains no managed files for this target home"
+        printf '%s\n' "${fm_program}: restored $fm_restored_count managed file(s) from $fm_restore_dir"
         ;;
 esac
