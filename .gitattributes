@@ -1,4 +1,8 @@
-# Shell-parsed checksum manifests must retain LF in every checkout.
+# Every deployed text file is hashed byte-for-byte before installation.  Keep
+# its line endings independent of the operating system that prepared checkout.
+config/** text eol=lf
+assets/art/fata-morgana/manifest.json text eol=lf
+assets/wallpapers/fata-morgana/manifest.json text eol=lf
 assets/deployment.sha256 text eol=lf
 
 # Keep executable POSIX scripts portable across checkout platforms.

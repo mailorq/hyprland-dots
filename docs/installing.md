@@ -7,7 +7,7 @@
 Установите компоненты Wayland-сессии стандартным для вашей системы способом. Для всех профилей необходимы:
 
 ```sh
-for command in Hyprland hyprpaper waybar rofi kitty mako sha256sum; do
+for command in Hyprland hyprpaper waybar rofi kitty btop mako sha256sum; do
     command -v "$command" || exit 1
 done
 ```

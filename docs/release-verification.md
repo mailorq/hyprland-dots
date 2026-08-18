@@ -54,7 +54,7 @@ waybar --config "$fm_config_home/waybar/config.jsonc" --style "$fm_config_home/w
 
 Подтвердите вручную:
 
-- `Super + Q`, `Super + Tab` и `Super + F`;
+- `Super + Q`, `Super + Escape`, `Super + Tab` и `Super + F`;
 - переключение и перенос окна между workspaces 1–10;
 - отсутствие в desktop-профиле battery, backlight, temperature, CPU, memory и power profile;
 - корректный выбор каждого ноутбучного профиля на подходящем устройстве;
@@ -63,7 +63,7 @@ waybar --config "$fm_config_home/waybar/config.jsonc" --style "$fm_config_home/w
 ## Публикационный checklist
 
 1. Рабочее дерево содержит только осознанные изменения релиза.
-2. `assets/deployment.sha256` пересобран после любого изменения разворачиваемого файла и имеет LF line endings.
+2. `assets/deployment.sha256` пересобран после любого изменения разворачиваемого файла; все разворачиваемые текстовые файлы имеют LF line endings.
 3. `python3 tools/validate_release.py --integration` завершился успешно.
 4. Runtime gate завершён в целевой Wayland-сессии.
 5. Версия в `VERSION`, Git tag и release notes согласованы.

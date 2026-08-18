@@ -36,6 +36,17 @@ def main() -> None:
     require(len(paths) == len(set(paths)), "deployment checksum inventory contains duplicates")
     require(all("pictures" not in path.parts for path in paths), "private raw references must not enter deployment")
     require(all(not path.is_symlink() for path in paths), "deployment inventory must not contain symlinks")
+    text_paths = [path for path in paths if path.suffix.lower() != ".jpg"]
+    require(all(b"\r" not in path.read_bytes() for path in text_paths),
+            "deployed text sources must use LF line endings before hashing")
+    attributes = (ROOT / ".gitattributes").read_text(encoding="utf-8")
+    for fragment in (
+        "config/** text eol=lf",
+        "assets/art/fata-morgana/manifest.json text eol=lf",
+        "assets/wallpapers/fata-morgana/manifest.json text eol=lf",
+        "assets/deployment.sha256 text eol=lf",
+    ):
+        require(fragment in attributes, f"missing stable deployment EOL rule: {fragment}")
 
     art_source = (ROOT / "tools" / "build_art_assets.py").read_text(encoding="utf-8")
     wallpaper_source = (ROOT / "tools" / "build_wallpapers.py").read_text(encoding="utf-8")

@@ -32,8 +32,8 @@ API Hyprland; устаревшие файлы Hyprlang и директивы и�
 ## Клавиатурные сочетания
 
 <code>fata/bindings.lua</code> содержит базовый набор с модификатором Super:
-Kitty, Rofi, переключение на последнее окно, закрытие окна, floating,
-fullscreen и пространства 1–10. <code>Super+Tab</code> переводит фокус на
+Kitty, btop в Kitty, Rofi, переключение на последнее окно, закрытие окна,
+floating, fullscreen и пространства 1–10. <code>Super+Tab</code> переводит фокус на
 предыдущее окно. Rofi запускается через установленный
 <code>$HOME/.local/bin/fata-rofi</code>, поэтому не зависит от PATH менеджера
 входа.
