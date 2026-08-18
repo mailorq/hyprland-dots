@@ -9,6 +9,9 @@ local fata_rofi = '"$HOME/.local/bin/fata-rofi"'
 hl.bind("SUPER + Q", hl.dsp.exec_cmd("kitty"))
 -- Launch Kitty. / Запустить Kitty.
 
+hl.bind("SUPER + Escape", hl.dsp.exec_cmd("kitty btop"))
+-- Open the process and resource monitor in Kitty. / Открыть монитор процессов и ресурсов в Kitty.
+
 hl.bind("SUPER + Tab", hl.dsp.focus({ last = true }))
 -- Toggle focus to the last window, like a compact Alt+Tab. / Перейти к последнему окну, как компактный Alt+Tab.
 

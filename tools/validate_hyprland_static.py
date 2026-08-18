@@ -48,7 +48,7 @@ def main() -> int:
 
     colors = HYPR_DIR / "fata" / "colors.lua"
     canonical_colors = ROOT / "theme" / "colors.lua"
-    if not colors.is_file() or colors.read_bytes() != canonical_colors.read_bytes():
+    if not colors.is_file() or colors.read_text(encoding="utf-8") != canonical_colors.read_text(encoding="utf-8"):
         errors.append("config/hypr/fata/colors.lua is not synchronized with theme/colors.lua")
 
     bindings = HYPR_DIR / "fata" / "bindings.lua"
@@ -58,6 +58,7 @@ def main() -> int:
         binding_text = bindings.read_text(encoding="utf-8")
         for fragment in (
             'hl.bind("SUPER + Q", hl.dsp.exec_cmd("kitty"))',
+            'hl.bind("SUPER + Escape", hl.dsp.exec_cmd("kitty btop"))',
             'hl.bind("SUPER + Tab", hl.dsp.focus({ last = true }))',
             'local fata_rofi = \'"$HOME/.local/bin/fata-rofi"\'',
             'hl.bind("SUPER + F", hl.dsp.exec_cmd(fata_rofi))',
@@ -70,7 +71,7 @@ def main() -> int:
         ):
             if fragment not in binding_text:
                 errors.append(f"base binding contract lacks {fragment}")
-        if re.search(r'hl\.dsp\.exec_(?:cmd|raw)\("(?!kitty"\))', binding_text):
+        if re.search(r'hl\.dsp\.exec_(?:cmd|raw)\("(?!(?:kitty|kitty btop)"\))', binding_text):
             errors.append("bindings.lua invokes an undeclared external command")
 
     workspace_file = HYPR_DIR / "fata" / "workspaces.lua"

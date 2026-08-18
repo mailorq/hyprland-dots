@@ -23,7 +23,7 @@ fm_test_home="$fm_test_root/home"
 fm_test_config="$fm_test_root/config"
 mkdir -p "$fm_test_bin" "$fm_test_home" "$fm_test_config"
 
-for fm_test_command in Hyprland hyprpaper kitty rofi mako waybar; do
+for fm_test_command in Hyprland hyprpaper kitty btop rofi mako waybar; do
     printf '%s\n' '#!/bin/sh' 'exit 0' > "$fm_test_bin/$fm_test_command"
     chmod 0755 "$fm_test_bin/$fm_test_command"
 done

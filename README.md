@@ -13,6 +13,7 @@
 | Waybar | Сегментированная панель для desktop и трёх явных laptop-профилей |
 | Rofi | Wayland launcher с одним выбранным фоном из каталога утверждённых иллюстраций |
 | Kitty | Терминал с доступом ко всем утверждённым иллюстрациям как к фонам |
+| btop | Монитор процессов и ресурсов, запускаемый в Kitty по требованию |
 | Mako | Уведомления без дополнительных shell-скриптов |
 
 Desktop-профиль не содержит battery, backlight, temperature, CPU, memory, power-profiles или аналогичных виджетов. Ноутбучные модули включаются только явным выбором профиля.
@@ -35,12 +36,12 @@ Desktop-профиль не содержит battery, backlight, temperature, CP
 
 ## Установка
 
-Перед началом установите компоненты рабочей среды способом, принятым в вашей системе. Требуются `Hyprland` версии 0.55 или новее, `hyprpaper`, `waybar`, `rofi` с поддержкой Wayland, `kitty` и `mako`.
+Перед началом установите компоненты рабочей среды способом, принятым в вашей системе. Требуются `Hyprland` версии 0.55 или новее, `hyprpaper`, `waybar`, `rofi` с поддержкой Wayland, `kitty`, `btop` и `mako`.
 
 Проверьте окружение:
 
 ```sh
-for command in Hyprland hyprpaper waybar rofi kitty mako sha256sum; do
+for command in Hyprland hyprpaper waybar rofi kitty btop mako sha256sum; do
     command -v "$command" || exit 1
 done
 ```
@@ -106,6 +107,7 @@ hyprctl devices
 | Привязка | Действие |
 |---|---|
 | `Super + Q` | Kitty |
+| `Super + Escape` | btop в Kitty |
 | `Super + Tab` | последнее активное окно |
 | `Super + F` | Rofi |
 | `Super + Shift + C` | закрыть активное окно |

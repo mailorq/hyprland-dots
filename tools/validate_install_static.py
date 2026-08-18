@@ -51,6 +51,7 @@ def main() -> None:
         "fm_require_command Hyprland",
         "fm_require_command hyprpaper",
         "fm_require_command kitty",
+        "fm_require_command btop",
         "fm_require_command rofi",
         "fm_require_command mako",
         "fm_require_command waybar",
