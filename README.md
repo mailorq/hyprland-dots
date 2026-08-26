@@ -116,6 +116,28 @@ hyprctl devices
 | `Super + 1…0` | workspace 1…10 на текущем мониторе |
 | `Super + Shift + 1…0` | переместить окно в workspace 1…10 |
 
+## Генерация и проверка
+
+`scripts/fata-build` координирует генераторы и проверки из checkout. Он не является установщиком и не выполняет package-manager операции. По умолчанию он не изменяет файлы:
+
+```sh
+PYTHON=python3 sh scripts/fata-build --check
+```
+
+Для изменения палитры, approved art manifest или Waybar profile используйте явный режим обновления текстовых производных файлов:
+
+```sh
+PYTHON=python3 sh scripts/fata-build --refresh-generated
+```
+
+Этот режим обновляет palette adapters, Kitty/Rofi selectors, Waybar profiles и `assets/deployment.sha256`, затем запускает release gate. Он не запускает builders артов или обоев и не записывает изображения. Полный изолированный тест установщика:
+
+```sh
+PYTHON=python3 sh scripts/fata-build --integration
+```
+
+Подробный контракт приведён в [docs/building.md](C:/Users/mailor/PycharmProjects/hyprland-dots/docs/building.md).
+
 ## Проверка релиза
 
 Для разработки требуется Python 3.10+ и Pillow из [tools/requirements-assets.txt](C:/Users/mailor/PycharmProjects/hyprland-dots/tools/requirements-assets.txt). Проверка не изменяет изображения:
@@ -124,10 +146,10 @@ hyprctl devices
 python3 -m venv .venv
 . .venv/bin/activate
 python3 -m pip install -r tools/requirements-assets.txt
-python3 tools/validate_release.py --integration
+PYTHON=python3 sh scripts/fata-build --integration
 ```
 
-`validate_release.py --integration` проверяет хеши art и wallpaper, palette adapters, Lua/Rasi/CSS/JSONC-контракты, installer, deployment manifest и изолированный shell-сценарий установки. Интеграционный тест работает только с временным `mktemp`-каталогом и подставными бинарниками зависимостей.
+`fata-build --integration` проверяет хеши art и wallpaper, palette adapters, Lua/Rasi/CSS/JSONC-контракты, installer, deployment manifest и изолированный shell-сценарий установки. Интеграционный тест работает только с временным `mktemp`-каталогом и подставными бинарниками зависимостей.
 
 Непосредственно в работающей Wayland-сессии дополнительно проверьте парсеры и IPC:
 
@@ -160,6 +182,7 @@ waybar --config "$fm_config_home/waybar/config.jsonc" --style "$fm_config_home/w
 - [Зависимости и профили](C:/Users/mailor/PycharmProjects/hyprland-dots/docs/dependency-contract.md)
 - [Архитектурные решения](C:/Users/mailor/PycharmProjects/hyprland-dots/docs/architecture-decisions.md)
 - [Проверка релиза](C:/Users/mailor/PycharmProjects/hyprland-dots/docs/release-verification.md)
+- [Генерация и build boundary](C:/Users/mailor/PycharmProjects/hyprland-dots/docs/building.md)
 - [Контракт Hyprland](C:/Users/mailor/PycharmProjects/hyprland-dots/docs/hyprland-contract.md)
 - [Контракт Waybar](C:/Users/mailor/PycharmProjects/hyprland-dots/docs/waybar-contract.md)
 - [Контракт Kitty, Rofi и Mako](C:/Users/mailor/PycharmProjects/hyprland-dots/docs/interaction-surfaces-contract.md)

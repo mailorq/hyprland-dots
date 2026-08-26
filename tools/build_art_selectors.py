@@ -159,7 +159,8 @@ def main() -> None:
     }
     for path, content in outputs.items():
         path.parent.mkdir(parents=True, exist_ok=True)
-        path.write_text(content, encoding="utf-8")
+        with path.open("w", encoding="utf-8", newline="\n") as output:
+            output.write(content)
 
 
 if __name__ == "__main__":

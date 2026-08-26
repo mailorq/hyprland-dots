@@ -18,6 +18,7 @@ CHECKS = (
     ("tools/validate_waybar_static.py",),
     ("tools/validate_wallpapers_static.py",),
     ("tools/validate_install_static.py",),
+    ("tools/validate_build_static.py",),
     ("tools/validate_release_static.py",),
 )
 

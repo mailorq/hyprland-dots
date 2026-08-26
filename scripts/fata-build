@@ -1,0 +1,78 @@
+#!/bin/sh
+# Coordinate reproducible text-generation and validation for this checkout.
+# Frozen artwork and wallpaper builders are deliberately not exposed here.
+set -eu
+
+fm_program=${0##*/}
+fm_mode=check
+fm_python=${PYTHON:-python3}
+
+fm_usage() {
+    cat <<'EOF'
+Usage: fata-build [--check | --refresh-generated | --integration]
+
+Modes:
+  --check              Verify the complete non-mutating release contract (default).
+  --refresh-generated  Rebuild only text adapters and deployment checksums, then verify.
+  --integration        Run --check plus the isolated installer integration test.
+
+Environment:
+  PYTHON               Python 3.10+ command to use (default: python3).
+
+Frozen assets:
+  This script never invokes the artwork or wallpaper rebuild commands and never
+  writes JPG files. Asset revisions require their separate explicit approval.
+EOF
+}
+
+if [ "$#" -gt 1 ]; then
+    fm_usage >&2
+    exit 64
+fi
+
+if [ "$#" -eq 1 ]; then
+    case "$1" in
+        --check) fm_mode=check ;;
+        --refresh-generated) fm_mode=refresh-generated ;;
+        --integration) fm_mode=integration ;;
+        --help|-h)
+            fm_usage
+            exit 0
+            ;;
+        *)
+            printf '%s\n' "$fm_program: unknown option: $1" >&2
+            fm_usage >&2
+            exit 64
+            ;;
+    esac
+fi
+
+fm_script_dir=$(CDPATH= cd -P "$(dirname "$0")" && pwd)
+fm_root=$(CDPATH= cd -P "$fm_script_dir/.." && pwd)
+
+if ! command -v "$fm_python" >/dev/null 2>&1; then
+    printf '%s\n' "$fm_program: Python 3.10+ command is unavailable: $fm_python" >&2
+    exit 69
+fi
+
+fm_run_python() {
+    fm_python_script=$1
+    shift
+    "$fm_python" "$fm_root/$fm_python_script" "$@"
+}
+
+case "$fm_mode" in
+    check)
+        fm_run_python tools/validate_release.py
+        ;;
+    refresh-generated)
+        fm_run_python tools/build_theme_colors.py
+        fm_run_python tools/build_art_selectors.py
+        fm_run_python tools/build_waybar_profiles.py
+        fm_run_python tools/build_release_manifest.py
+        fm_run_python tools/validate_release.py
+        ;;
+    integration)
+        fm_run_python tools/validate_release.py --integration
+        ;;
+esac

@@ -1,11 +1,13 @@
 # Every deployed text file is hashed byte-for-byte before installation.  Keep
 # its line endings independent of the operating system that prepared checkout.
 config/** text eol=lf
+theme/colors.* text eol=lf
 assets/art/fata-morgana/manifest.json text eol=lf
 assets/wallpapers/fata-morgana/manifest.json text eol=lf
 assets/deployment.sha256 text eol=lf
 
 # Keep executable POSIX scripts portable across checkout platforms.
 scripts/fata-install text eol=lf
+scripts/fata-build text eol=lf
 scripts/fata-rofi text eol=lf
 tools/test_install_integration.sh text eol=lf
