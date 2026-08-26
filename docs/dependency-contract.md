@@ -50,6 +50,7 @@ Temperature, CPU, memory и power-profiles не входят в любой пр�
 | Python 3.10+ | generators и static validators |
 | Pillow 12.x | проверка формата, размеров и SHA-256 images |
 | POSIX `sh` | shell syntax и `tools/test_install_integration.sh` |
+| `scripts/fata-build` | shell coordinator; использует `PYTHON` или `python3` без shell interpolation |
 
 Установка среды разработки:
 

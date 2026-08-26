@@ -12,17 +12,9 @@
 ## Стандартная проверка
 
 ~~~sh
-python3 tools/build_theme_colors.py
-python3 tools/build_art_assets.py --check
-python3 tools/build_wallpapers.py --check
-python3 tools/build_art_selectors.py
-python3 tools/build_waybar_profiles.py
-python3 tools/validate_hyprland_static.py
-python3 tools/validate_interaction_static.py
-python3 tools/validate_waybar_static.py
-python3 tools/validate_wallpapers_static.py
-python3 tools/validate_install_static.py
-sh -n scripts/fata-install
+sh -n scripts/fata-build
+PYTHON=python3 sh scripts/fata-build --refresh-generated
+PYTHON=python3 sh scripts/fata-build --check
 sh scripts/fata-install --profile desktop
 ~~~
 

@@ -128,7 +128,8 @@ def main() -> None:
     for profile_name in PROFILES:
         target = WAYBAR_DIR / f"config.{profile_name}.jsonc"
         target.parent.mkdir(parents=True, exist_ok=True)
-        target.write_text(render_profile(profile_name), encoding="utf-8")
+        with target.open("w", encoding="utf-8", newline="\n") as output:
+            output.write(render_profile(profile_name))
 
 
 if __name__ == "__main__":

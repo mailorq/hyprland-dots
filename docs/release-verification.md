@@ -10,7 +10,7 @@
 python3 -m venv .venv
 . .venv/bin/activate
 python3 -m pip install -r tools/requirements-assets.txt
-python3 tools/validate_release.py --integration
+PYTHON=python3 sh scripts/fata-build --integration
 ```
 
 `validate_release.py` выполняет только read-only проверки в отношении art и wallpaper. В gate входят:
@@ -26,6 +26,7 @@ python3 tools/validate_release.py --integration
 Также выполните syntax check на той POSIX shell, где будет запускаться установщик:
 
 ```sh
+sh -n scripts/fata-build
 sh -n scripts/fata-install
 sh -n scripts/fata-rofi
 sh -n tools/test_install_integration.sh
