@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import argparse
+import shutil
 import subprocess
 import sys
 from pathlib import Path
@@ -37,7 +38,14 @@ def main() -> int:
     for check in checks:
         command = list(check) if check[0] == "sh" else [sys.executable, *check]
         print("+", " ".join(command))
-        completed = subprocess.run(command, cwd=ROOT, check=False)
+        if shutil.which(command[0]) is None:
+            print(f"Release gate: required executable unavailable: {command[0]}", file=sys.stderr)
+            return 69
+        try:
+            completed = subprocess.run(command, cwd=ROOT, check=False)
+        except OSError as error:
+            print(f"Release gate: could not execute {command[0]}: {error}", file=sys.stderr)
+            return 69
         if completed.returncode != 0:
             return completed.returncode
     print("Release gate: pass")

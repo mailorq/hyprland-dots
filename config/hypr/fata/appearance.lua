@@ -58,10 +58,10 @@ hl.curve("fm_ease_out", {
     points = { { 0.22, 1.0 }, { 0.36, 1.0 } },
 })
 
-hl.animation({ leaf = "global",     enabled = true, speed = 2.4, bezier = "fm_ease_out" })
-hl.animation({ leaf = "windows",    enabled = true, speed = 2.6, bezier = "fm_ease_out" })
-hl.animation({ leaf = "windowsIn",  enabled = true, speed = 2.6, bezier = "fm_ease_out", style = "popin 94%" })
-hl.animation({ leaf = "windowsOut", enabled = true, speed = 1.6, bezier = "fm_ease_out", style = "popin 94%" })
-hl.animation({ leaf = "fade",       enabled = true, speed = 1.8, bezier = "fm_ease_out" })
-hl.animation({ leaf = "layers",     enabled = true, speed = 1.8, bezier = "fm_ease_out", style = "fade" })
-hl.animation({ leaf = "workspaces", enabled = true, speed = 2.2, bezier = "fm_ease_out", style = "slidefade 8%" })
+hl.animation({ leaf = "global",     enabled = true, speed = 2.4, curve = "fm_ease_out" })
+hl.animation({ leaf = "windows",    enabled = true, speed = 2.6, curve = "fm_ease_out" })
+hl.animation({ leaf = "windowsIn",  enabled = true, speed = 2.6, curve = "fm_ease_out", style = "popin 94%" })
+hl.animation({ leaf = "windowsOut", enabled = true, speed = 1.6, curve = "fm_ease_out", style = "popin 94%" })
+hl.animation({ leaf = "fade",       enabled = true, speed = 1.8, curve = "fm_ease_out" })
+hl.animation({ leaf = "layers",     enabled = true, speed = 1.8, curve = "fm_ease_out", style = "fade" })
+hl.animation({ leaf = "workspaces", enabled = true, speed = 2.2, curve = "fm_ease_out", style = "slidefade 8%" })

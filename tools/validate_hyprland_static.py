@@ -78,6 +78,26 @@ def main() -> int:
     if not workspace_file.is_file() or "for workspace = 1, 10 do" not in workspace_file.read_text(encoding="utf-8"):
         errors.append("the ten-workspace contract is absent")
 
+    appearance_file = HYPR_DIR / "fata" / "appearance.lua"
+    if not appearance_file.is_file():
+        errors.append("missing appearance module")
+    else:
+        appearance = appearance_file.read_text(encoding="utf-8")
+        if 'hl.curve("fm_ease_out"' not in appearance:
+            errors.append("appearance module lacks the declared animation curve")
+        if appearance.count('curve = "fm_ease_out"') != 7:
+            errors.append("animations must use the current Lua curve field consistently")
+        if "bezier =" in appearance:
+            errors.append("animations use the obsolete Lua bezier field instead of curve")
+
+    monitor_file = HYPR_DIR / "fata" / "monitors.lua"
+    if not monitor_file.is_file():
+        errors.append("missing portable monitor fallback")
+    else:
+        monitor = monitor_file.read_text(encoding="utf-8")
+        if 'scale = 1,' not in monitor or 'scale = "auto"' in monitor:
+            errors.append("portable monitor fallback must use deterministic integer scale 1")
+
     autostart_file = HYPR_DIR / "fata" / "autostart.lua"
     if not autostart_file.is_file():
         errors.append("missing Fata session autostart module")

@@ -62,6 +62,10 @@ def main() -> None:
             "release gate must include the shell integration test when requested")
     require('command = list(check) if check[0] == "sh" else [sys.executable, *check]' in release_gate,
             "release gate must not execute the shell integration test through Python")
+    require('shutil.which(command[0]) is None' in release_gate,
+            "release gate must report a missing shell executable without a traceback")
+    require('except OSError as error:' in release_gate,
+            "release gate must report process launch failures without a traceback")
     require(build_art_assets.verify(build_art_assets.DEFAULT_INPUT_DIR, build_art_assets.DEFAULT_OUTPUT_DIR) == 0,
             "frozen art masters failed verification")
     require(build_wallpapers.verify(build_wallpapers.OUTPUT_DIR) == 0,
